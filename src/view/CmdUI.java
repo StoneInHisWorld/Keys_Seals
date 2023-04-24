@@ -10,7 +10,7 @@ public class CmdUI {
     private final String companyName = "周大福公司";
     private final String warning = "在使用本系统时，请勿更改.data文件";
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws Exception {
         CmdUI ui = new CmdUI();
         Scanner scanner = new Scanner(System.in);
         ui.welcome();
@@ -32,11 +32,16 @@ public class CmdUI {
                 System.out.println("命令输入错误！");
             }
         }
+        ui.goodbye();
     }
 
     public void welcome() {
         System.out.println("欢迎来到" + companyName +"钥匙管理系统");
         System.out.println("注意：" + warning);
+    }
+
+    public void goodbye() {
+        System.out.println("再见！");
     }
 
     public int getKeyCmd() {

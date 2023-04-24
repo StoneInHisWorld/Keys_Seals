@@ -36,17 +36,25 @@ public class DepKeysDAO {
 
     /**
      * 将所有depKeys转化为字符串，写回
-     * @param keys 所有depKey的字符串格式
+     * @param keys depKeys对象列表
      * @throws IOException 文件写入异常
      */
-    public void writeBack(List<String> keys) throws IOException {
+    public void writeBack(List<DepKey> keys) throws IOException {
         FileWriter fileWriter = new FileWriter(new File(this.depKey_filePath));
-        BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
-        for (String key : keys) {
-//            bufferedWriter.write(key + "\n");
-            fileWriter.write(key + "\n");
+        for (DepKey key : keys) {
+            fileWriter.write(key.toString() + "\n");
         }
         fileWriter.close();
-        bufferedWriter.close();
     }
+
+//    public void add(DepKey depKey) throws IOException {
+//        // 追加写回
+//        FileWriter fileWriter = new FileWriter(
+//                new File(this.depKey_filePath), true
+//        );
+//        for (DepKey key : keys) {
+//            fileWriter.write(key.toString() + "\n");
+//        }
+//        fileWriter.close();
+//    }
 }

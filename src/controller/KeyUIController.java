@@ -28,4 +28,13 @@ public class KeyUIController {
     public void exitKeyUI() throws IOException {
         this.dbService.WriteBackDB();
     }
+
+    public void addKey(String dep, String keyStr) {
+        try {
+            this.dbService.addDepKey(dep, keyStr);
+        }
+        catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
 }

@@ -6,10 +6,8 @@ import model.entity.DepKey;
 import model.entity.SupKey;
 
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import java.util.function.Function;
 
 public class DBService {
 
@@ -63,10 +61,23 @@ public class DBService {
     }
 
     /**
-     * 将数据库对象中的内容全部写回文件
+     * 将数据库对象中的内容全部按序号顺序写回文件
      * @throws IOException 文件写入异常
      */
     public void WriteBackDB() throws IOException {
-        this.depKeysDAO.writeBack(this.DepKeyToStr());
+        List<DepKey> depKeys = this.db.getDepKeys();
+        // depKey需按序号顺序排列后写入
+        Collections.sort(depKeys);
+        this.depKeysDAO.writeBack(depKeys);
+    }
+
+    public void addDepKey(String dep, String keyStr) throws Exception {
+        List<DepKey> depKeys = this.db.getDepKeys();
+        int lastestId = depKeys.get(depKeys.size() - 1).getId();
+        // 检查输入的字符串是否合法
+        keyStr = dep + '\t' + lastestId + '\t' + keyStr;
+        DepKey depKey = new DepKey(keyStr);
+        depKeys.add(depKey);
+//        this.depKeysDAO.add(depKey);
     }
 }

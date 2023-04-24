@@ -1,6 +1,8 @@
 package model.entity;
 
-public class DepKey {
+import java.util.Comparator;
+
+public class DepKey implements Comparable<DepKey> {
     private String department = "";
     private int id = -1;
     private String store = "";
@@ -16,13 +18,16 @@ public class DepKey {
         int progress = 0;
         try {
             this.department = strs[progress++];
+            if (department.equals("后勤")) {
+                throw new Exception("不可使用后勤钥匙字符串初始化部门钥匙！");
+            }
             this.id = new Integer(strs[progress++]);
             this.store = strs[progress++];
             this.safe_id = strs[progress++];
             switch (strs[progress++]) {
                 case "1":this.back_up = true;break;
                 case "0":this.back_up = false;break;
-                default:throw new Exception("Wrong depkey_str!");
+                default:throw new Exception("错误的部门钥匙字符串输入！");
             }
             this.emergency = new Integer(strs[progress++]);
             this.note = strs[progress++];
@@ -111,4 +116,9 @@ public class DepKey {
                 last_return + '\t' + last_fetch  + '\t'+ note;
     }
 
+
+    @Override
+    public int compareTo(DepKey o) {
+        return this.id <= o.id ? 1 : 0;
+    }
 }
