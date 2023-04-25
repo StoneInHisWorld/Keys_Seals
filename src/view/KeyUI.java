@@ -96,7 +96,7 @@ public class KeyUI {
                 System.out.println("功能尚未开放！请选择其他功能：");
             }
             else if (cmd == addCmd) {
-                this.addKeyUI(dep);
+                this.addSafeUI(dep);
             }
             else if (cmd == fetchCmd) {
                 System.out.println("功能尚未开放！请选择其他功能：");
@@ -107,28 +107,52 @@ public class KeyUI {
         }
     }
 
-    private void addKeyUI(String dep) throws Exception {
+    /**
+     * 添加保险柜界面，并更新部门选择。可以添加新部门。
+     * @param dep 目前界面展示的钥匙所属部门
+     * @throws Exception 输入错误提示
+     */
+    private void addSafeUI(String dep) throws Exception {
         Scanner scanner = new Scanner(System.in);
-        // 是否添加新部门
-        System.out.println("是否继续在" + dep + "添加钥匙？1. 是 " +
-                "2. 否，添加一个新部门 0. 退出");
         while (true) {
+            // 是否添加新部门
+            System.out.println("是否继续在" + dep + "添加保险柜？1. 是 " +
+                    "2. 否，添加一个新部门 0. 退出");
             int choice = getChoice(0, 2);
             if (choice == 0) {
                 return;
             }
             else if (choice == 2) {
                 System.out.print("请输入新部门名：");
-                dep = scanner.nextLine();
+                String new_dep = scanner.nextLine();
+                // 部门名查重
+                if (this.departments.contains(new_dep)) {
+                    System.out.println(new_dep + "已存在，请重新输入新的部门名，或查看"
+                            + new_dep + "钥匙以添加新的保险柜！");
+                }
+                else {
+                    dep = new_dep;
+                    break;
+                }
+
             }
             else {
                 break;
             }
         }
         String input = inputKey(dep, scanner);
-        this.keyUIController.addKey(dep, input);
+        // 更新部门选择
+        this.departments = this.keyUIController.addSafe(dep, input);
+        System.out.println("添加保险柜成功！");
     }
 
+    /**
+     * 输入钥匙除部门和序号外的其他信息。使用tab间隔
+     * @param dep 钥匙所属部门
+     * @param scanner 输入扫描器
+     * @return 输入字符串
+     * @throws Exception 输入错误提示
+     */
     private String inputKey(String dep, Scanner scanner) throws Exception {
         // 输入新钥匙数据
         System.out.println("请依次输入各项数据，项间使用tab间隔：");
@@ -141,7 +165,7 @@ public class KeyUI {
         }
         else {
             System.out.println("店铺名\t保险柜序号\t备用钥匙\t应急钥匙" +
-                    "\t入库人" + "\t出库人\t备注，");
+                    "\t入库人\t出库人\t备注");
         }
         return scanner.nextLine();
     }

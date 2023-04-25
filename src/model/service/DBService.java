@@ -24,7 +24,7 @@ public class DBService {
     }
 
     public Set<String> collectDepart() {
-        Set<String> depSet = new HashSet<>();
+        Set<String> depSet = new LinkedHashSet<>();
         for (DepKey key : db.getDepKeys()) {
             depSet.add(key.getDepartment());
         }
@@ -71,13 +71,12 @@ public class DBService {
         this.depKeysDAO.writeBack(depKeys);
     }
 
-    public void addDepKey(String dep, String keyStr) throws Exception {
+    public void addSafe_DepKey(String dep, String keyStr) throws Exception {
         List<DepKey> depKeys = this.db.getDepKeys();
         int lastestId = depKeys.get(depKeys.size() - 1).getId();
         // 检查输入的字符串是否合法
-        keyStr = dep + '\t' + lastestId + '\t' + keyStr;
+        keyStr = dep + '\t' + (lastestId + 1) + '\t' + keyStr;
         DepKey depKey = new DepKey(keyStr);
         depKeys.add(depKey);
-//        this.depKeysDAO.add(depKey);
     }
 }

@@ -1,17 +1,13 @@
 package model.entity;
 
-import java.util.Comparator;
+import java.util.List;
 
-public class DepKey implements Comparable<DepKey> {
-    private String department = "";
-    private int id = -1;
+public class DepKey extends Key{
+
     private String store = "";
     private String safe_id = "null";
     private boolean back_up = false;
     private int emergency = 0;
-    private String note = "";
-    private String last_return = "";
-    private String last_fetch = "";
 
     public DepKey(String depKey_str) throws Exception {
         String[] strs = depKey_str.split("\t");
@@ -116,9 +112,15 @@ public class DepKey implements Comparable<DepKey> {
                 last_return + '\t' + last_fetch  + '\t'+ note;
     }
 
-
-    @Override
-    public int compareTo(DepKey o) {
-        return this.id <= o.id ? 1 : 0;
+    public static List<String> memberToStr() {
+        List<String> stringList = Key.memberToString();
+        stringList.add("商铺");
+        stringList.add("保险柜序号");
+        stringList.add("备用钥匙");
+        stringList.add("应急钥匙");
+        stringList.add("入库人");
+        stringList.add("出库人");
+        stringList.add("备注");
+        return stringList;
     }
 }

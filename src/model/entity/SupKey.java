@@ -5,9 +5,9 @@ public class SupKey {
     private int id;
     private String loc;
     private int num_key;
-    private String note;
     private String last_return;
     private String last_fetch;
+    private String note;
 
     public String getDepartment() {
         return department;

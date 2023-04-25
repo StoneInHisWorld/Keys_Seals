@@ -46,15 +46,4 @@ public class DepKeysDAO {
         }
         fileWriter.close();
     }
-
-//    public void add(DepKey depKey) throws IOException {
-//        // 追加写回
-//        FileWriter fileWriter = new FileWriter(
-//                new File(this.depKey_filePath), true
-//        );
-//        for (DepKey key : keys) {
-//            fileWriter.write(key.toString() + "\n");
-//        }
-//        fileWriter.close();
-//    }
 }
