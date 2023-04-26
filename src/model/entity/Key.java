@@ -21,13 +21,18 @@ public class Key implements Comparable<Key> {
         return this.id <= o.id ? 1 : 0;
     }
 
+    @Override
+    public String toString() {
+        return department + '\t' + id + '\t';
+    }
+
     /**
      * 钥匙的成员字符串前两个输出必为部门和序号
      * @return 钥匙输出字符串
      */
-    public static List<String> memberToString() {
+    public static List<String> memberToStr() {
         List<String> stringList = new LinkedList<>();
-        stringList.add("部门");
+        stringList.add("部门名称");
         stringList.add("序号");
         return stringList;
     }

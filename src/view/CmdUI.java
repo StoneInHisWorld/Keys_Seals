@@ -22,7 +22,7 @@ public class CmdUI {
                 break;
             }
             else if (cmd == ui.getKeyCmd()) {
-                KeyUI keyUI = new KeyUI();
+                KeyUI keyUI = new KeyUI(scanner);
                 keyUI.mainPage();
             }
             else if (cmd == ui.getSealCmd()) {
@@ -33,6 +33,7 @@ public class CmdUI {
             }
         }
         ui.goodbye();
+        scanner.close();
     }
 
     public void welcome() {

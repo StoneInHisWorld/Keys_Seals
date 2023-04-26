@@ -7,12 +7,11 @@ import model.entity.SupKey;
 
 import java.io.IOException;
 import java.util.*;
-import java.util.function.Function;
 
 public class DBService {
 
-    private DB db;
-    private DepKeysDAO depKeysDAO;
+    private final DB db;
+    private final DepKeysDAO depKeysDAO;
 
     public DBService() {
         this.db = new DB();
@@ -61,6 +60,18 @@ public class DBService {
     }
 
     /**
+     * 所有的SupKey转化为输出字符串，返回
+     * @return 部门为后勤的SupKey的字符串形式
+     */
+    public List<String> SupKeyToStr() {
+        List<String> ret = new LinkedList<>();
+        for (SupKey supKey : this.db.getSupKeys()) {
+            ret.add(supKey.toString());
+        }
+        return ret;
+    }
+
+    /**
      * 将数据库对象中的内容全部按序号顺序写回文件
      * @throws IOException 文件写入异常
      */
@@ -71,6 +82,12 @@ public class DBService {
         this.depKeysDAO.writeBack(depKeys);
     }
 
+    /**
+     * 添加部门钥匙的保险柜
+     * @param dep 保险柜所属部门
+     * @param keyStr 添加保险桂的详细信息
+     * @throws Exception 输入字符串不符格式异常
+     */
     public void addSafe_DepKey(String dep, String keyStr) throws Exception {
         List<DepKey> depKeys = this.db.getDepKeys();
         int lastestId = depKeys.get(depKeys.size() - 1).getId();
@@ -78,5 +95,25 @@ public class DBService {
         keyStr = dep + '\t' + (lastestId + 1) + '\t' + keyStr;
         DepKey depKey = new DepKey(keyStr);
         depKeys.add(depKey);
+    }
+
+    public String getSupKeyColumnName() throws Exception {
+        StringBuilder columnNames = new StringBuilder();
+        // 成员名间添加tab键
+        for (String s : SupKey.memberToStr()) {
+            columnNames.append(s).append('\t');
+        }
+        // 去掉最后一个tab
+        return columnNames.substring(0, columnNames.length() - 1);
+    }
+
+    public String getDepKeyColumnName() throws Exception {
+        StringBuilder columnNames = new StringBuilder();
+        // 成员名间添加tab键
+        for (String s : DepKey.memberToStr()) {
+            columnNames.append(s).append('\t');
+        }
+        // 去掉最后一个tab
+        return columnNames.substring(0, columnNames.length() - 1);
     }
 }
