@@ -24,9 +24,6 @@ public class KeyUI {
     private static final int fetchCmd = 3;
     private static final int delCmd = 4;
     private static final int exitCmd = 0;
-    private static final String columnName = "部门名\t" + "序号\t" +
-            "店铺名\t" + "保险柜序号\t" + "备用钥匙\t" + "应急钥匙\t" +
-            "入库人\t" + "出库人\t" + "备注\t";
 
     public KeyUI(Scanner scanner) {
         this.scanner = scanner;
@@ -52,7 +49,7 @@ public class KeyUI {
     private String selectDepartment() {
         this.displayDepartments();
         System.out.println("0.退出\n请选择要查看的部门：");
-        int choice = this.getChoice(0, this.departments.size());
+        int choice = KeyUIController.getChoice(0, this.departments.size());
         if (choice == 0) {
             return exitChoice;
         }
@@ -130,7 +127,7 @@ public class KeyUI {
             // 是否添加新部门
             System.out.println("是否继续在" + dep + "添加保险柜？1. 是 " +
                     "2. 否，添加一个新部门 0. 退出");
-            int choice = getChoice(0, 2);
+            int choice = KeyUIController.getChoice(0, 2);
             if (choice == 0) {
                 return;
             }
@@ -189,8 +186,13 @@ public class KeyUI {
     }
 
     private void delSafeUI(String dep) {
-        System.out.println("请输入删除的保险柜id（数字序号，输入0返回）：");
-        int id = this.scanner.nextInt();
+        while (true) {
+            System.out.println("请输入删除的保险柜id（数字序号，输入0返回）：");
+            int id = this.scanner.nextInt();
+            if (this.keyUIController.delSafe(dep, id)) {
+                return;
+            }
+        }
     }
 
     private void displaySafe(String dep) throws Exception {
@@ -212,18 +214,6 @@ public class KeyUI {
 //    private void displaySupKey() {
 //
 //    }
-
-    private int getChoice(final int lowRan, final int highRan) {
-        int choice;
-        while (true) {
-            choice = this.scanner.nextInt();
-            if (choice < lowRan || choice > highRan) {
-                System.out.println("请输入正确的命令！");
-            }
-            else break;
-        }
-        return choice;
-    }
 
     private void exit() throws IOException {
         this.keyUIController.exitKeyUI();

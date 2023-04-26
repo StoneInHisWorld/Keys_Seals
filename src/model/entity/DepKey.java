@@ -35,64 +35,8 @@ public class DepKey extends Key{
         return department;
     }
 
-    public void setDepartment(String department) {
-        this.department = department;
-    }
-
     public int getId() {
         return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getStore() {
-        return store;
-    }
-
-    public void setStore(String store) {
-        this.store = store;
-    }
-
-    public String getSafe_id() {
-        return safe_id;
-    }
-
-    public void setSafe_id(String safe_id) {
-        this.safe_id = safe_id;
-    }
-
-    public int getEmergency() {
-        return emergency;
-    }
-
-    public void setEmergency(int emergency) {
-        this.emergency = emergency;
-    }
-
-    public String getNote() {
-        return note;
-    }
-
-    public void setNote(String note) {
-        this.note = note;
-    }
-
-    public String getLast_return() {
-        return last_return;
-    }
-
-    public void setLast_return(String last_return) {
-        this.last_return = last_return;
-    }
-
-    public String getLast_fetch() {
-        return last_fetch;
-    }
-
-    public void setLast_fetch(String last_fetch) {
-        this.last_fetch = last_fetch;
     }
 
     @Override
@@ -105,7 +49,7 @@ public class DepKey extends Key{
     public static List<String> memberToStr() {
         List<String> stringList = Key.memberToStr();
         stringList.add("商铺");
-        stringList.add("保险柜序号");
+        stringList.add("保险柜");
         stringList.add("备用钥匙");
         stringList.add("应急钥匙");
         stringList.add("入库人");

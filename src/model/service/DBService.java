@@ -97,7 +97,7 @@ public class DBService {
         depKeys.add(depKey);
     }
 
-    public String getSupKeyColumnName() throws Exception {
+    public String getSupKeyColumnName() {
         StringBuilder columnNames = new StringBuilder();
         // 成员名间添加tab键
         for (String s : SupKey.memberToStr()) {
@@ -107,7 +107,7 @@ public class DBService {
         return columnNames.substring(0, columnNames.length() - 1);
     }
 
-    public String getDepKeyColumnName() throws Exception {
+    public String getDepKeyColumnName() {
         StringBuilder columnNames = new StringBuilder();
         // 成员名间添加tab键
         for (String s : DepKey.memberToStr()) {
@@ -115,5 +115,24 @@ public class DBService {
         }
         // 去掉最后一个tab
         return columnNames.substring(0, columnNames.length() - 1);
+    }
+
+    /**
+     * 根据id查找部门保险柜
+     * @param id 保险柜ID
+     * @return 找到则返回对应的保险柜，否则返回null
+     */
+    public DepKey findDepKey(int id) {
+        for (DepKey depKey : this.db.getDepKeys()) {
+            if (depKey.getId() == id) return depKey;
+        }
+        return null;
+    }
+
+    public boolean delDepSafe(String dep, int id) {
+        // 删除部门符合且id符合的保险柜
+        return this.db.getDepKeys().removeIf(
+                depKey -> depKey.getDepartment().equals(dep) &&
+                        depKey.getId() == id);
     }
 }
