@@ -26,6 +26,22 @@ public class Key implements Comparable<Key> {
         return department + '\t' + id + '\t';
     }
 
+    public String getDepartment() {
+        return department;
+    }
+
+    public void setDepartment(String department) {
+        this.department = department;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
     /**
      * 钥匙的成员字符串前两个输出必为部门和序号
      * @return 钥匙输出字符串

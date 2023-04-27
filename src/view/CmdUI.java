@@ -1,14 +1,24 @@
 package view;
 
-import java.io.IOException;
+import java.io.*;
 import java.util.Scanner;
 
 public class CmdUI {
+
     private final int keyCmd = 1;
     private final int sealCmd = 2;
     private final int exitCmd = 0;
-    private final String companyName = "周大福公司";
-    private final String warning = "在使用本系统时，请勿更改.data文件";
+    private final String configPath = "configuration.txt";
+    private final String companyName;
+    private final String warning;
+
+    public CmdUI() throws IOException {
+        // 加载配置文件
+        BufferedReader bufferedReader = new BufferedReader(new FileReader(configPath));
+        this.companyName = bufferedReader.readLine().substring(4);
+        this.warning = bufferedReader.readLine().substring(5);
+        bufferedReader.close();
+    }
 
     public static void main(String[] args) throws Exception {
         CmdUI ui = new CmdUI();

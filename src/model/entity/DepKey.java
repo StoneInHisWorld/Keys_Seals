@@ -31,14 +31,6 @@ public class DepKey extends Key{
         } catch (IndexOutOfBoundsException e) {  }
     }
 
-    public String getDepartment() {
-        return department;
-    }
-
-    public int getId() {
-        return id;
-    }
-
     @Override
     public String toString() {
         return super.toString() + store + '\t' + safe_id + '\t' +

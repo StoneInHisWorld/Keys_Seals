@@ -10,10 +10,12 @@ import java.util.Set;
 
 public class KeyUIController {
 
+    private final Scanner scanner;
     private static final String supportDep = "后勤";
     private final DBService dbService;
 
-    public KeyUIController() {
+    public KeyUIController(Scanner scanner) {
+        this.scanner = scanner;
         this.dbService = new DBService();
     }
 
@@ -64,7 +66,6 @@ public class KeyUIController {
         }
         else {
             // 输出部门保险柜信息
-//            ret.add(this.dbService.getDepKeyColumnName());
             if (!ret.addAll(this.dbService.DepKeyToStr(dep))) {
                 throw new Exception("生成部门保险柜信息失败！");
             }
@@ -99,7 +100,7 @@ public class KeyUIController {
             String keyStr;
             // 确认保险柜的存在
             try {
-                keyStr = this.dbService.findDepKey(id).toString();
+                keyStr = this.dbService.findDepKey(dep, id).toString();
             } catch (NullPointerException e) {
                 System.out.println(dep + "下无id为" + id + "的保险柜！");
                 return false;
@@ -109,7 +110,7 @@ public class KeyUIController {
             System.out.println(this.dbService.getDepKeyColumnName());
             System.out.println(keyStr);
             System.out.println("注意：此操作不可逆！1. 是 0. 否");
-            if (getChoice(0, 1) == 0) {
+            if (getChoice(scanner, 0, 1) == 0) {
                 return false;
             }
             else {
@@ -130,8 +131,8 @@ public class KeyUIController {
      * @param highRan 最大数字命令
      * @return 选择结果
      */
-    public static int getChoice(final int lowRan, final int highRan) {
-        Scanner scanner = new Scanner(System.in);
+    public static int getChoice(final Scanner scanner, final int lowRan,
+                                final int highRan) {
         int choice;
         while (true) {
             choice = scanner.nextInt();
@@ -140,7 +141,6 @@ public class KeyUIController {
             }
             else break;
         }
-        scanner.close();
         return choice;
     }
 }

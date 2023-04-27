@@ -1,7 +1,6 @@
 package view;
 
 import controller.KeyUIController;
-import org.w3c.dom.html.HTMLInputElement;
 
 import java.io.IOException;
 import java.util.Iterator;
@@ -27,7 +26,7 @@ public class KeyUI {
 
     public KeyUI(Scanner scanner) {
         this.scanner = scanner;
-        this.keyUIController = new KeyUIController();
+        this.keyUIController = new KeyUIController(scanner);
         try {
             this.departments = keyUIController.initKeyUI();
         } catch (Exception e) {
@@ -49,7 +48,8 @@ public class KeyUI {
     private String selectDepartment() {
         this.displayDepartments();
         System.out.println("0.退出\n请选择要查看的部门：");
-        int choice = KeyUIController.getChoice(0, this.departments.size());
+        int choice = KeyUIController.getChoice(
+                scanner, 0, this.departments.size());
         if (choice == 0) {
             return exitChoice;
         }
@@ -65,6 +65,10 @@ public class KeyUI {
 
     private void displayDepartments() {
         int i = 0;
+        if (this.departments.size() == 0) {
+            System.out.println("数据库中暂未存有任何保险柜数据！");
+            return;
+        }
         for (String department : departments) {
             System.out.print(((i++)+1) + "." + department + " ");
         }
@@ -78,24 +82,15 @@ public class KeyUI {
         if (depChoice.equals(exitChoice)) return;
         this.displaySafe(depChoice);
         this.overviewOptionPage(depChoice);
-//        if (depChoice.equals(supportDep)) {
-//            // 展示后勤钥匙
-//            this.displaySupKey();
-//        }
-//        else if (!depChoice.equals(exitChoice)) {
-//            // 展示部门钥匙
-//            this.displayDepKey(depChoice);
-//            this.overviewOptionPage(depChoice);
-//        }
     }
 
-    private void overviewOptionPage(String dep) throws Exception {
+    private void overviewOptionPage(String dep) {
         // 对钥匙进行操作
         while(true) {
             System.out.println("请选择功能：" + takeCmd + ". 入库 " +
                     addCmd + ". 添加保险柜 " + fetchCmd + ". 出库 " +
                     delCmd + ". 删除保险柜 " + exitCmd + ". 退出");
-            int cmd = this.scanner.nextInt();
+            int cmd = scanner.nextInt();
             if (cmd == exitCmd) {
                 break;
             }
@@ -120,20 +115,20 @@ public class KeyUI {
     /**
      * 添加保险柜界面，并更新部门选择。可以添加新部门。
      * @param dep 目前界面展示的钥匙所属部门
-     * @throws Exception 输入错误提示
      */
-    private void addSafeUI(String dep) throws Exception {
+    private void addSafeUI(String dep) {
         while (true) {
             // 是否添加新部门
             System.out.println("是否继续在" + dep + "添加保险柜？1. 是 " +
                     "2. 否，添加一个新部门 0. 退出");
-            int choice = KeyUIController.getChoice(0, 2);
+            int choice = KeyUIController.getChoice(
+                    scanner, 0, 2);
             if (choice == 0) {
                 return;
             }
             else if (choice == 2) {
                 System.out.print("请输入新部门名：");
-                String new_dep = this.scanner.nextLine();
+                String new_dep = scanner.nextLine();
                 // 部门名查重
                 if (this.departments.contains(new_dep)) {
                     System.out.println(new_dep + "已存在，请重新输入新的部门名，或查看"
@@ -159,10 +154,8 @@ public class KeyUI {
      * 输入钥匙除部门和序号外的其他信息。使用tab间隔
      * @param dep 钥匙所属部门
      * @return 输入字符串
-     * @throws Exception 输入错误提示
      */
-    private String inputKey(String dep) throws Exception {
-        Scanner scanner = new Scanner(System.in);
+    private String inputKey(String dep) {
         // 输入新钥匙数据
         System.out.println("请依次输入各项数据，项间使用tab间隔：");
         // 获取新保险柜需要输入的数据
@@ -171,24 +164,13 @@ public class KeyUI {
         columnNames = columnNames.substring(columnNames.indexOf('\t') + 1);
         columnNames = columnNames.substring(columnNames.indexOf('\t') + 1);
         System.out.println(columnNames);
-//        if (dep.equals(KeyUI.supportDep)) {
-//            // 添加后勤部的钥匙
-//            System.out.println();
-//        }
-//        else if (dep.equals(KeyUI.exitChoice)) {
-//            throw new Exception("错误的部门输入！");
-//        }
-//        else {
-//            System.out.println("店铺名\t保险柜序号\t备用钥匙\t应急钥匙" +
-//                    "\t入库人\t出库人\t备注");
-//        }
         return scanner.nextLine();
     }
 
     private void delSafeUI(String dep) {
         while (true) {
             System.out.println("请输入删除的保险柜id（数字序号，输入0返回）：");
-            int id = this.scanner.nextInt();
+            int id = scanner.nextInt();
             if (this.keyUIController.delSafe(dep, id)) {
                 return;
             }
@@ -201,19 +183,6 @@ public class KeyUI {
             System.out.println(output);
         }
     }
-
-//    private void displayDepKey(String dep) {
-//        List<String> columnNames = null;
-//        List<String> output = this.keyUIController.displayDepKeys(dep, columnNames);
-//        System.out.println(columnNames);
-//        for (String key : this.keyUIController.displayDepKeys(dep)) {
-//            System.out.println(key);
-//        }
-//    }
-//
-//    private void displaySupKey() {
-//
-//    }
 
     private void exit() throws IOException {
         this.keyUIController.exitKeyUI();

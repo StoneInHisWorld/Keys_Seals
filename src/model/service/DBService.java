@@ -129,10 +129,32 @@ public class DBService {
         return null;
     }
 
+    /**
+     * 根据id查找部门保险柜
+     * @param id 保险柜ID
+     * @return 找到则返回对应的保险柜，否则返回null
+     */
+    public DepKey findDepKey(String dep, int id) {
+        for (DepKey depKey : this.db.getDepKeys()) {
+            if (depKey.getId() == id && depKey.getDepartment().equals(dep))
+                return depKey;
+        }
+        return null;
+    }
+
     public boolean delDepSafe(String dep, int id) {
         // 删除部门符合且id符合的保险柜
-        return this.db.getDepKeys().removeIf(
+        if (this.db.getDepKeys().removeIf(
                 depKey -> depKey.getDepartment().equals(dep) &&
-                        depKey.getId() == id);
+                        depKey.getId() == id)) {
+            // 若删除成功，则刷新所有key的id
+            List<DepKey> depKeys = this.db.getDepKeys();
+            int new_id = 1;
+            for (DepKey depKey : depKeys) {
+                depKey.setId(new_id++);
+            }
+            return true;
+        }
+        return false;
     }
 }
