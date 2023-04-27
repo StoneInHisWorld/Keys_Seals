@@ -1,16 +1,30 @@
 package view;
 
-import java.io.IOException;
+import java.io.*;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Scanner;
 
 public class CmdUI {
+
     private final int keyCmd = 1;
     private final int sealCmd = 2;
     private final int exitCmd = 0;
-    private final String companyName = "周大福公司";
-    private final String warning = "在使用本系统时，请勿更改.data文件";
+    private final String configPath = "configuration.txt";
+    private final String companyName;
+    private final String warning;
 
-    public static void main(String[] args) throws IOException {
+    public CmdUI() throws IOException {
+        // 加载配置文件
+        FileInputStream file = new FileInputStream(configPath);
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(file, StandardCharsets.UTF_8));
+        this.companyName = bufferedReader.readLine().substring(4);
+        this.warning = bufferedReader.readLine().substring(5);
+        bufferedReader.close();
+        file.close();
+    }
+
+    public static void main(String[] args) throws Exception {
         CmdUI ui = new CmdUI();
         Scanner scanner = new Scanner(System.in);
         ui.welcome();
@@ -22,7 +36,7 @@ public class CmdUI {
                 break;
             }
             else if (cmd == ui.getKeyCmd()) {
-                KeyUI keyUI = new KeyUI();
+                KeyUI keyUI = new KeyUI(scanner);
                 keyUI.mainPage();
             }
             else if (cmd == ui.getSealCmd()) {
@@ -32,11 +46,17 @@ public class CmdUI {
                 System.out.println("命令输入错误！");
             }
         }
+        ui.goodbye();
+        scanner.close();
     }
 
     public void welcome() {
         System.out.println("欢迎来到" + companyName +"钥匙管理系统");
         System.out.println("注意：" + warning);
+    }
+
+    public void goodbye() {
+        System.out.println("再见！");
     }
 
     public int getKeyCmd() {

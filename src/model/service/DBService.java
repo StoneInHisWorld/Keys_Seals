@@ -6,27 +6,24 @@ import model.entity.DepKey;
 import model.entity.SupKey;
 
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class DBService {
 
-    private DB db;
-    private DepKeysDAO depKeysDAO;
+    private final DB db;
+    private final DepKeysDAO depKeysDAO;
 
     public DBService() {
         this.db = new DB();
         this.depKeysDAO = new DepKeysDAO();
     }
 
-    public void initDB() throws Exception {
+    public void loadDB() throws Exception {
         db.setDepKeys(this.depKeysDAO.findAll());
     }
 
     public Set<String> collectDepart() {
-        Set<String> depSet = new HashSet<>();
+        Set<String> depSet = new LinkedHashSet<>();
         for (DepKey key : db.getDepKeys()) {
             depSet.add(key.getDepartment());
         }
@@ -63,10 +60,101 @@ public class DBService {
     }
 
     /**
-     * 将数据库对象中的内容全部写回文件
+     * 所有的SupKey转化为输出字符串，返回
+     * @return 部门为后勤的SupKey的字符串形式
+     */
+    public List<String> SupKeyToStr() {
+        List<String> ret = new LinkedList<>();
+        for (SupKey supKey : this.db.getSupKeys()) {
+            ret.add(supKey.toString());
+        }
+        return ret;
+    }
+
+    /**
+     * 将数据库对象中的内容全部按序号顺序写回文件
      * @throws IOException 文件写入异常
      */
-    public void WriteBackDB() throws IOException {
-        this.depKeysDAO.writeBack(this.DepKeyToStr());
+    public void writeBackDB() throws IOException {
+        List<DepKey> depKeys = this.db.getDepKeys();
+        // depKey需按序号顺序排列后写入
+        Collections.sort(depKeys);
+        this.depKeysDAO.writeBack(depKeys);
+    }
+
+    /**
+     * 添加部门钥匙的保险柜
+     * @param dep 保险柜所属部门
+     * @param keyStr 添加保险桂的详细信息
+     * @throws Exception 输入字符串不符格式异常
+     */
+    public void addSafe_DepKey(String dep, String keyStr) throws Exception {
+        List<DepKey> depKeys = this.db.getDepKeys();
+        int lastestId = depKeys.get(depKeys.size() - 1).getId();
+        // 检查输入的字符串是否合法
+        keyStr = dep + '\t' + (lastestId + 1) + '\t' + keyStr;
+        DepKey depKey = new DepKey(keyStr);
+        depKeys.add(depKey);
+    }
+
+    public String getSupKeyColumnName() {
+        StringBuilder columnNames = new StringBuilder();
+        // 成员名间添加tab键
+        for (String s : SupKey.memberToStr()) {
+            columnNames.append(s).append('\t');
+        }
+        // 去掉最后一个tab
+        return columnNames.substring(0, columnNames.length() - 1);
+    }
+
+    public String getDepKeyColumnName() {
+        StringBuilder columnNames = new StringBuilder();
+        // 成员名间添加tab键
+        for (String s : DepKey.memberToStr()) {
+            columnNames.append(s).append('\t');
+        }
+        // 去掉最后一个tab
+        return columnNames.substring(0, columnNames.length() - 1);
+    }
+
+    /**
+     * 根据id查找部门保险柜
+     * @param id 保险柜ID
+     * @return 找到则返回对应的保险柜，否则返回null
+     */
+    public DepKey findDepKey(int id) {
+        for (DepKey depKey : this.db.getDepKeys()) {
+            if (depKey.getId() == id) return depKey;
+        }
+        return null;
+    }
+
+    /**
+     * 根据id查找部门保险柜
+     * @param id 保险柜ID
+     * @return 找到则返回对应的保险柜，否则返回null
+     */
+    public DepKey findDepKey(String dep, int id) {
+        for (DepKey depKey : this.db.getDepKeys()) {
+            if (depKey.getId() == id && depKey.getDepartment().equals(dep))
+                return depKey;
+        }
+        return null;
+    }
+
+    public boolean delDepSafe(String dep, int id) {
+        // 删除部门符合且id符合的保险柜
+        if (this.db.getDepKeys().removeIf(
+                depKey -> depKey.getDepartment().equals(dep) &&
+                        depKey.getId() == id)) {
+            // 若删除成功，则刷新所有key的id
+            List<DepKey> depKeys = this.db.getDepKeys();
+            int new_id = 1;
+            for (DepKey depKey : depKeys) {
+                depKey.setId(new_id++);
+            }
+            return true;
+        }
+        return false;
     }
 }
