@@ -1,6 +1,8 @@
 package view;
 
 import java.io.*;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Scanner;
 
 public class CmdUI {
@@ -14,10 +16,12 @@ public class CmdUI {
 
     public CmdUI() throws IOException {
         // 加载配置文件
-        BufferedReader bufferedReader = new BufferedReader(new FileReader(configPath));
+        FileInputStream file = new FileInputStream(configPath);
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(file, StandardCharsets.UTF_8));
         this.companyName = bufferedReader.readLine().substring(4);
         this.warning = bufferedReader.readLine().substring(5);
         bufferedReader.close();
+        file.close();
     }
 
     public static void main(String[] args) throws Exception {

@@ -3,14 +3,13 @@ package model.dao;
 import model.entity.DepKey;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
 public class DepKeysDAO {
 
     private final String depKey_filePath = "./keys.data";
-//    private final String supKey_filePath = "";
-//    private final String seal_filePath = "";
 
     /**
      * 查找所有depKey
@@ -19,12 +18,9 @@ public class DepKeysDAO {
      */
     public List<DepKey> findAll() throws Exception {
         List<DepKey> depKeys = new ArrayList<>();
-        File file = new File(this.depKey_filePath);
-        if (!file.exists()) {
-            throw new Exception("文件不存在！");
-        }
+        FileInputStream file = new FileInputStream(this.depKey_filePath);
         // 读取部门钥匙
-        BufferedReader br = new BufferedReader(new FileReader(file));
+        BufferedReader br = new BufferedReader(new InputStreamReader(file, StandardCharsets.UTF_8));
         String line;
         // 将每一行转化为部门钥匙对象
         while ((line = br.readLine()) != null) {

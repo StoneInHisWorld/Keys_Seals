@@ -84,7 +84,7 @@ public class KeyUI {
         this.overviewOptionPage(depChoice);
     }
 
-    private void overviewOptionPage(String dep) {
+    private void overviewOptionPage(String dep) throws Exception {
         // 对钥匙进行操作
         while(true) {
             System.out.println("请选择功能：" + takeCmd + ". 入库 " +
@@ -116,7 +116,7 @@ public class KeyUI {
      * 添加保险柜界面，并更新部门选择。可以添加新部门。
      * @param dep 目前界面展示的钥匙所属部门
      */
-    private void addSafeUI(String dep) {
+    private void addSafeUI(String dep) throws Exception {
         while (true) {
             // 是否添加新部门
             System.out.println("是否继续在" + dep + "添加保险柜？1. 是 " +
@@ -127,6 +127,7 @@ public class KeyUI {
                 return;
             }
             else if (choice == 2) {
+                Scanner scanner = new Scanner(System.in);
                 System.out.print("请输入新部门名：");
                 String new_dep = scanner.nextLine();
                 // 部门名查重
@@ -144,9 +145,10 @@ public class KeyUI {
                 break;
             }
         }
-        String input = inputKey(dep);
+        String input = inputSafe(dep);
         // 更新部门选择
-        this.departments = this.keyUIController.addSafe(dep, input);
+        this.keyUIController.addSafe(dep, input);
+        this.departments = this.keyUIController.refreshDB();
         System.out.println("添加保险柜成功！");
     }
 
@@ -155,7 +157,8 @@ public class KeyUI {
      * @param dep 钥匙所属部门
      * @return 输入字符串
      */
-    private String inputKey(String dep) {
+    private String inputSafe(String dep) {
+        Scanner scanner = new Scanner(System.in);
         // 输入新钥匙数据
         System.out.println("请依次输入各项数据，项间使用tab间隔：");
         // 获取新保险柜需要输入的数据
@@ -167,20 +170,28 @@ public class KeyUI {
         return scanner.nextLine();
     }
 
-    private void delSafeUI(String dep) {
+    private void delSafeUI(String dep) throws Exception {
         while (true) {
-            System.out.println("请输入删除的保险柜id（数字序号，输入0返回）：");
+            System.out.println("请输入删除的保险柜序号（数字序号，输入0返回）：");
             int id = scanner.nextInt();
             if (this.keyUIController.delSafe(dep, id)) {
+                System.out.println("删除" + id + "号保险柜成功！"+ dep + "的保险柜信息变更如下：");
+                this.displaySafe(dep);
+                this.departments = this.keyUIController.refreshDB();
                 return;
             }
         }
     }
 
     private void displaySafe(String dep) throws Exception {
-        List<String> outputs = this.keyUIController.displaySafe(dep);
-        for (String output : outputs) {
-            System.out.println(output);
+        try {
+            List<String> outputs = this.keyUIController.displaySafe(dep);
+            for (String output : outputs) {
+                System.out.println(output);
+            }
+        }
+        catch (Exception e) {
+            System.out.println(e.getMessage());
         }
     }
 

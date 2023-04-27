@@ -18,7 +18,7 @@ public class DBService {
         this.depKeysDAO = new DepKeysDAO();
     }
 
-    public void initDB() throws Exception {
+    public void loadDB() throws Exception {
         db.setDepKeys(this.depKeysDAO.findAll());
     }
 
@@ -75,7 +75,7 @@ public class DBService {
      * 将数据库对象中的内容全部按序号顺序写回文件
      * @throws IOException 文件写入异常
      */
-    public void WriteBackDB() throws IOException {
+    public void writeBackDB() throws IOException {
         List<DepKey> depKeys = this.db.getDepKeys();
         // depKey需按序号顺序排列后写入
         Collections.sort(depKeys);

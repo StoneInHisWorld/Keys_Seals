@@ -20,37 +20,30 @@ public class KeyUIController {
     }
 
     public Set<String> initKeyUI() throws Exception {
-        dbService.initDB();
+        dbService.loadDB();
         return this.dbService.collectDepart();
     }
-
-//    public List<String> displayDepKeys(String dep, List<String> columnNames) {
-//        columnNames = this.dbService.getColumnName(dep);
-//        return dbService.DepKeyToStr(dep);
-//    }
 
     /**
      * 退出钥匙界面需要将所有数据写回文件
      * @throws IOException 文件写回出错
      */
     public void exitKeyUI() throws IOException {
-        this.dbService.WriteBackDB();
+        this.dbService.writeBackDB();
     }
 
     /**
      * 添加保险柜，同时更新部门选择
      * @param dep 新保险柜所属部门
      * @param keyStr 新保险柜其他数据
-     * @return 更新的部门选择
      */
-    public Set<String> addSafe(String dep, String keyStr) {
+    public void addSafe(String dep, String keyStr) {
         try {
             this.dbService.addSafe_DepKey(dep, keyStr);
         }
         catch (Exception e) {
             System.out.println(e.getMessage());
         }
-        return this.dbService.collectDepart();
     }
 
     public List<String> displaySafe(String dep) throws Exception {
@@ -58,16 +51,15 @@ public class KeyUIController {
         ret.add(this.getSafeMemberNames(dep));
         if (dep.equals(supportDep)) {
             // 输出后勤部保险柜信息
-//            ret.add(dbService.getSupKeyColumnName());
             if (!ret.addAll(this.dbService.SupKeyToStr())) {
-                throw new Exception("生成后勤部保险柜信息失败！");
+                throw new Exception(dep + "部无保险柜信息！");
             }
             else return ret;
         }
         else {
             // 输出部门保险柜信息
             if (!ret.addAll(this.dbService.DepKeyToStr(dep))) {
-                throw new Exception("生成部门保险柜信息失败！");
+                throw new Exception(dep + "无保险柜信息！");
             }
             else return ret;
         }
@@ -142,5 +134,10 @@ public class KeyUIController {
             else break;
         }
         return choice;
+    }
+
+    public Set<String> refreshDB() throws Exception {
+        this.dbService.writeBackDB();
+        return this.dbService.collectDepart();
     }
 }
