@@ -15,7 +15,7 @@ public class KeyUI {
     private Set<String> departments;
     private static final String welcome = "进入钥匙管理系统";
     // 搜索命令
-    private static final String supportDep = "后勤";
+    private final String supportDep;
     private static final String exitChoice = "exit";
     // 数字命令
     private static final int takeCmd = 1;
@@ -24,8 +24,9 @@ public class KeyUI {
     private static final int delCmd = 4;
     private static final int exitCmd = 0;
 
-    public KeyUI(Scanner scanner) {
+    public KeyUI(Scanner scanner, String supportDep) {
         this.scanner = scanner;
+        this.supportDep = supportDep;
         this.keyUIController = new KeyUIController(scanner);
         try {
             this.departments = keyUIController.initKeyUI();
@@ -134,6 +135,9 @@ public class KeyUI {
                 if (this.departments.contains(new_dep)) {
                     System.out.println(new_dep + "已存在，请重新输入新的部门名，或查看"
                             + new_dep + "钥匙以添加新的保险柜！");
+                }
+                else if (new_dep.equals(supportDep)) {
+                    System.out.println("该功能尚未开放！");
                 }
                 else {
                     dep = new_dep;

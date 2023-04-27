@@ -13,6 +13,7 @@ public class CmdUI {
     private final String configPath = "configuration.txt";
     private final String companyName;
     private final String warning;
+    private final String supportDep;
 
     public CmdUI() throws IOException {
         // 加载配置文件
@@ -20,6 +21,7 @@ public class CmdUI {
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(file, StandardCharsets.UTF_8));
         this.companyName = bufferedReader.readLine().substring(4);
         this.warning = bufferedReader.readLine().substring(5);
+        this.supportDep = bufferedReader.readLine().substring(6);
         bufferedReader.close();
         file.close();
     }
@@ -36,7 +38,7 @@ public class CmdUI {
                 break;
             }
             else if (cmd == ui.getKeyCmd()) {
-                KeyUI keyUI = new KeyUI(scanner);
+                KeyUI keyUI = new KeyUI(scanner, ui.getSupportDep());
                 keyUI.mainPage();
             }
             else if (cmd == ui.getSealCmd()) {
@@ -71,11 +73,5 @@ public class CmdUI {
         return exitCmd;
     }
 
-    public String getCompanyName() {
-        return companyName;
-    }
-
-    public String getWarning() {
-        return warning;
-    }
+    public String getSupportDep() { return supportDep;    }
 }
