@@ -18,7 +18,7 @@ public class KeyUI {
     private final String supportDep;
     private static final String exitChoice = "exit";
     // 数字命令
-    private static final int takeCmd = 1;
+    private static final int retCmd = 1;
     private static final int addCmd = 2;
     private static final int fetchCmd = 3;
     private static final int delCmd = 4;
@@ -46,6 +46,10 @@ public class KeyUI {
         exit();
     }
 
+    /**
+     * 选择部门进行展示
+     * @return 用户选择的部门
+     */
     private String selectDepartment() {
         this.displayDepartments();
         System.out.println("0.退出\n请选择要查看的部门：");
@@ -64,6 +68,9 @@ public class KeyUI {
         }
     }
 
+    /**
+     * 展示数据库中的所有部门名
+     */
     private void displayDepartments() {
         int i = 0;
         if (this.departments.size() == 0) {
@@ -88,21 +95,21 @@ public class KeyUI {
     private void overviewOptionPage(String dep) throws Exception {
         // 对钥匙进行操作
         while(true) {
-            System.out.println("请选择功能：" + takeCmd + ". 入库 " +
+            System.out.println("请选择功能：" + retCmd + ". 入库 " +
                     addCmd + ". 添加保险柜 " + fetchCmd + ". 出库 " +
                     delCmd + ". 删除保险柜 " + exitCmd + ". 退出");
             int cmd = scanner.nextInt();
             if (cmd == exitCmd) {
                 break;
             }
-            else if (cmd == takeCmd) {
-                this.takeKeyUI(dep);
+            else if (cmd == retCmd) {
+                System.out.println("功能尚未开放！请选择其他功能：");
             }
             else if (cmd == addCmd) {
                 this.addSafeUI(dep);
             }
             else if (cmd == fetchCmd) {
-                System.out.println("功能尚未开放！请选择其他功能：");
+                this.fetchKeyUI(dep);
             }
             else if (cmd == delCmd) {
                 this.delSafeUI(dep);
@@ -113,14 +120,20 @@ public class KeyUI {
         }
     }
 
-    private void takeKeyUI(String dep) {
+    private void fetchKeyUI(String dep) {
+        System.out.println("（输入0则退出）");
         System.out.print("取出钥匙");
         String input = getInput("序号\t备用/紧急钥匙（b/j）\t出库人\t备注");
+        if (input.equals("0")) return;
+        String success_msg;
         try {
-            this.keyUIController.takeKey(dep, input);
+             success_msg = this.keyUIController.fetchKey(dep, input);
         } catch (Exception e) {
             System.out.println(e.getMessage());
+            fetchKeyUI(dep);
+            return;
         }
+        System.out.println(success_msg);
     }
 
     /**

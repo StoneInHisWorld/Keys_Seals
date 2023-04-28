@@ -9,7 +9,7 @@ public class Safe implements Comparable<Safe> {
     protected int id = -1;
     protected String last_return = "初始生成";
     protected String last_fetch = "初始生成";
-    protected String note = "无";
+    protected String note = "";
 
     /**
      * 比较函数

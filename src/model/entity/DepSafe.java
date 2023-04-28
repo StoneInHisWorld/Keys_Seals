@@ -32,9 +32,9 @@ public class DepSafe extends Safe {
             if (emergency < 0) {
                 throw new Exception("备用钥匙值为非负整数！");
             }
-            this.note = strs[progress++];
             this.last_return = strs[progress++];
-            this.last_fetch = strs[progress];
+            this.last_fetch = strs[progress++];
+            this.note = strs[progress];
         }
         catch (IndexOutOfBoundsException e) {
 
@@ -63,13 +63,13 @@ public class DepSafe extends Safe {
     @Override
     public String toString() {
         return super.toString() + store + '\t' + safe_id + '\t' +
-                back_up + '\t' + emergency + '\t' +
-                last_return + '\t' + last_fetch  + '\t'+ note;
+                back_up + '\t' + emergency + '\t' + last_return + '\t' +
+                last_fetch  + '\t'+ note;
     }
 
     public static List<String> memberToStr() {
         List<String> stringList = Safe.memberToStr();
-        stringList.add("商铺");
+        stringList.add("商铺名称");
         stringList.add("保险柜");
         stringList.add("备用钥匙");
         stringList.add("应急钥匙");

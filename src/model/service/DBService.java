@@ -174,8 +174,8 @@ public class DBService {
      * @param note 备注
      * @throws Exception 取出钥匙时出现的异常
      */
-    public void takeDepKey(String dep, int id, char key_select,
-                           String fetch_person, String note) throws Exception {
+    public void fetchDepKey(String dep, int id, char key_select,
+                            String fetch_person, String note) throws Exception {
         for (DepSafe depSafe : this.db.getDepSafes()) {
             // 找到对应部门下的保险柜
             if (depSafe.getDepartment().equals(dep) &&
@@ -188,6 +188,7 @@ public class DBService {
                         }
                         else {
                             depSafe.setBack_up(back_up_num);
+                            fetch_person += "（备用）";
                         }
                     }break;
                     case 'j': {
@@ -197,12 +198,14 @@ public class DBService {
                         }
                         else {
                             depSafe.setEmergency(emer_num);
+                            fetch_person += "（紧急）";
                         }
                     }break;
                     default: throw new Exception("未知类型钥匙" + key_select + "！");
                 }
                 depSafe.setLast_fetch(fetch_person);
                 depSafe.setNote(note);
+                return;
             }
         }
         throw new Exception(dep + "没有序号为" + id + "的保险柜！");

@@ -146,14 +146,15 @@ public class KeyUIController {
      * @param dep 取出钥匙所属保险柜的部门
      * @param input 用户输入
      * @throws Exception 用户输入的错误提示，保险柜钥匙取出错误提示
+     * @return 钥匙取出成功信息
      */
-    public void takeKey(String dep, String input) throws Exception {
+    public String fetchKey(String dep, String input) throws Exception {
         // 解析用户输入
         String[] strings = input.split("\t");
         int progress = 0;
-        int id;
-        char key_select;
-        String fetch_person;
+        int id = 0;
+        char key_select = 0;
+        String fetch_person = null;
         String note;
         try {
             id = new Integer(strings[progress++]);
@@ -162,14 +163,16 @@ public class KeyUIController {
                 throw new Exception("选择备用钥匙请填写b，选择紧急钥匙请填写j");
             }
             fetch_person = strings[progress++];
-            note = strings[progress];
+            note = strings[progress++];
         }
         catch (IndexOutOfBoundsException e) {
             // 备注项可以不填
-            if (progress == 3) {
+            if (progress > 3) {
                 note = "";
             }
-            throw new Exception("序号、钥匙选择、出库人三项必填！");
+            else {
+                throw new Exception("序号、钥匙选择、出库人三项必填！");   
+            }
         }
         catch (NumberFormatException e) {
             throw new Exception("序号需为非负整数！");
@@ -177,10 +180,19 @@ public class KeyUIController {
         // 将解析输入录入数据库中
         if (dep.equals(supportDep)) {
             throw new Exception("该功能尚未开放！");
-        } else {
-            this.dbService.takeDepKey(dep, id, key_select, fetch_person, note);
+        } 
+        else {
+            this.dbService.fetchDepKey(dep, id, key_select, fetch_person, note);
             // 刷新本地数据库
             this.dbService.writeBackDB();
+        }
+        switch (key_select) {
+            case 'b':return fetch_person + "成功取出" + dep + id +
+                    "号保险柜的备用钥匙";
+            case 'j':return fetch_person + "成功取出" + dep + id +
+                    "号保险柜的紧急钥匙";
+            default:throw new Exception("未知类型" + key_select +
+                    "的钥匙选择！");
         }
     }
 }
