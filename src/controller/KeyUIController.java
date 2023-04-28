@@ -140,4 +140,47 @@ public class KeyUIController {
         this.dbService.writeBackDB();
         return this.dbService.collectDepart();
     }
+
+    /**
+     * 解析用户输入的同时将出库信息更新到数据库中
+     * @param dep 取出钥匙所属保险柜的部门
+     * @param input 用户输入
+     * @throws Exception 用户输入的错误提示，保险柜钥匙取出错误提示
+     */
+    public void takeKey(String dep, String input) throws Exception {
+        // 解析用户输入
+        String[] strings = input.split("\t");
+        int progress = 0;
+        int id;
+        char key_select;
+        String fetch_person;
+        String note;
+        try {
+            id = new Integer(strings[progress++]);
+            key_select = strings[progress++].charAt(0);
+            if (key_select != 'b' && key_select != 'j') {
+                throw new Exception("选择备用钥匙请填写b，选择紧急钥匙请填写j");
+            }
+            fetch_person = strings[progress++];
+            note = strings[progress];
+        }
+        catch (IndexOutOfBoundsException e) {
+            // 备注项可以不填
+            if (progress == 3) {
+                note = "";
+            }
+            throw new Exception("序号、钥匙选择、出库人三项必填！");
+        }
+        catch (NumberFormatException e) {
+            throw new Exception("序号需为非负整数！");
+        }
+        // 将解析输入录入数据库中
+        if (dep.equals(supportDep)) {
+            throw new Exception("该功能尚未开放！");
+        } else {
+            this.dbService.takeDepKey(dep, id, key_select, fetch_person, note);
+            // 刷新本地数据库
+            this.dbService.writeBackDB();
+        }
+    }
 }

@@ -96,7 +96,7 @@ public class KeyUI {
                 break;
             }
             else if (cmd == takeCmd) {
-                System.out.println("功能尚未开放！请选择其他功能：");
+                this.takeKeyUI(dep);
             }
             else if (cmd == addCmd) {
                 this.addSafeUI(dep);
@@ -110,6 +110,16 @@ public class KeyUI {
             else {
                 System.out.println("命令输入错误！");
             }
+        }
+    }
+
+    private void takeKeyUI(String dep) {
+        System.out.print("取出钥匙");
+        String input = getInput("序号\t备用/紧急钥匙（b/j）\t出库人\t备注");
+        try {
+            this.keyUIController.takeKey(dep, input);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
         }
     }
 
@@ -149,6 +159,7 @@ public class KeyUI {
                 break;
             }
         }
+        // 获取输入
         String input = inputSafe(dep);
         // 更新部门选择
         this.keyUIController.addSafe(dep, input);
@@ -157,20 +168,29 @@ public class KeyUI {
     }
 
     /**
-     * 输入钥匙除部门和序号外的其他信息。使用tab间隔
-     * @param dep 钥匙所属部门
+     * 输入保险柜除部门和序号外的其他信息。使用tab间隔
+     * @param dep 保险柜所属部门
      * @return 输入字符串
      */
     private String inputSafe(String dep) {
-        Scanner scanner = new Scanner(System.in);
-        // 输入新钥匙数据
-        System.out.println("请依次输入各项数据，项间使用tab间隔：");
         // 获取新保险柜需要输入的数据
         String columnNames = this.keyUIController.getSafeMemberNames(dep);
         // 取出前两项
         columnNames = columnNames.substring(columnNames.indexOf('\t') + 1);
         columnNames = columnNames.substring(columnNames.indexOf('\t') + 1);
-        System.out.println(columnNames);
+        return this.getInput(columnNames);
+    }
+
+    /**
+     * 获取默认输入流中的用户输入
+     * @param display 需要展示的输入提示
+     * @return 输入字符串
+     */
+    private String getInput(String display) {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("请依次输入各项数据，项间使用tab间隔：");
+        // 展示输入提示
+        System.out.println(display);
         return scanner.nextLine();
     }
 
@@ -178,6 +198,7 @@ public class KeyUI {
         while (true) {
             System.out.println("请输入删除的保险柜序号（数字序号，输入0返回）：");
             int id = scanner.nextInt();
+            if (id == 0) return;
             if (this.keyUIController.delSafe(dep, id)) {
                 System.out.println("删除" + id + "号保险柜成功！"+ dep + "的保险柜信息变更如下：");
                 this.displaySafe(dep);
@@ -187,7 +208,7 @@ public class KeyUI {
         }
     }
 
-    private void displaySafe(String dep) throws Exception {
+    private void displaySafe(String dep) {
         try {
             List<String> outputs = this.keyUIController.displaySafe(dep);
             for (String output : outputs) {

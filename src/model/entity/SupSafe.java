@@ -2,21 +2,17 @@ package model.entity;
 
 import java.util.List;
 
-public class SupKey extends Key{
-    private String department;
-    private int id;
+public class SupSafe extends Safe {
+
     private String loc;
     private int num_key;
-    private String last_return;
-    private String last_fetch;
-    private String note;
 
     public String getDepartment() {
         return department;
     }
 
     public static List<String> memberToStr() {
-        List<String> stringList = Key.memberToStr();
+        List<String> stringList = Safe.memberToStr();
         stringList.add("地点");
         stringList.add("钥匙数量");
         stringList.add("入库人");
