@@ -204,7 +204,44 @@ public class DBService {
                     default: throw new Exception("未知类型钥匙" + key_select + "！");
                 }
                 depSafe.setLast_fetch(fetch_person);
-                depSafe.setNote(note);
+                if (!note.equals("")) {
+                    depSafe.setNote(note);
+                }
+                return;
+            }
+        }
+        throw new Exception(dep + "没有序号为" + id + "的保险柜！");
+    }
+
+    /**
+     * 归还钥匙
+     * @param dep 钥匙入库保险柜所属部门
+     * @param id 保险柜id
+     * @param key_select 选择的钥匙钥匙类型
+     * @param ret_person 入库人
+     * @param note 备注
+     * @throws Exception 钥匙归还出错信息
+     */
+    public void retDepKey(String dep, int id, char key_select, String ret_person, String note) throws Exception {
+        for (DepSafe depSafe : this.db.getDepSafes()) {
+            // 找到对应部门下的保险柜
+            if (depSafe.getDepartment().equals(dep) &&
+                    depSafe.getId() == id) {
+                switch (key_select) {
+                    case 'b':{
+                        depSafe.setBack_up(depSafe.getBack_up() + 1);
+                        ret_person += "（备用）";
+                    }break;
+                    case 'j': {
+                        depSafe.setEmergency(depSafe.getEmergency() + 1);
+                        ret_person += "（紧急）";
+                    }break;
+                    default: throw new Exception("未知类型钥匙" + key_select + "！");
+                }
+                depSafe.setLast_return(ret_person);
+                if (!note.equals("")) {
+                    depSafe.setNote(note);
+                }
                 return;
             }
         }

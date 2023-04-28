@@ -103,7 +103,7 @@ public class KeyUI {
                 break;
             }
             else if (cmd == retCmd) {
-                System.out.println("功能尚未开放！请选择其他功能：");
+                this.retKeyUI(dep);
             }
             else if (cmd == addCmd) {
                 this.addSafeUI(dep);
@@ -118,6 +118,22 @@ public class KeyUI {
                 System.out.println("命令输入错误！");
             }
         }
+    }
+
+    private void retKeyUI(String dep) {
+        System.out.println("（输入0则退出）");
+        System.out.print("放入钥匙");
+        String input = getInput("序号\t备用/紧急钥匙（b/j）\t入库人\t备注");
+        if (input.equals("0")) return;
+        String success_msg;
+        try {
+            success_msg = this.keyUIController.retKey(dep, input);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            retKeyUI(dep);
+            return;
+        }
+        System.out.println(success_msg);
     }
 
     private void fetchKeyUI(String dep) {
@@ -161,6 +177,9 @@ public class KeyUI {
                 }
                 else if (new_dep.equals(supportDep)) {
                     System.out.println("该功能尚未开放！");
+                }
+                else if (new_dep.contains("后勤")) {
+                    System.out.println("有关后勤部门的信息，部门栏请填“" + supportDep + "”！");
                 }
                 else {
                     dep = new_dep;

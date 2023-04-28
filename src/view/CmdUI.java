@@ -1,9 +1,13 @@
 package view;
 
 import java.io.*;
+import java.nio.channels.FileChannel;
+import java.nio.channels.FileLock;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Scanner;
+
+import static java.lang.Thread.sleep;
 
 public class CmdUI {
 
@@ -17,13 +21,13 @@ public class CmdUI {
 
     public CmdUI() throws IOException {
         // 加载配置文件
-        FileInputStream file = new FileInputStream(configPath);
-        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(file, StandardCharsets.UTF_8));
+        FileInputStream fileInputStream = new FileInputStream(configPath);
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(fileInputStream, StandardCharsets.UTF_8));
         this.companyName = bufferedReader.readLine().substring(4);
         this.warning = bufferedReader.readLine().substring(5);
         this.supportDep = bufferedReader.readLine().substring(6);
         bufferedReader.close();
-        file.close();
+        fileInputStream.close();
     }
 
     public static void main(String[] args) throws Exception {

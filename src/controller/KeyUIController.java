@@ -195,4 +195,52 @@ public class KeyUIController {
                     "的钥匙选择！");
         }
     }
+
+    public String retKey(String dep, String input) throws Exception {
+        // 解析用户输入
+        String[] strings = input.split("\t");
+        int progress = 0;
+        int id = 0;
+        char key_select = 0;
+        String ret_person = null;
+        String note;
+        try {
+            id = new Integer(strings[progress++]);
+            key_select = strings[progress++].charAt(0);
+            if (key_select != 'b' && key_select != 'j') {
+                throw new Exception("选择备用钥匙请填写b，选择紧急钥匙请填写j");
+            }
+            ret_person = strings[progress++];
+            note = strings[progress++];
+        }
+        catch (IndexOutOfBoundsException e) {
+            // 备注项可以不填
+            if (progress > 3) {
+                note = "";
+            }
+            else {
+                throw new Exception("序号、钥匙选择、入库人三项必填！");
+            }
+        }
+        catch (NumberFormatException e) {
+            throw new Exception("序号需为非负整数！");
+        }
+        // 将解析输入录入数据库中
+        if (dep.equals(supportDep)) {
+            throw new Exception("该功能尚未开放！");
+        }
+        else {
+            this.dbService.retDepKey(dep, id, key_select, ret_person, note);
+            // 刷新本地数据库
+            this.dbService.writeBackDB();
+        }
+        switch (key_select) {
+            case 'b':return ret_person + "成功放入" + dep + id +
+                    "号保险柜的备用钥匙";
+            case 'j':return ret_person + "成功放入" + dep + id +
+                    "号保险柜的紧急钥匙";
+            default:throw new Exception("未知类型" + key_select +
+                    "的钥匙选择！");
+        }
+    }
 }
