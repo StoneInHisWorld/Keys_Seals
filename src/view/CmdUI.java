@@ -1,13 +1,11 @@
 package view;
 
-import java.io.*;
-import java.nio.channels.FileChannel;
-import java.nio.channels.FileLock;
-import java.nio.charset.Charset;
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.Scanner;
-
-import static java.lang.Thread.sleep;
 
 public class CmdUI {
 
@@ -30,8 +28,14 @@ public class CmdUI {
         fileInputStream.close();
     }
 
-    public static void main(String[] args) throws Exception {
-        CmdUI ui = new CmdUI();
+    public static void main(String[] args){
+        CmdUI ui;
+        try {
+            ui = new CmdUI();
+        } catch (IOException e) {
+            System.out.println("配置文件读取异常！");
+            return;
+        }
         Scanner scanner = new Scanner(System.in);
         ui.welcome();
         while(true) {
@@ -43,7 +47,11 @@ public class CmdUI {
             }
             else if (cmd == ui.getKeyCmd()) {
                 KeyUI keyUI = new KeyUI(scanner, ui.getSupportDep());
-                keyUI.mainPage();
+                try {
+                    keyUI.mainPage();
+                } catch (Exception e) {
+                    System.out.println(e.getMessage());
+                }
             }
             else if (cmd == ui.getSealCmd()) {
                 System.out.println("功能尚未开放！请选择其他功能：");

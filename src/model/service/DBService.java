@@ -22,6 +22,10 @@ public class DBService {
         db.setDepSafes(this.depKeysDAO.findAll());
     }
 
+    /**
+     * 收集部门
+     * @return 数据库中所有保险柜所属部门
+     */
     public Set<String> collectDepart() {
         Set<String> depSet = new LinkedHashSet<>();
         for (DepSafe key : db.getDepSafes()) {
@@ -75,11 +79,15 @@ public class DBService {
      * 将数据库对象中的内容全部按序号顺序写回文件
      * @throws IOException 文件写入异常
      */
-    public void writeBackDB() throws IOException {
+    public void writeBackDB() throws Exception {
         List<DepSafe> depSafes = this.db.getDepSafes();
         // depKey需按序号顺序排列后写入
         Collections.sort(depSafes);
-        this.depKeysDAO.writeBack(depSafes);
+        try {
+            this.depKeysDAO.writeBack(depSafes);
+        } catch (IOException e) {
+            throw new Exception("文件写入发生异常！");
+        }
     }
 
     /**
@@ -88,11 +96,17 @@ public class DBService {
      * @param keyStr 添加保险桂的详细信息
      * @throws Exception 输入字符串不符格式异常
      */
-    public void addSafe_DepKey(String dep, String keyStr) throws Exception {
+    public void addDepSafe(String dep, String keyStr) throws Exception {
         List<DepSafe> depSafes = this.db.getDepSafes();
-        int lastestId = depSafes.get(depSafes.size() - 1).getId();
+        int lastest_Id;
+        int size = depSafes.size();
+        if (size > 0) {
+            lastest_Id = depSafes.get(size - 1).getId();
+        }
+        else lastest_Id = 0;
+        // int lastestId = depSafes.get(depSafes.size() - 1).getId();
         // 检查输入的字符串是否合法
-        keyStr = dep + '\t' + (lastestId + 1) + '\t' + keyStr;
+        keyStr = dep + '\t' + (lastest_Id + 1) + '\t' + keyStr;
         DepSafe depSafe = new DepSafe(keyStr);
         depSafes.add(depSafe);
     }
@@ -246,5 +260,24 @@ public class DBService {
             }
         }
         throw new Exception(dep + "没有序号为" + id + "的保险柜！");
+    }
+
+    /**
+     * 添加后勤部保险柜
+     * @param keyStr 后勤部保险柜信息字符串
+     * @throws Exception 字符串解析异常
+     */
+    public void addSupSafe(String keyStr) throws Exception {
+        List<SupSafe> supSafes = this.db.getSupSafes();
+        int lastest_Id;
+        int size = supSafes.size();
+        if (size > 0) {
+            lastest_Id = supSafes.get(size - 1).getId();
+        }
+        else lastest_Id = 0;
+        // 检查输入的字符串是否合法
+        keyStr = (lastest_Id + 1) + "\t" + keyStr;
+        SupSafe supSafe = new SupSafe(keyStr);
+        supSafes.add(supSafe);
     }
 }

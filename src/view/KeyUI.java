@@ -15,7 +15,7 @@ public class KeyUI {
     private Set<String> departments;
     private static final String welcome = "进入钥匙管理系统";
     // 搜索命令
-    private final String supportDep;
+    private static String supportDep;
     private static final String exitChoice = "exit";
     // 数字命令
     private static final int retCmd = 1;
@@ -26,8 +26,8 @@ public class KeyUI {
 
     public KeyUI(Scanner scanner, String supportDep) {
         this.scanner = scanner;
-        this.supportDep = supportDep;
-        this.keyUIController = new KeyUIController(scanner);
+        KeyUI.supportDep = supportDep;
+        this.keyUIController = new KeyUIController(scanner, supportDep);
         try {
             this.departments = keyUIController.initKeyUI();
         } catch (Exception e) {
@@ -92,6 +92,11 @@ public class KeyUI {
         this.overviewOptionPage(depChoice);
     }
 
+    /**
+     * 总览界面功能选择
+     * @param dep 总览界面选择的部门
+     * @throws Exception 各个功能出现的异常
+     */
     private void overviewOptionPage(String dep) throws Exception {
         // 对钥匙进行操作
         while(true) {
@@ -156,7 +161,7 @@ public class KeyUI {
      * 添加保险柜界面，并更新部门选择。可以添加新部门。
      * @param dep 目前界面展示的钥匙所属部门
      */
-    private void addSafeUI(String dep) throws Exception {
+    private void addSafeUI(String dep) {
         while (true) {
             // 是否添加新部门
             System.out.println("是否继续在" + dep + "添加保险柜？1. 是 " +
@@ -176,7 +181,8 @@ public class KeyUI {
                             + new_dep + "钥匙以添加新的保险柜！");
                 }
                 else if (new_dep.equals(supportDep)) {
-                    System.out.println("该功能尚未开放！");
+                    dep = new_dep;
+                    break;
                 }
                 else if (new_dep.contains("后勤")) {
                     System.out.println("有关后勤部门的信息，部门栏请填“" + supportDep + "”！");
@@ -192,10 +198,18 @@ public class KeyUI {
             }
         }
         // 获取输入
-        String input = inputSafe(dep);
-        // 更新部门选择
-        this.keyUIController.addSafe(dep, input);
-        this.departments = this.keyUIController.refreshDB();
+        try {
+            String input = inputSafe(dep);
+            // 更新部门选择
+            this.keyUIController.addSafe(dep, input);
+            this.departments = this.keyUIController.refreshDB();
+        }
+        catch (Exception e) {
+            // 更新时出错则提示用户，并继续询问是否添加保险柜
+            System.out.println(e.getMessage());
+            addSafeUI(dep);
+            return;
+        }
         System.out.println("添加保险柜成功！");
     }
 
@@ -252,7 +266,7 @@ public class KeyUI {
         }
     }
 
-    private void exit() throws IOException {
+    private void exit() throws Exception {
         this.keyUIController.exitKeyUI();
     }
 }

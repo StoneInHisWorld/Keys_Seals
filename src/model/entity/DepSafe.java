@@ -8,7 +8,6 @@ public class DepSafe extends Safe {
     private String safe_id = "null";
     private int back_up = 0;
     private int emergency = 0;
-    private static final String supportDep = "后勤";
 
     public DepSafe(String depKey_str) throws Exception {
         String[] strs = depKey_str.split("\t");
@@ -37,7 +36,9 @@ public class DepSafe extends Safe {
             this.note = strs[progress];
         }
         catch (IndexOutOfBoundsException e) {
-
+            int index = new Integer(e.getMessage());
+            if (index <= 3)
+                throw new Exception("商铺名称、保险柜名称为必填项！");
         }
         catch (NumberFormatException e) {
             throw new Exception("保险柜备用钥匙、紧急钥匙值为非负整数！");

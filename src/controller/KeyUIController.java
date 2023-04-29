@@ -1,5 +1,6 @@
 package controller;
 
+import model.entity.Safe;
 import model.service.DBService;
 
 import java.io.IOException;
@@ -11,12 +12,14 @@ import java.util.Set;
 public class KeyUIController {
 
     private final Scanner scanner;
-    private static final String supportDep = "后勤";
+    public static String supportDep;
     private final DBService dbService;
 
-    public KeyUIController(Scanner scanner) {
+    public KeyUIController(Scanner scanner, String supportDep) {
         this.scanner = scanner;
         this.dbService = new DBService();
+        KeyUIController.supportDep = supportDep;
+        Safe.supportDep = supportDep;
     }
 
     public Set<String> initKeyUI() throws Exception {
@@ -28,7 +31,7 @@ public class KeyUIController {
      * 退出钥匙界面需要将所有数据写回文件
      * @throws IOException 文件写回出错
      */
-    public void exitKeyUI() throws IOException {
+    public void exitKeyUI() throws Exception {
         this.dbService.writeBackDB();
     }
 
@@ -37,12 +40,12 @@ public class KeyUIController {
      * @param dep 新保险柜所属部门
      * @param keyStr 新保险柜其他数据
      */
-    public void addSafe(String dep, String keyStr) {
-        try {
-            this.dbService.addSafe_DepKey(dep, keyStr);
+    public void addSafe(String dep, String keyStr) throws Exception {
+        if (dep.equals(supportDep)) {
+            this.dbService.addSupSafe(keyStr);
         }
-        catch (Exception e) {
-            System.out.println(e.getMessage());
+        else {
+            this.dbService.addDepSafe(dep, keyStr);
         }
     }
 
@@ -163,11 +166,12 @@ public class KeyUIController {
                 throw new Exception("选择备用钥匙请填写b，选择紧急钥匙请填写j");
             }
             fetch_person = strings[progress++];
-            note = strings[progress++];
+            note = strings[progress];
         }
         catch (IndexOutOfBoundsException e) {
             // 备注项可以不填
-            if (progress > 3) {
+            int index = new Integer(e.getMessage());
+            if (index > 3) {
                 note = "";
             }
             else {
@@ -211,11 +215,12 @@ public class KeyUIController {
                 throw new Exception("选择备用钥匙请填写b，选择紧急钥匙请填写j");
             }
             ret_person = strings[progress++];
-            note = strings[progress++];
+            note = strings[progress];
         }
         catch (IndexOutOfBoundsException e) {
             // 备注项可以不填
-            if (progress > 3) {
+            int index = new Integer(e.getMessage());
+            if (index > 3) {
                 note = "";
             }
             else {

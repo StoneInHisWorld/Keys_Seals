@@ -10,6 +10,7 @@ public class Safe implements Comparable<Safe> {
     protected String last_return = "初始生成";
     protected String last_fetch = "初始生成";
     protected String note = "";
+    public static String supportDep;
 
     /**
      * 比较函数
@@ -38,24 +39,12 @@ public class Safe implements Comparable<Safe> {
         this.id = id;
     }
 
-    public String getLast_return() {
-        return last_return;
-    }
-
     public void setLast_return(String last_return) {
         this.last_return = last_return;
     }
 
-    public String getLast_fetch() {
-        return last_fetch;
-    }
-
     public void setLast_fetch(String last_fetch) {
         this.last_fetch = last_fetch;
-    }
-
-    public String getNote() {
-        return note;
     }
 
     public void setNote(String note) {
