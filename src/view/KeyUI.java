@@ -27,7 +27,7 @@ public class KeyUI {
     public KeyUI(Scanner scanner, String supportDep) {
         this.scanner = scanner;
         KeyUI.supportDep = supportDep;
-        this.keyUIController = new KeyUIController(scanner, supportDep);
+        this.keyUIController = new KeyUIController(supportDep);
         try {
             this.departments = keyUIController.initKeyUI();
         } catch (Exception e) {
@@ -53,8 +53,7 @@ public class KeyUI {
     private String selectDepartment() {
         this.displayDepartments();
         System.out.println("0.退出\n请选择要查看的部门：");
-        int choice = KeyUIController.getChoice(
-                scanner, 0, this.departments.size());
+        int choice = getChoice(scanner, 0, this.departments.size());
         if (choice == 0) {
             return exitChoice;
         }
@@ -86,7 +85,7 @@ public class KeyUI {
      * 总览界面
      * @param depChoice 选择的部门
      */
-    private void overviewPage(String depChoice) throws Exception {
+    private void overviewPage(String depChoice) {
         if (depChoice.equals(exitChoice)) return;
         this.displaySafe(depChoice);
         this.overviewOptionPage(depChoice);
@@ -95,9 +94,8 @@ public class KeyUI {
     /**
      * 总览界面功能选择
      * @param dep 总览界面选择的部门
-     * @throws Exception 各个功能出现的异常
      */
-    private void overviewOptionPage(String dep) throws Exception {
+    private void overviewOptionPage(String dep) {
         // 对钥匙进行操作
         while(true) {
             System.out.println("请选择功能：" + retCmd + ". 入库 " +
@@ -166,8 +164,7 @@ public class KeyUI {
             // 是否添加新部门
             System.out.println("是否继续在" + dep + "添加保险柜？1. 是 " +
                     "2. 否，添加一个新部门 0. 退出");
-            int choice = KeyUIController.getChoice(
-                    scanner, 0, 2);
+            int choice = getChoice(scanner, 0, 2);
             if (choice == 0) {
                 return;
             }
@@ -201,8 +198,7 @@ public class KeyUI {
         try {
             String input = inputSafe(dep);
             // 更新部门选择
-            this.keyUIController.addSafe(dep, input);
-            this.departments = this.keyUIController.refreshDB();
+            this.departments = this.keyUIController.addSafe(dep, input);
         }
         catch (Exception e) {
             // 更新时出错则提示用户，并继续询问是否添加保险柜
@@ -240,16 +236,49 @@ public class KeyUI {
         return scanner.nextLine();
     }
 
-    private void delSafeUI(String dep) throws Exception {
+    private void delSafeUI(String dep) {
         while (true) {
             System.out.println("请输入删除的保险柜序号（数字序号，输入0返回）：");
             int id = scanner.nextInt();
             if (id == 0) return;
-            if (this.keyUIController.delSafe(dep, id)) {
-                System.out.println("删除" + id + "号保险柜成功！"+ dep + "的保险柜信息变更如下：");
-                this.displaySafe(dep);
-                this.departments = this.keyUIController.refreshDB();
+            // 如果删除后勤部的保险柜
+            if (dep.equals(supportDep)) {
+                System.out.println("该功能暂未开放");
                 return;
+            }
+            else {
+                // 删除部门保险柜
+                String keyStr;
+                // 确认保险柜的存在
+                try {
+                    keyStr = this.keyUIController.findSafe(dep, id);
+                } catch (Exception e) {
+                    System.out.println(e.getMessage());
+                    delSafeUI(dep);
+                    return;
+                }
+                // 输出信息，用户确认删除
+                System.out.println("确定要删除" + id + "号保险柜吗？信息如下：");
+                System.out.println(this.keyUIController.getSafeMemberNames(dep));
+                System.out.println(keyStr);
+                System.out.println("注意：此操作不可逆！1. 是 0. 否");
+                if (getChoice(scanner, 0, 1) == 0) {
+                    // 撤销删除则重新选择保险柜
+                    delSafeUI(dep);
+                    return;
+                }
+                else {
+                    try {
+                        this.departments = this.keyUIController.delSafe(dep, id);
+                        System.out.println("删除" + id + "号保险柜成功！"+ dep + "的保险柜信息变更如下：");
+                        this.displaySafe(dep);
+                        // this.departments = this.keyUIController.refreshDB();
+                        return;
+                    }
+                    catch (Exception e) {
+                        System.out.println(e.getMessage());
+                    }
+                }
             }
         }
     }
@@ -264,6 +293,25 @@ public class KeyUI {
         catch (Exception e) {
             System.out.println(e.getMessage());
         }
+    }
+
+    /**
+     * 获取用户的选择，只能使用数字命令
+     * @param lowRan 最小数字命令
+     * @param highRan 最大数字命令
+     * @return 选择结果
+     */
+    private int getChoice(final Scanner scanner, final int lowRan,
+                                final int highRan) {
+        int choice;
+        while (true) {
+            choice = scanner.nextInt();
+            if (choice < lowRan || choice > highRan) {
+                System.out.println("请输入正确的命令！");
+            }
+            else break;
+        }
+        return choice;
     }
 
     private void exit() throws Exception {

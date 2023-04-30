@@ -3,6 +3,7 @@ package model.service;
 import model.dao.DepKeysDAO;
 import model.entity.DB;
 import model.entity.DepSafe;
+import model.entity.Safe;
 import model.entity.SupSafe;
 
 import java.io.IOException;
@@ -132,11 +133,11 @@ public class DBService {
     }
 
     /**
-     * 根据id查找部门保险柜
+     * 根据序号查找全部门保险柜
      * @param id 保险柜ID
      * @return 找到则返回对应的保险柜，否则返回null
      */
-    public DepSafe findDepKey(int id) {
+    public DepSafe findDepSafe(int id) {
         for (DepSafe depSafe : this.db.getDepSafes()) {
             if (depSafe.getId() == id) return depSafe;
         }
@@ -144,17 +145,17 @@ public class DBService {
     }
 
     /**
-     * 根据id和部门查找保险柜
+     * 根据序号和部门查找保险柜
      * @param dep 保险柜所属部门
      * @param id 保险柜ID
      * @return 找到则返回对应的保险柜，否则返回null
      */
-    public DepSafe findDepKey(String dep, int id) {
+    public String findDepSafe(String dep, int id) throws Exception {
         for (DepSafe depSafe : this.db.getDepSafes()) {
             if (depSafe.getId() == id && depSafe.getDepartment().equals(dep))
-                return depSafe;
+                return depSafe.toString();
         }
-        return null;
+        throw new Exception(dep + "下无序号为" + id + "的保险柜！");
     }
 
     /**
@@ -163,7 +164,7 @@ public class DBService {
      * @param id 保险柜id
      * @return 删除是否成功
      */
-    public boolean delDepSafe(String dep, int id) {
+    public void delDepSafe(String dep, int id) throws Exception {
         // 删除部门符合且id符合的保险柜
         if (this.db.getDepSafes().removeIf(
                 depSafe -> depSafe.getDepartment().equals(dep) &&
@@ -174,9 +175,9 @@ public class DBService {
             for (DepSafe depSafe : depSafes) {
                 depSafe.setId(new_id++);
             }
-            return true;
+            return;
         }
-        return false;
+        throw new Exception(dep + "并不存在序号为" + id + "保险柜！");
     }
 
     /**
@@ -279,5 +280,36 @@ public class DBService {
         keyStr = (lastest_Id + 1) + "\t" + keyStr;
         SupSafe supSafe = new SupSafe(keyStr);
         supSafes.add(supSafe);
+    }
+
+    /**
+     * 查找后勤部对应序号的保险柜
+     * @param id 保险柜序号
+     * @return 保险柜信息字符串
+     * @throws Exception 查找保险柜异常字符串
+     */
+    public String findSupSafe(int id) throws Exception {
+        String supportDep = this.db.getSupSafes().get(0).getDepartment();
+        for (SupSafe supSafe : this.db.getSupSafes()) {
+            if (supSafe.getId() == id) {
+                return supSafe.toString();
+            }
+        }
+        throw new Exception(supportDep + "无序号为" + id + "的保险柜！");
+    }
+
+    public void delSupSafe(int id) throws Exception {
+        // 删除id符合的保险柜
+        if (this.db.getSupSafes().removeIf(
+                supSafe -> supSafe.getId() == id)) {
+            // 若删除成功，则刷新所有后勤部保险柜的id
+            List<SupSafe> supSafes = this.db.getSupSafes();
+            int new_id = 1;
+            for (SupSafe supSafe : supSafes) {
+                supSafe.setId(new_id++);
+            }
+            return;
+        }
+        throw new Exception(Safe.supportDep + "并不存在序号为" + id + "保险柜！");
     }
 }

@@ -6,17 +6,14 @@ import model.service.DBService;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Scanner;
 import java.util.Set;
 
 public class KeyUIController {
 
-    private final Scanner scanner;
     public static String supportDep;
     private final DBService dbService;
 
-    public KeyUIController(Scanner scanner, String supportDep) {
-        this.scanner = scanner;
+    public KeyUIController(String supportDep) {
         this.dbService = new DBService();
         KeyUIController.supportDep = supportDep;
         Safe.supportDep = supportDep;
@@ -40,32 +37,39 @@ public class KeyUIController {
      * @param dep 新保险柜所属部门
      * @param keyStr 新保险柜其他数据
      */
-    public void addSafe(String dep, String keyStr) throws Exception {
+    public Set<String> addSafe(String dep, String keyStr) throws Exception {
         if (dep.equals(supportDep)) {
             this.dbService.addSupSafe(keyStr);
         }
         else {
             this.dbService.addDepSafe(dep, keyStr);
         }
+        this.refreshDB();
+        return this.dbService.collectDepart();
     }
 
+    /**
+     * 展示对应部门的所有保险柜信息
+     * @param dep 保险柜所属部门
+     * @return 所有保险柜的信息字符串
+     * @throws Exception 空保险柜信息
+     */
     public List<String> displaySafe(String dep) throws Exception {
         List<String> ret = new LinkedList<>();
         ret.add(this.getSafeMemberNames(dep));
         if (dep.equals(supportDep)) {
             // 输出后勤部保险柜信息
-            if (!ret.addAll(this.dbService.SupKeyToStr())) {
-                throw new Exception(dep + "部无保险柜信息！");
+            if (ret.addAll(this.dbService.SupKeyToStr())) {
+                return ret;
             }
-            else return ret;
         }
         else {
             // 输出部门保险柜信息
-            if (!ret.addAll(this.dbService.DepKeyToStr(dep))) {
-                throw new Exception(dep + "无保险柜信息！");
+            if (ret.addAll(this.dbService.DepKeyToStr(dep))) {
+                return ret;
             }
-            else return ret;
         }
+        throw new Exception(dep + "无保险柜信息！");
     }
 
     public String getSafeMemberNames(String dep) {
@@ -83,65 +87,53 @@ public class KeyUIController {
      * @param id 保险柜序号
      * @return 删除是否成功，成功则true，失败则false
      */
-    public boolean delSafe(String dep, int id) {
-        // 退出则不进行任何操作
-        if (id == 0) return true;
+    public Set<String> delSafe(String dep, int id) throws Exception {
         if (dep.equals(supportDep)) {
-            System.out.println("该功能暂未开放");
-            return false;
+            this.dbService.delSupSafe(id);
         }
         else {
-            // 删除部门保险柜
-            String keyStr;
-            // 确认保险柜的存在
-            try {
-                keyStr = this.dbService.findDepKey(dep, id).toString();
-            } catch (NullPointerException e) {
-                System.out.println(dep + "下无id为" + id + "的保险柜！");
-                return false;
-            }
-            // 输出信息，用户确认删除
-            System.out.println("确定要删除" + id + "号保险柜吗？信息如下：");
-            System.out.println(this.dbService.getDepKeyColumnName());
-            System.out.println(keyStr);
-            System.out.println("注意：此操作不可逆！1. 是 0. 否");
-            if (getChoice(scanner, 0, 1) == 0) {
-                return false;
-            }
-            else {
-                if (this.dbService.delDepSafe(dep, id)) {
-                    return true;
-                }
-                else {
-                    System.out.println("部门保险柜删除失败！");
-                    return false;
-                }
-            }
+            this.dbService.delDepSafe(dep, id);
         }
-    }
-
-    /**
-     * 获取用户的选择，只能使用数字命令
-     * @param lowRan 最小数字命令
-     * @param highRan 最大数字命令
-     * @return 选择结果
-     */
-    public static int getChoice(final Scanner scanner, final int lowRan,
-                                final int highRan) {
-        int choice;
-        while (true) {
-            choice = scanner.nextInt();
-            if (choice < lowRan || choice > highRan) {
-                System.out.println("请输入正确的命令！");
-            }
-            else break;
-        }
-        return choice;
-    }
-
-    public Set<String> refreshDB() throws Exception {
-        this.dbService.writeBackDB();
+        this.refreshDB();
         return this.dbService.collectDepart();
+//        if (dep.equals(supportDep)) {
+//            System.out.println("该功能暂未开放");
+//            return false;
+//        }
+//        else {
+//            // 删除部门保险柜
+//            String keyStr;
+//            // 确认保险柜的存在
+//            try {
+//                keyStr = this.dbService.findDepKey(dep, id).toString();
+//            } catch (NullPointerException e) {
+//                System.out.println(dep + "下无id为" + id + "的保险柜！");
+//                return false;
+//            }
+//            // 输出信息，用户确认删除
+//            System.out.println("确定要删除" + id + "号保险柜吗？信息如下：");
+//            System.out.println(this.dbService.getDepKeyColumnName());
+//            System.out.println(keyStr);
+//            System.out.println("注意：此操作不可逆！1. 是 0. 否");
+//            if (getChoice(scanner, 0, 1) == 0) {
+//                return false;
+//            }
+//            else {
+//                if (this.dbService.delDepSafe(dep, id)) {
+//                    return true;
+//                }
+//                else {
+//                    System.out.println("部门保险柜删除失败！");
+//                    return false;
+//                }
+//            }
+//        }
+    }
+
+//    public Set<String> refreshDB() throws Exception {
+    public void refreshDB() throws Exception {
+        this.dbService.writeBackDB();
+//        return this.dbService.collectDepart();
     }
 
     /**
@@ -188,7 +180,7 @@ public class KeyUIController {
         else {
             this.dbService.fetchDepKey(dep, id, key_select, fetch_person, note);
             // 刷新本地数据库
-            this.dbService.writeBackDB();
+            this.refreshDB();
         }
         switch (key_select) {
             case 'b':return fetch_person + "成功取出" + dep + id +
@@ -200,6 +192,13 @@ public class KeyUIController {
         }
     }
 
+    /**
+     * 钥匙入库
+     * @param dep 钥匙所属部门
+     * @param input 用户输入入库信息
+     * @return 入库成功输出信息
+     * @throws Exception 钥匙输入信息异常
+     */
     public String retKey(String dep, String input) throws Exception {
         // 解析用户输入
         String[] strings = input.split("\t");
@@ -237,7 +236,7 @@ public class KeyUIController {
         else {
             this.dbService.retDepKey(dep, id, key_select, ret_person, note);
             // 刷新本地数据库
-            this.dbService.writeBackDB();
+            this.refreshDB();
         }
         switch (key_select) {
             case 'b':return ret_person + "成功放入" + dep + id +
@@ -246,6 +245,15 @@ public class KeyUIController {
                     "号保险柜的紧急钥匙";
             default:throw new Exception("未知类型" + key_select +
                     "的钥匙选择！");
+        }
+    }
+
+    public String findSafe(String dep, int id) throws Exception {
+        if (dep.equals(supportDep)) {
+            return this.dbService.findSupSafe(id);
+        }
+        else {
+            return this.dbService.findDepSafe(dep, id);
         }
     }
 }
