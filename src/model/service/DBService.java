@@ -1,6 +1,7 @@
 package model.service;
 
-import model.dao.DepKeysDAO;
+import model.dao.DepSafesDAO;
+import model.dao.SupSafesDAO;
 import model.entity.DB;
 import model.entity.DepSafe;
 import model.entity.Safe;
@@ -12,15 +13,18 @@ import java.util.*;
 public class DBService {
 
     private final DB db;
-    private final DepKeysDAO depKeysDAO;
+    private final DepSafesDAO depSafesDAO;
+    private final SupSafesDAO supSafesDAO;
 
     public DBService() {
         this.db = new DB();
-        this.depKeysDAO = new DepKeysDAO();
+        this.depSafesDAO = new DepSafesDAO();
+        this.supSafesDAO = new SupSafesDAO();
     }
 
     public void loadDB() throws Exception {
-        db.setDepSafes(this.depKeysDAO.findAll());
+        db.setDepSafes(this.depSafesDAO.findAll());
+        db.setSupSafes(this.supSafesDAO.findAll());
     }
 
     /**
@@ -82,10 +86,13 @@ public class DBService {
      */
     public void writeBackDB() throws Exception {
         List<DepSafe> depSafes = this.db.getDepSafes();
-        // depKey需按序号顺序排列后写入
+        List<SupSafe> supSafes = this.db.getSupSafes();
+        // 保险柜需按序号顺序排列后写入
         Collections.sort(depSafes);
+        Collections.sort(supSafes);
         try {
-            this.depKeysDAO.writeBack(depSafes);
+            this.depSafesDAO.writeBack(depSafes);
+            this.supSafesDAO.writeBack(supSafes);
         } catch (IOException e) {
             throw new Exception("文件写入发生异常！");
         }
@@ -277,7 +284,8 @@ public class DBService {
         }
         else lastest_Id = 0;
         // 检查输入的字符串是否合法
-        keyStr = (lastest_Id + 1) + "\t" + keyStr;
+        keyStr = Safe.supportDep + "\t" + (lastest_Id + 1) + "\t" +
+                keyStr;
         SupSafe supSafe = new SupSafe(keyStr);
         supSafes.add(supSafe);
     }

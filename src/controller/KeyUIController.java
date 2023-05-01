@@ -163,7 +163,7 @@ public class KeyUIController {
         catch (IndexOutOfBoundsException e) {
             // 备注项可以不填
             int index = new Integer(e.getMessage());
-            if (index > 3) {
+            if (index >= 3) {
                 note = "";
             }
             else {
@@ -219,7 +219,7 @@ public class KeyUIController {
         catch (IndexOutOfBoundsException e) {
             // 备注项可以不填
             int index = new Integer(e.getMessage());
-            if (index > 3) {
+            if (index >= 3) {
                 note = "";
             }
             else {

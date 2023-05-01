@@ -98,10 +98,15 @@ public class KeyUI {
     private void overviewOptionPage(String dep) {
         // 对钥匙进行操作
         while(true) {
+            // 部门列表没有对应部门，这种情况只会发生在删除dep内最后一个保险柜
+            // 之后。
+            if (!this.departments.contains(dep)) {
+                System.out.println("只有" + addCmd + "添加保险柜功能有效！");
+            }
             System.out.println("请选择功能：" + retCmd + ". 入库 " +
                     addCmd + ". 添加保险柜 " + fetchCmd + ". 出库 " +
                     delCmd + ". 删除保险柜 " + exitCmd + ". 退出");
-            int cmd = scanner.nextInt();
+            int cmd = getChoice(scanner, exitCmd, delCmd);
             if (cmd == exitCmd) {
                 break;
             }
@@ -109,7 +114,14 @@ public class KeyUI {
                 this.retKeyUI(dep);
             }
             else if (cmd == addCmd) {
-                this.addSafeUI(dep);
+                String old_dep = dep;
+                // 当创建新部门时，会切换到新部门的选择页
+                dep = this.addSafeUI(dep);
+                if (!old_dep.equals(dep)) {
+                    System.out.println("切换到" + dep + "的功能页，" +
+                            dep + "的保险柜信息如下：");
+                    this.displaySafe(dep);
+                }
             }
             else if (cmd == fetchCmd) {
                 this.fetchKeyUI(dep);
@@ -159,14 +171,14 @@ public class KeyUI {
      * 添加保险柜界面，并更新部门选择。可以添加新部门。
      * @param dep 目前界面展示的钥匙所属部门
      */
-    private void addSafeUI(String dep) {
+    private String addSafeUI(String dep) {
         while (true) {
             // 是否添加新部门
             System.out.println("是否继续在" + dep + "添加保险柜？1. 是 " +
                     "2. 否，添加一个新部门 0. 退出");
             int choice = getChoice(scanner, 0, 2);
             if (choice == 0) {
-                return;
+                return dep;
             }
             else if (choice == 2) {
                 Scanner scanner = new Scanner(System.in);
@@ -203,10 +215,10 @@ public class KeyUI {
         catch (Exception e) {
             // 更新时出错则提示用户，并继续询问是否添加保险柜
             System.out.println(e.getMessage());
-            addSafeUI(dep);
-            return;
+            return addSafeUI(dep);
         }
         System.out.println("添加保险柜成功！");
+        return dep;
     }
 
     /**
@@ -236,50 +248,61 @@ public class KeyUI {
         return scanner.nextLine();
     }
 
+    /**
+     * 删除保险柜界面
+     * @param dep 保险柜所属部门
+     */
     private void delSafeUI(String dep) {
         while (true) {
             System.out.println("请输入删除的保险柜序号（数字序号，输入0返回）：");
-            int id = scanner.nextInt();
-            if (id == 0) return;
-            // 如果删除后勤部的保险柜
-            if (dep.equals(supportDep)) {
-                System.out.println("该功能暂未开放");
-                return;
-            }
-            else {
-                // 删除部门保险柜
+            try {
+                // 输入保险柜序号
+                int id = new Integer(scanner.nextLine());
+                if (id == 0) return;
                 String keyStr;
                 // 确认保险柜的存在
-                try {
-                    keyStr = this.keyUIController.findSafe(dep, id);
-                } catch (Exception e) {
-                    System.out.println(e.getMessage());
-                    delSafeUI(dep);
-                    return;
-                }
+                keyStr = this.keyUIController.findSafe(dep, id);
                 // 输出信息，用户确认删除
                 System.out.println("确定要删除" + id + "号保险柜吗？信息如下：");
                 System.out.println(this.keyUIController.getSafeMemberNames(dep));
                 System.out.println(keyStr);
                 System.out.println("注意：此操作不可逆！1. 是 0. 否");
-                if (getChoice(scanner, 0, 1) == 0) {
-                    // 撤销删除则重新选择保险柜
-                    delSafeUI(dep);
+                if (getChoice(scanner, 0, 1) == 1) {
+                    this.departments = this.keyUIController.delSafe(dep, id);
+                    System.out.println("删除" + id + "号保险柜成功！" +
+                            dep + "的保险柜信息变更如下：");
+                    this.displaySafe(dep);
                     return;
                 }
-                else {
-                    try {
-                        this.departments = this.keyUIController.delSafe(dep, id);
-                        System.out.println("删除" + id + "号保险柜成功！"+ dep + "的保险柜信息变更如下：");
-                        this.displaySafe(dep);
-                        // this.departments = this.keyUIController.refreshDB();
-                        return;
-                    }
-                    catch (Exception e) {
-                        System.out.println(e.getMessage());
-                    }
-                }
+            } catch (NumberFormatException e) {
+                System.out.println("请输入正确的保险柜序号！");
             }
+            catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
+//                // 输出信息，用户确认删除
+//                System.out.println("确定要删除" + id + "号保险柜吗？信息如下：");
+//                System.out.println(this.keyUIController.getSafeMemberNames(dep));
+//                System.out.println(keyStr);
+//                System.out.println("注意：此操作不可逆！1. 是 0. 否");
+//                if (getChoice(scanner, 0, 1) == 0) {
+//                    // 撤销删除则重新选择保险柜
+//                    delSafeUI(dep);
+//                    return;
+//                }
+//                else {
+//                    try {
+//                        this.departments = this.keyUIController.delSafe(dep, id);
+//                        System.out.println("删除" + id + "号保险柜成功！"+ dep + "的保险柜信息变更如下：");
+//                        this.displaySafe(dep);
+//                        // this.departments = this.keyUIController.refreshDB();
+//                        return;
+//                    }
+//                    catch (Exception e) {
+//                        System.out.println(e.getMessage());
+//                    }
+//                }
+//            }
         }
     }
 
@@ -301,11 +324,17 @@ public class KeyUI {
      * @param highRan 最大数字命令
      * @return 选择结果
      */
-    private int getChoice(final Scanner scanner, final int lowRan,
+    public static int getChoice(final Scanner scanner, final int lowRan,
                                 final int highRan) {
         int choice;
         while (true) {
-            choice = scanner.nextInt();
+            try {
+                choice = new Integer(scanner.nextLine());
+            }
+            catch (NumberFormatException e) {
+                System.out.println("请输入正确的选择命令！");
+                continue;
+            }
             if (choice < lowRan || choice > highRan) {
                 System.out.println("请输入正确的命令！");
             }

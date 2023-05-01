@@ -7,9 +7,9 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DepKeysDAO {
+public class DepSafesDAO {
 
-    private final String depKey_filePath = "./keys.data";
+    private final String depKey_filePath = "./depsafes.data";
 
     /**
      * 查找所有depKey

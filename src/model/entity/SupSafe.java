@@ -16,7 +16,7 @@ public class SupSafe extends Safe {
         String[] strs = supSafe_str.split("\t");
         int progress = 0;
         try {
-            this.department = supportDep;
+            this.department = strs[progress++];
             this.id = new Integer(strs[progress++]);
             if (id < 0) {
                 throw new Exception("序号为非负整数！");
@@ -32,7 +32,7 @@ public class SupSafe extends Safe {
         }
         catch (IndexOutOfBoundsException e) {
             int index = new Integer(e.getMessage());
-            if (index <= 1)
+            if (index <= 2)
                 throw new Exception("位置为必填项！");
         }
         catch (NumberFormatException e) {

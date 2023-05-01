@@ -9,10 +9,10 @@ import java.util.Scanner;
 
 public class CmdUI {
 
-    private final int keyCmd = 1;
-    private final int sealCmd = 2;
-    private final int exitCmd = 0;
-    private final String configPath = "configuration.txt";
+    private static final int keyCmd = 1;
+    private static final int sealCmd = 2;
+    private static final int exitCmd = 0;
+    private static final String configPath = "configuration.txt";
     private final String companyName;
     private final String warning;
     private final String supportDep;
@@ -41,22 +41,28 @@ public class CmdUI {
         while(true) {
             System.out.println("请选择功能：" + ui.getKeyCmd() + ". 钥匙 " + ui.getSealCmd() + ". 印章 "
                     + ui.getExitCmd() + ". 退出");
-            int cmd = scanner.nextInt();
-            if (cmd == ui.getExitCmd()) {
-                break;
-            }
-            else if (cmd == ui.getKeyCmd()) {
-                KeyUI keyUI = new KeyUI(scanner, ui.getSupportDep());
-                try {
-                    keyUI.mainPage();
-                } catch (Exception e) {
-                    System.out.println(e.getMessage());
+            int cmd = KeyUI.getChoice(scanner, ui.getExitCmd(), ui.getSealCmd());
+            try {
+//                cmd = scanner.nextInt();
+                if (cmd == ui.getExitCmd()) {
+                    break;
                 }
-            }
-            else if (cmd == ui.getSealCmd()) {
-                System.out.println("功能尚未开放！请选择其他功能：");
-            }
-            else {
+                else if (cmd == ui.getKeyCmd()) {
+                    // 钥匙处理界面
+                    KeyUI keyUI = new KeyUI(scanner, ui.getSupportDep());
+                    try {
+                        keyUI.mainPage();
+                    } catch (Exception e) {
+                        System.out.println(e.getMessage());
+                    }
+                }
+                else if (cmd == ui.getSealCmd()) {
+                    System.out.println("功能尚未开放！请选择其他功能：");
+                }
+                else {
+                    throw new Exception();
+                }
+            } catch (Exception e) {
                 System.out.println("命令输入错误！");
             }
         }
