@@ -5,27 +5,27 @@ import java.util.List;
 
 public class DB {
 
-    private List<DepKey> depKeys;
-    private List<SupKey> supKeys;
+    private List<DepSafe> depSafes;
+    private List<SupSafe> supSafes;
 
     public DB() {
-        this.depKeys = new ArrayList<>();
-        this.supKeys = new ArrayList<>();
+        this.depSafes = new ArrayList<>();
+        this.supSafes = new ArrayList<>();
     }
 
-    public List<DepKey> getDepKeys() {
-        return depKeys;
+    public List<DepSafe> getDepSafes() {
+        return depSafes;
     }
 
-    public void setDepKeys(List<DepKey> depKeys) {
-        this.depKeys = depKeys;
+    public void setDepSafes(List<DepSafe> depSafes) {
+        this.depSafes = depSafes;
     }
 
-    public List<SupKey> getSupKeys() {
-        return supKeys;
+    public List<SupSafe> getSupSafes() {
+        return supSafes;
     }
 
-    public void setSupKeys(List<SupKey> supKeys) {
-        this.supKeys = supKeys;
+    public void setSupSafes(List<SupSafe> supSafes) {
+        this.supSafes = supSafes;
     }
 }

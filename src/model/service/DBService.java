@@ -1,9 +1,11 @@
 package model.service;
 
-import model.dao.DepKeysDAO;
+import model.dao.DepSafesDAO;
+import model.dao.SupSafesDAO;
 import model.entity.DB;
-import model.entity.DepKey;
-import model.entity.SupKey;
+import model.entity.DepSafe;
+import model.entity.Safe;
+import model.entity.SupSafe;
 
 import java.io.IOException;
 import java.util.*;
@@ -11,23 +13,30 @@ import java.util.*;
 public class DBService {
 
     private final DB db;
-    private final DepKeysDAO depKeysDAO;
+    private final DepSafesDAO depSafesDAO;
+    private final SupSafesDAO supSafesDAO;
 
     public DBService() {
         this.db = new DB();
-        this.depKeysDAO = new DepKeysDAO();
+        this.depSafesDAO = new DepSafesDAO();
+        this.supSafesDAO = new SupSafesDAO();
     }
 
     public void loadDB() throws Exception {
-        db.setDepKeys(this.depKeysDAO.findAll());
+        db.setDepSafes(this.depSafesDAO.findAll());
+        db.setSupSafes(this.supSafesDAO.findAll());
     }
 
+    /**
+     * 收集部门
+     * @return 数据库中所有保险柜所属部门
+     */
     public Set<String> collectDepart() {
         Set<String> depSet = new LinkedHashSet<>();
-        for (DepKey key : db.getDepKeys()) {
+        for (DepSafe key : db.getDepSafes()) {
             depSet.add(key.getDepartment());
         }
-        for (SupKey key : db.getSupKeys()) {
+        for (SupSafe key : db.getSupSafes()) {
             depSet.add(key.getDepartment());
         }
         return depSet;
@@ -39,8 +48,8 @@ public class DBService {
      */
     public List<String> DepKeyToStr() {
         List<String> ret = new LinkedList<>();
-        for (DepKey depKey : this.db.getDepKeys()) {
-            ret.add(depKey.toString());
+        for (DepSafe depSafe : this.db.getDepSafes()) {
+            ret.add(depSafe.toString());
         }
         return ret;
     }
@@ -52,9 +61,9 @@ public class DBService {
      */
     public List<String> DepKeyToStr(String dep) {
         List<String> ret = new LinkedList<>();
-        for (DepKey depKey : this.db.getDepKeys()) {
-            if (depKey.getDepartment().equals(dep))
-                ret.add(depKey.toString());
+        for (DepSafe depSafe : this.db.getDepSafes()) {
+            if (depSafe.getDepartment().equals(dep))
+                ret.add(depSafe.toString());
         }
         return ret;
     }
@@ -65,8 +74,8 @@ public class DBService {
      */
     public List<String> SupKeyToStr() {
         List<String> ret = new LinkedList<>();
-        for (SupKey supKey : this.db.getSupKeys()) {
-            ret.add(supKey.toString());
+        for (SupSafe supSafe : this.db.getSupSafes()) {
+            ret.add(supSafe.toString());
         }
         return ret;
     }
@@ -75,11 +84,18 @@ public class DBService {
      * 将数据库对象中的内容全部按序号顺序写回文件
      * @throws IOException 文件写入异常
      */
-    public void writeBackDB() throws IOException {
-        List<DepKey> depKeys = this.db.getDepKeys();
-        // depKey需按序号顺序排列后写入
-        Collections.sort(depKeys);
-        this.depKeysDAO.writeBack(depKeys);
+    public void writeBackDB() throws Exception {
+        List<DepSafe> depSafes = this.db.getDepSafes();
+        List<SupSafe> supSafes = this.db.getSupSafes();
+        // 保险柜需按序号顺序排列后写入
+        Collections.sort(depSafes);
+        Collections.sort(supSafes);
+        try {
+            this.depSafesDAO.writeBack(depSafes);
+            this.supSafesDAO.writeBack(supSafes);
+        } catch (IOException e) {
+            throw new Exception("文件写入发生异常！");
+        }
     }
 
     /**
@@ -88,19 +104,25 @@ public class DBService {
      * @param keyStr 添加保险桂的详细信息
      * @throws Exception 输入字符串不符格式异常
      */
-    public void addSafe_DepKey(String dep, String keyStr) throws Exception {
-        List<DepKey> depKeys = this.db.getDepKeys();
-        int lastestId = depKeys.get(depKeys.size() - 1).getId();
+    public void addDepSafe(String dep, String keyStr) throws Exception {
+        List<DepSafe> depSafes = this.db.getDepSafes();
+        int lastest_Id;
+        int size = depSafes.size();
+        if (size > 0) {
+            lastest_Id = depSafes.get(size - 1).getId();
+        }
+        else lastest_Id = 0;
+        // int lastestId = depSafes.get(depSafes.size() - 1).getId();
         // 检查输入的字符串是否合法
-        keyStr = dep + '\t' + (lastestId + 1) + '\t' + keyStr;
-        DepKey depKey = new DepKey(keyStr);
-        depKeys.add(depKey);
+        keyStr = dep + '\t' + (lastest_Id + 1) + '\t' + keyStr;
+        DepSafe depSafe = new DepSafe(keyStr);
+        depSafes.add(depSafe);
     }
 
     public String getSupKeyColumnName() {
         StringBuilder columnNames = new StringBuilder();
         // 成员名间添加tab键
-        for (String s : SupKey.memberToStr()) {
+        for (String s : SupSafe.memberToStr()) {
             columnNames.append(s).append('\t');
         }
         // 去掉最后一个tab
@@ -110,7 +132,7 @@ public class DBService {
     public String getDepKeyColumnName() {
         StringBuilder columnNames = new StringBuilder();
         // 成员名间添加tab键
-        for (String s : DepKey.memberToStr()) {
+        for (String s : DepSafe.memberToStr()) {
             columnNames.append(s).append('\t');
         }
         // 去掉最后一个tab
@@ -118,43 +140,184 @@ public class DBService {
     }
 
     /**
-     * 根据id查找部门保险柜
+     * 根据序号查找全部门保险柜
      * @param id 保险柜ID
      * @return 找到则返回对应的保险柜，否则返回null
      */
-    public DepKey findDepKey(int id) {
-        for (DepKey depKey : this.db.getDepKeys()) {
-            if (depKey.getId() == id) return depKey;
+    public DepSafe findDepSafe(int id) {
+        for (DepSafe depSafe : this.db.getDepSafes()) {
+            if (depSafe.getId() == id) return depSafe;
         }
         return null;
     }
 
     /**
-     * 根据id查找部门保险柜
+     * 根据序号和部门查找保险柜
+     * @param dep 保险柜所属部门
      * @param id 保险柜ID
      * @return 找到则返回对应的保险柜，否则返回null
      */
-    public DepKey findDepKey(String dep, int id) {
-        for (DepKey depKey : this.db.getDepKeys()) {
-            if (depKey.getId() == id && depKey.getDepartment().equals(dep))
-                return depKey;
+    public String findDepSafe(String dep, int id) throws Exception {
+        for (DepSafe depSafe : this.db.getDepSafes()) {
+            if (depSafe.getId() == id && depSafe.getDepartment().equals(dep))
+                return depSafe.toString();
         }
-        return null;
+        throw new Exception(dep + "下无序号为" + id + "的保险柜！");
     }
 
-    public boolean delDepSafe(String dep, int id) {
+    /**
+     * 删除部门和序号均符合用户输入的保险柜
+     * @param dep 保险柜所属部门
+     * @param id 保险柜id
+     * @return 删除是否成功
+     */
+    public void delDepSafe(String dep, int id) throws Exception {
         // 删除部门符合且id符合的保险柜
-        if (this.db.getDepKeys().removeIf(
-                depKey -> depKey.getDepartment().equals(dep) &&
-                        depKey.getId() == id)) {
+        if (this.db.getDepSafes().removeIf(
+                depSafe -> depSafe.getDepartment().equals(dep) &&
+                        depSafe.getId() == id)) {
             // 若删除成功，则刷新所有key的id
-            List<DepKey> depKeys = this.db.getDepKeys();
+            List<DepSafe> depSafes = this.db.getDepSafes();
             int new_id = 1;
-            for (DepKey depKey : depKeys) {
-                depKey.setId(new_id++);
+            for (DepSafe depSafe : depSafes) {
+                depSafe.setId(new_id++);
             }
-            return true;
+            return;
         }
-        return false;
+        throw new Exception(dep + "并不存在序号为" + id + "保险柜！");
+    }
+
+    /**
+     * 取出部门保险柜的钥匙
+     * @param dep 保险柜所属部门
+     * @param id 保险柜id
+     * @param key_select 选择的钥匙
+     * @param fetch_person 出库人
+     * @param note 备注
+     * @throws Exception 取出钥匙时出现的异常
+     */
+    public void fetchDepKey(String dep, int id, char key_select,
+                            String fetch_person, String note) throws Exception {
+        for (DepSafe depSafe : this.db.getDepSafes()) {
+            // 找到对应部门下的保险柜
+            if (depSafe.getDepartment().equals(dep) &&
+                    depSafe.getId() == id) {
+                switch (key_select) {
+                    case 'b':{
+                        int back_up_num = depSafe.getBack_up() - 1;
+                        if (back_up_num < 0) {
+                            throw new Exception("备用钥匙数量不足！");
+                        }
+                        else {
+                            depSafe.setBack_up(back_up_num);
+                            fetch_person += "（备用）";
+                        }
+                    }break;
+                    case 'j': {
+                        int emer_num = depSafe.getEmergency() - 1;
+                        if (emer_num < 0) {
+                            throw new Exception("紧急钥匙数量不足！");
+                        }
+                        else {
+                            depSafe.setEmergency(emer_num);
+                            fetch_person += "（紧急）";
+                        }
+                    }break;
+                    default: throw new Exception("未知类型钥匙" + key_select + "！");
+                }
+                depSafe.setLast_fetch(fetch_person);
+                if (!note.equals("")) {
+                    depSafe.setNote(note);
+                }
+                return;
+            }
+        }
+        throw new Exception(dep + "没有序号为" + id + "的保险柜！");
+    }
+
+    /**
+     * 归还钥匙
+     * @param dep 钥匙入库保险柜所属部门
+     * @param id 保险柜id
+     * @param key_select 选择的钥匙钥匙类型
+     * @param ret_person 入库人
+     * @param note 备注
+     * @throws Exception 钥匙归还出错信息
+     */
+    public void retDepKey(String dep, int id, char key_select, String ret_person, String note) throws Exception {
+        for (DepSafe depSafe : this.db.getDepSafes()) {
+            // 找到对应部门下的保险柜
+            if (depSafe.getDepartment().equals(dep) &&
+                    depSafe.getId() == id) {
+                switch (key_select) {
+                    case 'b':{
+                        depSafe.setBack_up(depSafe.getBack_up() + 1);
+                        ret_person += "（备用）";
+                    }break;
+                    case 'j': {
+                        depSafe.setEmergency(depSafe.getEmergency() + 1);
+                        ret_person += "（紧急）";
+                    }break;
+                    default: throw new Exception("未知类型钥匙" + key_select + "！");
+                }
+                depSafe.setLast_return(ret_person);
+                if (!note.equals("")) {
+                    depSafe.setNote(note);
+                }
+                return;
+            }
+        }
+        throw new Exception(dep + "没有序号为" + id + "的保险柜！");
+    }
+
+    /**
+     * 添加后勤部保险柜
+     * @param keyStr 后勤部保险柜信息字符串
+     * @throws Exception 字符串解析异常
+     */
+    public void addSupSafe(String keyStr) throws Exception {
+        List<SupSafe> supSafes = this.db.getSupSafes();
+        int lastest_Id;
+        int size = supSafes.size();
+        if (size > 0) {
+            lastest_Id = supSafes.get(size - 1).getId();
+        }
+        else lastest_Id = 0;
+        // 检查输入的字符串是否合法
+        keyStr = Safe.supportDep + "\t" + (lastest_Id + 1) + "\t" +
+                keyStr;
+        SupSafe supSafe = new SupSafe(keyStr);
+        supSafes.add(supSafe);
+    }
+
+    /**
+     * 查找后勤部对应序号的保险柜
+     * @param id 保险柜序号
+     * @return 保险柜信息字符串
+     * @throws Exception 查找保险柜异常字符串
+     */
+    public String findSupSafe(int id) throws Exception {
+        String supportDep = this.db.getSupSafes().get(0).getDepartment();
+        for (SupSafe supSafe : this.db.getSupSafes()) {
+            if (supSafe.getId() == id) {
+                return supSafe.toString();
+            }
+        }
+        throw new Exception(supportDep + "无序号为" + id + "的保险柜！");
+    }
+
+    public void delSupSafe(int id) throws Exception {
+        // 删除id符合的保险柜
+        if (this.db.getSupSafes().removeIf(
+                supSafe -> supSafe.getId() == id)) {
+            // 若删除成功，则刷新所有后勤部保险柜的id
+            List<SupSafe> supSafes = this.db.getSupSafes();
+            int new_id = 1;
+            for (SupSafe supSafe : supSafes) {
+                supSafe.setId(new_id++);
+            }
+            return;
+        }
+        throw new Exception(Safe.supportDep + "并不存在序号为" + id + "保险柜！");
     }
 }

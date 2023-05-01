@@ -3,13 +3,14 @@ package model.entity;
 import java.util.LinkedList;
 import java.util.List;
 
-public class Key implements Comparable<Key> {
+public class Safe implements Comparable<Safe> {
 
     protected String department = "";
     protected int id = -1;
-    protected String last_return = "";
-    protected String last_fetch = "";
+    protected String last_return = "初始生成";
+    protected String last_fetch = "初始生成";
     protected String note = "";
+    public static String supportDep;
 
     /**
      * 比较函数
@@ -17,7 +18,7 @@ public class Key implements Comparable<Key> {
      * @return id顺序比较结果
      */
     @Override
-    public int compareTo(Key o) {
+    public int compareTo(Safe o) {
         return this.id <= o.id ? 1 : 0;
     }
 
@@ -30,16 +31,24 @@ public class Key implements Comparable<Key> {
         return department;
     }
 
-    public void setDepartment(String department) {
-        this.department = department;
-    }
-
     public int getId() {
         return id;
     }
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public void setLast_return(String last_return) {
+        this.last_return = last_return;
+    }
+
+    public void setLast_fetch(String last_fetch) {
+        this.last_fetch = last_fetch;
+    }
+
+    public void setNote(String note) {
+        this.note = note;
     }
 
     /**
