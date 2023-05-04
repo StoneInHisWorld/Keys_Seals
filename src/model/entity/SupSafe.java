@@ -44,6 +44,14 @@ public class SupSafe extends Safe {
         return department;
     }
 
+    public int getNum_key() {
+        return num_key;
+    }
+
+    public void setNum_key(int num_key) {
+        this.num_key = num_key;
+    }
+
     @Override
     public String toString() {
         return super.toString() + loc + '\t' + num_key + '\t' +

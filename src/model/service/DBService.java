@@ -210,7 +210,7 @@ public class DBService {
                         }
                         else {
                             depSafe.setBack_up(back_up_num);
-                            fetch_person += "（备用）";
+                            fetch_person += "（备）";
                         }
                     }break;
                     case 'j': {
@@ -220,7 +220,7 @@ public class DBService {
                         }
                         else {
                             depSafe.setEmergency(emer_num);
-                            fetch_person += "（紧急）";
+                            fetch_person += "（急）";
                         }
                     }break;
                     default: throw new Exception("未知类型钥匙" + key_select + "！");
@@ -234,6 +234,35 @@ public class DBService {
         }
         throw new Exception(dep + "没有序号为" + id + "的保险柜！");
     }
+
+    /**
+     * 取出后勤部的钥匙
+     * @param id 保险柜序号
+     * @param fetch_person 出库人
+     * @param note 备注
+     * @throws Exception 找不到保险柜异常
+     */
+    public void fetchSupKey(int id, String fetch_person, String note) throws Exception {
+        for (SupSafe supSafe : this.db.getSupSafes()) {
+            // 找到对应部门下的保险柜
+            if (supSafe.getId() == id) {
+                int num_key = supSafe.getNum_key() - 1;
+                if (num_key < 0) {
+                    throw new Exception("备用钥匙数量不足！");
+                }
+                else {
+                    supSafe.setNum_key(num_key);
+                }
+                supSafe.setLast_fetch(fetch_person);
+                if (!note.equals("")) {
+                    supSafe.setNote(note);
+                }
+                return;
+            }
+        }
+        throw new Exception(Safe.supportDep + "没有序号为" + id + "的保险柜！");
+    }
+
 
     /**
      * 归还钥匙
@@ -252,11 +281,11 @@ public class DBService {
                 switch (key_select) {
                     case 'b':{
                         depSafe.setBack_up(depSafe.getBack_up() + 1);
-                        ret_person += "（备用）";
+                        ret_person += "（备）";
                     }break;
                     case 'j': {
                         depSafe.setEmergency(depSafe.getEmergency() + 1);
-                        ret_person += "（紧急）";
+                        ret_person += "（急）";
                     }break;
                     default: throw new Exception("未知类型钥匙" + key_select + "！");
                 }
@@ -320,4 +349,6 @@ public class DBService {
         }
         throw new Exception(Safe.supportDep + "并不存在序号为" + id + "保险柜！");
     }
+
+
 }

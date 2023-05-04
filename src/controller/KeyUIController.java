@@ -96,44 +96,10 @@ public class KeyUIController {
         }
         this.refreshDB();
         return this.dbService.collectDepart();
-//        if (dep.equals(supportDep)) {
-//            System.out.println("该功能暂未开放");
-//            return false;
-//        }
-//        else {
-//            // 删除部门保险柜
-//            String keyStr;
-//            // 确认保险柜的存在
-//            try {
-//                keyStr = this.dbService.findDepKey(dep, id).toString();
-//            } catch (NullPointerException e) {
-//                System.out.println(dep + "下无id为" + id + "的保险柜！");
-//                return false;
-//            }
-//            // 输出信息，用户确认删除
-//            System.out.println("确定要删除" + id + "号保险柜吗？信息如下：");
-//            System.out.println(this.dbService.getDepKeyColumnName());
-//            System.out.println(keyStr);
-//            System.out.println("注意：此操作不可逆！1. 是 0. 否");
-//            if (getChoice(scanner, 0, 1) == 0) {
-//                return false;
-//            }
-//            else {
-//                if (this.dbService.delDepSafe(dep, id)) {
-//                    return true;
-//                }
-//                else {
-//                    System.out.println("部门保险柜删除失败！");
-//                    return false;
-//                }
-//            }
-//        }
     }
 
-//    public Set<String> refreshDB() throws Exception {
     public void refreshDB() throws Exception {
         this.dbService.writeBackDB();
-//        return this.dbService.collectDepart();
     }
 
     /**
@@ -144,51 +110,78 @@ public class KeyUIController {
      * @return 钥匙取出成功信息
      */
     public String fetchKey(String dep, String input) throws Exception {
-        // 解析用户输入
-        String[] strings = input.split("\t");
-        int progress = 0;
-        int id = 0;
-        char key_select = 0;
-        String fetch_person = null;
-        String note;
-        try {
-            id = new Integer(strings[progress++]);
-            key_select = strings[progress++].charAt(0);
-            if (key_select != 'b' && key_select != 'j') {
-                throw new Exception("选择备用钥匙请填写b，选择紧急钥匙请填写j");
-            }
-            fetch_person = strings[progress++];
-            note = strings[progress];
-        }
-        catch (IndexOutOfBoundsException e) {
-            // 备注项可以不填
-            int index = new Integer(e.getMessage());
-            if (index >= 3) {
-                note = "";
-            }
-            else {
-                throw new Exception("序号、钥匙选择、出库人三项必填！");   
-            }
-        }
-        catch (NumberFormatException e) {
-            throw new Exception("序号需为非负整数！");
-        }
-        // 将解析输入录入数据库中
         if (dep.equals(supportDep)) {
-            throw new Exception("该功能尚未开放！");
-        } 
-        else {
-            this.dbService.fetchDepKey(dep, id, key_select, fetch_person, note);
-            // 刷新本地数据库
+            // 解析用户输入
+            String[] strings = input.split("\t");
+            int id = 0;
+            String fetch_person = "";
+            String note;
+            try {
+                int progress = 0;
+                id = new Integer(strings[progress++]);
+                fetch_person = strings[progress++];
+                note = strings[progress];
+            }
+            catch (IndexOutOfBoundsException e) {
+                // 备注项可以不填
+                int index = new Integer(e.getMessage());
+                if (index > 1) {
+                    note = "";
+                }
+                else {
+                    throw new Exception("序号、钥匙选择、出库人三项必填！");
+                }
+            }
+            catch (NumberFormatException e) {
+                throw new Exception("序号需为非负整数！");
+            }
+            // 将解析输入录入数据库中
+            this.dbService.fetchSupKey(id, fetch_person, note);
             this.refreshDB();
+            return fetch_person + "成功取出" + dep + id + "号保险柜的一把钥匙";
         }
-        switch (key_select) {
-            case 'b':return fetch_person + "成功取出" + dep + id +
-                    "号保险柜的备用钥匙";
-            case 'j':return fetch_person + "成功取出" + dep + id +
-                    "号保险柜的紧急钥匙";
-            default:throw new Exception("未知类型" + key_select +
-                    "的钥匙选择！");
+        else {
+            // 处理部门事务
+            int id = 0;
+            char key_select = 0;
+            String fetch_person = "";
+            String note;
+            try {
+                // 解析用户输入
+                String[] strings = input.split("\t");
+                int progress = 0;
+                id = new Integer(strings[progress++]);
+                key_select = strings[progress++].charAt(0);
+                if (key_select != 'b' && key_select != 'j') {
+                    throw new Exception("选择备用钥匙请填写b，选择紧急钥匙请填写j");
+                }
+                fetch_person = strings[progress++];
+                note = strings[progress];
+            }
+            catch (IndexOutOfBoundsException e) {
+                // 备注项可以不填
+                int index = new Integer(e.getMessage());
+                if (index >= 3) {
+                    note = "";
+                }
+                else {
+                    throw new Exception("序号、钥匙选择、出库人三项必填！");
+                }
+            }
+            catch (NumberFormatException e) {
+                throw new Exception("序号需为非负整数！");
+            }
+            // 刷新本地数据库，返回成功
+            this.dbService.fetchDepKey(dep, id, key_select, fetch_person, note);
+            this.refreshDB();
+            switch (key_select) {
+                case 'b':return fetch_person + "成功取出" + dep + id +
+                        "号保险柜的备用钥匙";
+                case 'j':return fetch_person + "成功取出" + dep + id +
+                        "号保险柜的紧急钥匙";
+                default:throw new Exception("未知类型" + key_select +
+                        "的钥匙选择！");
+            }
         }
     }
 

@@ -9,7 +9,7 @@ import java.util.List;
 
 public class DepSafesDAO {
 
-    private final String depKey_filePath = "./depsafes.data";
+    private final String depSafe_filePath = "./depsafes.data";
 
     /**
      * 查找所有depKey
@@ -18,7 +18,7 @@ public class DepSafesDAO {
      */
     public List<DepSafe> findAll() throws Exception {
         List<DepSafe> depSafes = new ArrayList<>();
-        FileInputStream file = new FileInputStream(this.depKey_filePath);
+        FileInputStream file = new FileInputStream(this.depSafe_filePath);
         // 读取部门钥匙
         BufferedReader br = new BufferedReader(new InputStreamReader(file, StandardCharsets.UTF_8));
         String line;
@@ -32,14 +32,16 @@ public class DepSafesDAO {
 
     /**
      * 将所有depKeys转化为字符串，写回
-     * @param keys depKeys对象列表
+     * @param safes depKeys对象列表
      * @throws IOException 文件写入异常
      */
-    public void writeBack(List<DepSafe> keys) throws IOException {
-        FileWriter fileWriter = new FileWriter(new File(this.depKey_filePath));
-        for (DepSafe key : keys) {
-            fileWriter.write(key.toString() + "\n");
+    public void writeBack(List<DepSafe> safes) throws IOException {
+        FileOutputStream file = new FileOutputStream(this.depSafe_filePath);
+        // 读取部门钥匙
+        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(file, StandardCharsets.UTF_8));
+        for (DepSafe key : safes) {
+            bw.write(key.toString() + "\n");
         }
-        fileWriter.close();
+        bw.close();
     }
 }

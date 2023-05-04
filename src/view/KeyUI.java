@@ -151,20 +151,31 @@ public class KeyUI {
         System.out.println(success_msg);
     }
 
+    /**
+     * 取出钥匙的界面
+     * @param dep 钥匙所属的保险柜所属的部门
+     */
     private void fetchKeyUI(String dep) {
-        System.out.println("（输入0则退出）");
-        System.out.print("取出钥匙");
-        String input = getInput("序号\t备用/紧急钥匙（b/j）\t出库人\t备注");
-        if (input.equals("0")) return;
-        String success_msg;
-        try {
-             success_msg = this.keyUIController.fetchKey(dep, input);
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            fetchKeyUI(dep);
-            return;
+        while (true) {
+            try {
+                String display;
+                if (!dep.equals(supportDep)) {
+                    display = "序号\t备用/紧急钥匙（b/j）\t出库人\t备注";
+                }
+                else {
+                    display = "序号\t出库人\t备注";
+                }
+                System.out.println("（输入0则退出）");
+                System.out.print("取出钥匙");
+                String input = getInput(display);
+                if (input.equals("0")) return;
+                String success_msg = this.keyUIController.fetchKey(dep, input);
+                System.out.println(success_msg);
+                break;
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
         }
-        System.out.println(success_msg);
     }
 
     /**
