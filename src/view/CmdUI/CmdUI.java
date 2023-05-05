@@ -1,41 +1,33 @@
-package view;
+package view.CmdUI;
 
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
+import view.UI;
+
 import java.util.Scanner;
 
-public class CmdUI {
+public class CmdUI extends UI {
 
     private static final int keyCmd = 1;
     private static final int sealCmd = 2;
     private static final int exitCmd = 0;
-    private static final String configPath = "configuration.txt";
-    private final String companyName;
-    private final String warning;
-    private final String supportDep;
+//    private static final String configPath = "configuration.txt";
+//    private final String companyName;
+//    private final String warning;
+//    private final String supportDep;
 
-    public CmdUI() throws IOException {
-        // 加载配置文件
-        FileInputStream fileInputStream = new FileInputStream(configPath);
-        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(fileInputStream, StandardCharsets.UTF_8));
-        this.companyName = bufferedReader.readLine().substring(4);
-        this.warning = bufferedReader.readLine().substring(5);
-        this.supportDep = bufferedReader.readLine().substring(6);
-        bufferedReader.close();
-        fileInputStream.close();
+    public CmdUI() throws Exception {
+//        // 加载配置文件
+//        FileInputStream fileInputStream = new FileInputStream(configPath);
+//        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(fileInputStream, StandardCharsets.UTF_8));
+//        this.companyName = bufferedReader.readLine().substring(4);
+//        this.warning = bufferedReader.readLine().substring(5);
+//        this.supportDep = bufferedReader.readLine().substring(6);
+//        bufferedReader.close();
+//        fileInputStream.close();
     }
 
-    public static void main(String[] args){
+    public static void main(String[] args) throws Exception {
         CmdUI ui;
-        try {
-            ui = new CmdUI();
-        } catch (IOException e) {
-            System.out.println("配置文件读取异常！");
-            return;
-        }
+        ui = new CmdUI();
         Scanner scanner = new Scanner(System.in);
         ui.welcome();
         while(true) {
@@ -71,7 +63,7 @@ public class CmdUI {
     }
 
     public void welcome() {
-        System.out.println("欢迎来到" + companyName +"钥匙管理系统");
+        System.out.println("欢迎来到" + super.companyName +"钥匙管理系统");
         System.out.println("注意：" + warning);
     }
 
@@ -91,5 +83,5 @@ public class CmdUI {
         return exitCmd;
     }
 
-    public String getSupportDep() { return supportDep;    }
+    public String getSupportDep() { return supportDep; }
 }
