@@ -135,20 +135,32 @@ public class KeyUI {
         }
     }
 
+    /**
+     * 归还钥匙用户界面
+     * @param dep 钥匙所属保险柜的所属部门
+     */
     private void retKeyUI(String dep) {
-        System.out.println("（输入0则退出）");
-        System.out.print("放入钥匙");
-        String input = getInput("序号\t备用/紧急钥匙（b/j）\t入库人\t备注");
-        if (input.equals("0")) return;
-        String success_msg;
-        try {
-            success_msg = this.keyUIController.retKey(dep, input);
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            retKeyUI(dep);
-            return;
+        while (true) {
+            try {
+                String display;
+                if (!dep.equals(supportDep)) {
+                    display = "序号\t还备用或紧急钥匙（b或j）\t出库人\t备注";
+                }
+                else {
+                    display = "序号\t出库人\t备注";
+                }
+                System.out.println("（输入0则退出）");
+                System.out.print("放入钥匙");
+                String input = getInput(display);
+                if (input.equals("0")) return;
+                String success_msg = this.keyUIController.retKey(dep, input);
+                System.out.println(success_msg + "，" + dep + "信息变更如下：");
+                this.displaySafe(dep);
+                break;
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
         }
-        System.out.println(success_msg);
     }
 
     /**
@@ -160,7 +172,7 @@ public class KeyUI {
             try {
                 String display;
                 if (!dep.equals(supportDep)) {
-                    display = "序号\t备用/紧急钥匙（b/j）\t出库人\t备注";
+                    display = "序号\t取备用或紧急钥匙（b或j）\t出库人\t备注";
                 }
                 else {
                     display = "序号\t出库人\t备注";
@@ -169,8 +181,10 @@ public class KeyUI {
                 System.out.print("取出钥匙");
                 String input = getInput(display);
                 if (input.equals("0")) return;
-                String success_msg = this.keyUIController.fetchKey(dep, input);
+                String success_msg = this.keyUIController.fetchKey(dep, input) +
+                        "，" + dep + "的信息变更如下：";
                 System.out.println(success_msg);
+                this.displaySafe(dep);
                 break;
             } catch (Exception e) {
                 System.out.println(e.getMessage());
@@ -228,7 +242,12 @@ public class KeyUI {
             System.out.println(e.getMessage());
             return addSafeUI(dep);
         }
-        System.out.println("添加保险柜成功！");
+        try {
+            System.out.println("添加保险柜成功！" + dep + "信息变更如下：");
+            this.displaySafe(dep);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
         return dep;
     }
 
@@ -291,32 +310,13 @@ public class KeyUI {
             catch (Exception e) {
                 System.out.println(e.getMessage());
             }
-//                // 输出信息，用户确认删除
-//                System.out.println("确定要删除" + id + "号保险柜吗？信息如下：");
-//                System.out.println(this.keyUIController.getSafeMemberNames(dep));
-//                System.out.println(keyStr);
-//                System.out.println("注意：此操作不可逆！1. 是 0. 否");
-//                if (getChoice(scanner, 0, 1) == 0) {
-//                    // 撤销删除则重新选择保险柜
-//                    delSafeUI(dep);
-//                    return;
-//                }
-//                else {
-//                    try {
-//                        this.departments = this.keyUIController.delSafe(dep, id);
-//                        System.out.println("删除" + id + "号保险柜成功！"+ dep + "的保险柜信息变更如下：");
-//                        this.displaySafe(dep);
-//                        // this.departments = this.keyUIController.refreshDB();
-//                        return;
-//                    }
-//                    catch (Exception e) {
-//                        System.out.println(e.getMessage());
-//                    }
-//                }
-//            }
         }
     }
 
+    /**
+     * 将controller获取的部门保险柜信息字符串输出
+     * @param dep 保险柜所属部门
+     */
     private void displaySafe(String dep) {
         try {
             List<String> outputs = this.keyUIController.displaySafe(dep);

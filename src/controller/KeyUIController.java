@@ -111,7 +111,7 @@ public class KeyUIController {
      */
     public String fetchKey(String dep, String input) throws Exception {
         if (dep.equals(supportDep)) {
-            // 解析用户输入
+            // 处理后勤部事务，解析用户输入
             String[] strings = input.split("\t");
             int id = 0;
             String fetch_person = "";
@@ -129,7 +129,7 @@ public class KeyUIController {
                     note = "";
                 }
                 else {
-                    throw new Exception("序号、钥匙选择、出库人三项必填！");
+                    throw new Exception("序号、出库人三项必填！");
                 }
             }
             catch (NumberFormatException e) {
@@ -171,7 +171,7 @@ public class KeyUIController {
             catch (NumberFormatException e) {
                 throw new Exception("序号需为非负整数！");
             }
-            // 刷新本地数据库，返回成功
+            // 刷新本地数据库，返回成功消息
             this.dbService.fetchDepKey(dep, id, key_select, fetch_person, note);
             this.refreshDB();
             switch (key_select) {
@@ -193,54 +193,87 @@ public class KeyUIController {
      * @throws Exception 钥匙输入信息异常
      */
     public String retKey(String dep, String input) throws Exception {
-        // 解析用户输入
-        String[] strings = input.split("\t");
-        int progress = 0;
-        int id = 0;
-        char key_select = 0;
-        String ret_person = null;
-        String note;
-        try {
-            id = new Integer(strings[progress++]);
-            key_select = strings[progress++].charAt(0);
-            if (key_select != 'b' && key_select != 'j') {
-                throw new Exception("选择备用钥匙请填写b，选择紧急钥匙请填写j");
+        if (dep.equals(supportDep)) { // 处理后勤部归还钥匙事务
+            // 处理后勤部事务，解析用户输入
+            String[] strings = input.split("\t");
+            int id = 0;
+            String ret_person = "";
+            String note;
+            try {
+                int progress = 0;
+                id = new Integer(strings[progress++]);
+                ret_person = strings[progress++];
+                note = strings[progress];
             }
-            ret_person = strings[progress++];
-            note = strings[progress];
-        }
-        catch (IndexOutOfBoundsException e) {
-            // 备注项可以不填
-            int index = new Integer(e.getMessage());
-            if (index >= 3) {
-                note = "";
+            catch (IndexOutOfBoundsException e) {
+                // 备注项可以不填
+                int index = new Integer(e.getMessage());
+                if (index > 1) {
+                    note = "";
+                }
+                else {
+                    throw new Exception("序号、出库人两项必填！");
+                }
             }
-            else {
-                throw new Exception("序号、钥匙选择、入库人三项必填！");
+            catch (NumberFormatException e) {
+                throw new Exception("序号需为非负整数！");
             }
-        }
-        catch (NumberFormatException e) {
-            throw new Exception("序号需为非负整数！");
-        }
-        // 将解析输入录入数据库中
-        if (dep.equals(supportDep)) {
-            throw new Exception("该功能尚未开放！");
-        }
-        else {
-            this.dbService.retDepKey(dep, id, key_select, ret_person, note);
-            // 刷新本地数据库
+            // 将解析输入录入数据库中
+            this.dbService.retSupKey(id, ret_person, note);
             this.refreshDB();
+            return ret_person + "成功归还" + dep + id + "号保险柜的一把钥匙";
         }
-        switch (key_select) {
-            case 'b':return ret_person + "成功放入" + dep + id +
-                    "号保险柜的备用钥匙";
-            case 'j':return ret_person + "成功放入" + dep + id +
-                    "号保险柜的紧急钥匙";
-            default:throw new Exception("未知类型" + key_select +
-                    "的钥匙选择！");
+        else { // 处理部门归还钥匙事务
+            int id = 0;
+            char key_select = 0;
+            String ret_person = "";
+            String note;
+            try {
+                // 解析用户输入
+                String[] strings = input.split("\t");
+                int progress = 0;
+                id = new Integer(strings[progress++]);
+                key_select = strings[progress++].charAt(0);
+                if (key_select != 'b' && key_select != 'j') {
+                    throw new Exception("选择备用钥匙请填写b，选择紧急钥匙请填写j");
+                }
+                ret_person = strings[progress++];
+                note = strings[progress];
+            }
+            catch (IndexOutOfBoundsException e) {
+                // 备注项可以不填
+                int index = new Integer(e.getMessage());
+                if (index >= 3) {
+                    note = "";
+                }
+                else {
+                    throw new Exception("序号、钥匙选择、入库人三项必填！");
+                }
+            }
+            catch (NumberFormatException e) {
+                throw new Exception("序号需为非负整数！");
+            }
+            // 刷新本地数据库，返回成功消息
+            this.dbService.retDepKey(dep, id, key_select, ret_person, note);
+            this.refreshDB();
+            switch (key_select) {
+                case 'b':return ret_person + "成功放入" + dep + id +
+                        "号保险柜的备用钥匙";
+                case 'j':return ret_person + "成功放入" + dep + id +
+                        "号保险柜的紧急钥匙";
+                default:throw new Exception("未知类型" + key_select +
+                        "的钥匙选择！");
+            }
         }
     }
 
+    /**
+     * 寻找保险柜
+     * @param dep 保险柜所属部门
+     * @param id 序号
+     * @return 保险柜信息字符串
+     * @throws Exception 查找保险柜异常字符串
+     */
     public String findSafe(String dep, int id) throws Exception {
         if (dep.equals(supportDep)) {
             return this.dbService.findSupSafe(id);

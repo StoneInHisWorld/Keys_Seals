@@ -335,6 +335,11 @@ public class DBService {
         throw new Exception(supportDep + "无序号为" + id + "的保险柜！");
     }
 
+    /**
+     * 删除后勤部保险柜
+     * @param id 保险柜序号
+     * @throws Exception 找不到对应序号保险柜或者数据库未进行改变异常
+     */
     public void delSupSafe(int id) throws Exception {
         // 删除id符合的保险柜
         if (this.db.getSupSafes().removeIf(
@@ -350,5 +355,25 @@ public class DBService {
         throw new Exception(Safe.supportDep + "并不存在序号为" + id + "保险柜！");
     }
 
-
+    /**
+     * 归还后勤部钥匙
+     * @param id 保险柜序号
+     * @param ret_person 入库人
+     * @param note 备注
+     * @throws Exception 找不到保险柜异常
+     */
+    public void retSupKey(int id, String ret_person, String note) throws Exception {
+        for (SupSafe supSafe : this.db.getSupSafes()) {
+            // 找到对应部门下的保险柜
+            if (supSafe.getId() == id) {
+                supSafe.setNum_key(supSafe.getNum_key() + 1);
+                supSafe.setLast_return(ret_person);
+                if (!note.equals("")) {
+                    supSafe.setNote(note);
+                }
+                return;
+            }
+        }
+        throw new Exception(Safe.supportDep + "没有序号为" + id + "的保险柜！");
+    }
 }
