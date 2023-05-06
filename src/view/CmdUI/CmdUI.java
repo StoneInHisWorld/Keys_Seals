@@ -9,10 +9,6 @@ public class CmdUI extends UI {
     private static final int keyCmd = 1;
     private static final int sealCmd = 2;
     private static final int exitCmd = 0;
-//    private static final String configPath = "configuration.txt";
-//    private final String companyName;
-//    private final String warning;
-//    private final String supportDep;
 
     public CmdUI() throws Exception {
 //        // 加载配置文件
@@ -63,7 +59,7 @@ public class CmdUI extends UI {
     }
 
     public void welcome() {
-        System.out.println("欢迎来到" + super.companyName +"钥匙管理系统");
+        System.out.println("欢迎来到" + super.companyName +"钥匙管理系统v" + super.version);
         System.out.println("注意：" + warning);
     }
 

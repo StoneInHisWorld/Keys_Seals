@@ -1,14 +1,17 @@
-package view.GUI;
+package view.GUI.Frame;
 
-import sun.applet.Main;
+import controller.KeyUIController;
+import view.GUI.MouseListener.KeyBtnMouseListener;
 import view.UI;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 
 public class MainFrame extends UI {
+
+    /**
+     * 界面组件
+     */
     private JPanel topPanel;
     private JLabel welcomeLabel;
     private JLabel warningLabel;
@@ -16,15 +19,18 @@ public class MainFrame extends UI {
     private JButton keyBt;
     private JButton sealBt;
     private JPanel mainFramePanel;
+    private JPanel keyBtPanel;
+    private JPanel sealBtPanel;
+    /**
+     * 数据生成对象
+     */
+    private final KeyUIController keyUIController;
 
     public MainFrame() throws Exception {
-        keyBt.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                super.mouseClicked(e);
-            }
-        });
         this.welcome();
+        keyUIController = new KeyUIController(super.getSupportDep());
+        keyBt.addMouseListener(new KeyBtnMouseListener(
+                keyBt, sealBt, topPanel, sealBtPanel, this.keyUIController));
     }
 
     public static void main(String[] args) {

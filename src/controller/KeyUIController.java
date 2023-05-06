@@ -19,6 +19,11 @@ public class KeyUIController {
         Safe.supportDep = supportDep;
     }
 
+    /**
+     * 初始化钥匙UI
+     * @return 部门名集合
+     * @throws Exception 找不到数据文件异常
+     */
     public Set<String> initKeyUI() throws Exception {
         dbService.loadDB();
         return this.dbService.collectDepart();
@@ -281,5 +286,9 @@ public class KeyUIController {
         else {
             return this.dbService.findDepSafe(dep, id);
         }
+    }
+
+    public Set<String> getDepartments() {
+        return this.dbService.collectDepart();
     }
 }

@@ -22,6 +22,10 @@ public class DBService {
         this.supSafesDAO = new SupSafesDAO();
     }
 
+    /**
+     * 加载数据库
+     * @throws Exception 数据文件找不到异常
+     */
     public void loadDB() throws Exception {
         db.setDepSafes(this.depSafesDAO.findAll());
         db.setSupSafes(this.supSafesDAO.findAll());
