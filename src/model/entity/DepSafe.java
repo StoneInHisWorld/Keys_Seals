@@ -1,5 +1,7 @@
 package model.entity;
 
+import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 
 public class DepSafe extends Safe {
@@ -66,6 +68,18 @@ public class DepSafe extends Safe {
         return super.toString() + store + '\t' + safe_id + '\t' +
                 back_up + '\t' + emergency + '\t' + last_return + '\t' +
                 last_fetch  + '\t'+ note;
+    }
+
+    public Object[] getMembers() {
+        List<Object> objectList = new LinkedList<>(Arrays.asList(super.getMembers()));
+        objectList.add(this.store);
+        objectList.add(this.safe_id);
+        objectList.add(this.back_up);
+        objectList.add(this.emergency);
+        objectList.add(this.last_return);
+        objectList.add(this.last_fetch);
+        objectList.add(this.note);
+        return objectList.toArray();
     }
 
     public static List<String> memberToStr() {

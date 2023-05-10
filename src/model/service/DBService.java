@@ -380,4 +380,20 @@ public class DBService {
         }
         throw new Exception(Safe.supportDep + "没有序号为" + id + "的保险柜！");
     }
+
+    /**
+     * 获取部门保险柜的成员对象
+     * @param dep 部门保险柜所属部门
+     * @return 部门保险柜成员对象列表
+     * @throws Exception 找不到部门保险柜异常
+     */
+    public List<Object[]> getDepSafeMembers(String dep) throws Exception {
+        List<Object[]> ret = new LinkedList<>();
+        for (DepSafe depSafe : this.depSafesDAO.findAll()) {
+            if (depSafe.getDepartment().equals(dep)) {
+                ret.add(depSafe.getMembers());
+            }
+        }
+        return ret;
+    }
 }

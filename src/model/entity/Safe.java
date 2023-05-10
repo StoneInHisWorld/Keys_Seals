@@ -51,6 +51,14 @@ public class Safe implements Comparable<Safe> {
         this.note = note;
     }
 
+
+    public Object[] getMembers() {
+        Object[] members = new Object[2];
+        members[0] = this.department;
+        members[1] = this.id;
+        return members;
+    }
+
     /**
      * 钥匙的成员字符串前两个输出必为部门和序号
      * @return 钥匙输出字符串

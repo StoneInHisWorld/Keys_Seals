@@ -54,7 +54,7 @@ public class KeyUIController {
     }
 
     /**
-     * 展示对应部门的所有保险柜信息
+     * 展示对应部门的所有保险柜信息，附带上保险柜属性名
      * @param dep 保险柜所属部门
      * @return 所有保险柜的信息字符串
      * @throws Exception 空保险柜信息
@@ -83,6 +83,16 @@ public class KeyUIController {
         }
         else {
             return this.dbService.getDepKeyColumnName();
+        }
+    }
+
+    public List<Object[]> getSafeMembers(String dep) throws Exception {
+        if (dep.equals(supportDep)) {
+            System.out.println("该功能暂未开放！");
+            return null;
+        }
+        else {
+            return this.dbService.getDepSafeMembers(dep);
         }
     }
 
