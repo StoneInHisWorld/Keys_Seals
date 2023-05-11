@@ -6,6 +6,7 @@ import java.awt.event.MouseListener;
 
 public class BasicMethods {
 
+    public static final String UIFontString = "Microsoft YaHei UI";
     public static final int SMALL = -1, NORMAL = -2, BIG = -3, ULTRA = -4;
 
     public static void moveToCenter(JFrame frame) {
@@ -16,10 +17,25 @@ public class BasicMethods {
         frame.setLocation(x, y);
     }
 
-    public static JButton getVisibleBtn(String text, Font font, MouseListener listener) {
+    public static void moveToCenter(JDialog dialog) {
+        // 设置框架位置为屏幕中央
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        int x = (int) screenSize.getWidth() / 2 - dialog.getWidth() / 2;
+        int y = (int) screenSize.getHeight() / 2 - dialog.getHeight() / 2;
+        dialog.setLocation(x, y);
+    }
+
+    public static JButton getVisibleBtn(String text, Font font, int size, MouseListener listener) {
         JButton btn = new JButton(text);
         btn.setVisible(true);
-        Dimension dimension = new Dimension(200, 50);
+        Dimension dimension;
+        switch (size) {
+            case SMALL: dimension = new Dimension(20, 10); break;
+            case NORMAL: dimension = new Dimension(75, 30); break;
+            case BIG: dimension = new Dimension(200, 50); break;
+            case ULTRA: dimension = new Dimension(400, 100); break;
+            default: dimension = new Dimension(-1, -1);break;
+        }
         btn.setPreferredSize(dimension);
         btn.setHorizontalAlignment(SwingConstants.CENTER);
         btn.setVerticalAlignment(SwingConstants.CENTER);
@@ -46,12 +62,12 @@ public class BasicMethods {
         }
     }
 
-    public static Font getPlainFont(final int size) {
-        return new Font("微软雅黑", Font.PLAIN, size);
+    private static Font getPlainFont(final int size) {
+        return new Font(UIFontString, Font.PLAIN, size);
     }
 
-    public static Font getBoldFont(int size) {
-        return new Font("微软雅黑", Font.BOLD, size);
+    private static Font getBoldFont(int size) {
+        return new Font(UIFontString, Font.BOLD, size);
     }
 
     public static void showStandardMessageDialog(String title, String msg, int msgType) {

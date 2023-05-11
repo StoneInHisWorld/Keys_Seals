@@ -3,7 +3,8 @@ package model.entity;
 import java.util.LinkedList;
 import java.util.List;
 
-public class Safe implements Comparable<Safe> {
+//public class Safe implements Comparable<Safe> {
+public class Safe{
 
     protected String department = "";
     protected int id = -1;
@@ -17,10 +18,8 @@ public class Safe implements Comparable<Safe> {
      * @param o 右操作数
      * @return id顺序比较结果
      */
-    @Override
-    public int compareTo(Safe o) {
-        return this.id <= o.id ? 1 : 0;
-    }
+//    @Override
+    public int compareTo(Safe o) { return this.id <= o.id ? 1 : 0; }
 
     @Override
     public String toString() {

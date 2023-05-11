@@ -396,4 +396,17 @@ public class DBService {
         }
         return ret;
     }
+
+    /**
+     * 获取后勤部保险柜成员
+     * @return 保险柜成员列表
+     * @throws Exception 后勤部保险柜数据文件查找异常
+     */
+    public List<Object[]> getSupSafeMembers() throws Exception {
+        List<Object[]> ret = new LinkedList<>();
+        for (SupSafe supSafe : this.supSafesDAO.findAll()) {
+            ret.add(supSafe.getMembers());
+        }
+        return ret;
+    }
 }

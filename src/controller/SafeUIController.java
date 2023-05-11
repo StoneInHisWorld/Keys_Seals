@@ -8,14 +8,14 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-public class KeyUIController {
+public class SafeUIController {
 
     public static String supportDep;
     private final DBService dbService;
 
-    public KeyUIController(String supportDep) {
+    public SafeUIController(String supportDep) {
         this.dbService = new DBService();
-        KeyUIController.supportDep = supportDep;
+        SafeUIController.supportDep = supportDep;
         Safe.supportDep = supportDep;
     }
 
@@ -86,10 +86,15 @@ public class KeyUIController {
         }
     }
 
+    /**
+     * 获取保险柜成员
+     * @param dep 保险柜所属部门
+     * @return 成员列表
+     * @throws Exception 找不到部门保险柜异常
+     */
     public List<Object[]> getSafeMembers(String dep) throws Exception {
         if (dep.equals(supportDep)) {
-            System.out.println("该功能暂未开放！");
-            return null;
+            return this.dbService.getSupSafeMembers();
         }
         else {
             return this.dbService.getDepSafeMembers(dep);

@@ -1,6 +1,6 @@
 package view.GUI.safeRelated.MouseListener;
 
-import controller.KeyUIController;
+import controller.SafeUIController;
 
 import javax.swing.*;
 import java.awt.event.MouseAdapter;
@@ -9,18 +9,18 @@ import java.awt.event.MouseEvent;
 public class DepBtnMouseListener extends MouseAdapter {
 
     private String dep;
-    private KeyUIController keyUIController;
+    private SafeUIController safeUIController;
     private JFrame parentFrame;
     private JButton parentBtn;
 
     /**
      * 初始化部门按钮监听器
      * @param dep 部门按钮所属部门
-     * @param keyUIController 钥匙管理系统控制器
+     * @param safeUIController 钥匙管理系统控制器
      */
-    public DepBtnMouseListener(String dep, KeyUIController keyUIController, JFrame parentFrame) {
+    public DepBtnMouseListener(String dep, SafeUIController safeUIController, JFrame parentFrame) {
         this.dep = dep;
-        this.keyUIController = keyUIController;
+        this.safeUIController = safeUIController;
         this.parentFrame = parentFrame;
     }
 
@@ -32,7 +32,7 @@ public class DepBtnMouseListener extends MouseAdapter {
 //            // 调出保险柜总览界面
 //            JFrame frame = new JFrame("DepOverviewFrame");
 //            DepOverviewFrame depOverviewFrame = null;
-//            depOverviewFrame = new DepOverviewFrame(dep, keyUIController);
+//            depOverviewFrame = new DepOverviewFrame(dep, safeUIController);
 //            frame.setContentPane(depOverviewFrame.getMainPanel());
 //            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 //            frame.setTitle(dep + "保险柜信息");

@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
-public class DepSafe extends Safe {
+public class DepSafe extends Safe implements Comparable<DepSafe>{
 
     private String store = "";
     private String safe_id = "null";
@@ -92,5 +92,14 @@ public class DepSafe extends Safe {
         stringList.add("出库人");
         stringList.add("备注");
         return stringList;
+    }
+
+    @Override
+    public int compareTo(DepSafe o) {
+        if (this.store.equals(o.store))
+            if (this.safe_id.equals(o.safe_id))
+                return super.compareTo(o);
+            else return this.safe_id.compareTo(o.safe_id);
+        else return this.store.compareTo(o.store);
     }
 }

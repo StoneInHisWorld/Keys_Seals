@@ -1,6 +1,6 @@
 package view.CmdUI;
 
-import controller.KeyUIController;
+import controller.SafeUIController;
 
 import java.util.Iterator;
 import java.util.List;
@@ -10,7 +10,7 @@ import java.util.Set;
 public class KeyUI {
 
     private final Scanner scanner;
-    private final KeyUIController keyUIController;
+    private final SafeUIController safeUIController;
     private Set<String> departments;
     private static final String welcome = "进入钥匙管理系统";
     // 搜索命令
@@ -26,9 +26,9 @@ public class KeyUI {
     public KeyUI(Scanner scanner, String supportDep) {
         this.scanner = scanner;
         KeyUI.supportDep = supportDep;
-        this.keyUIController = new KeyUIController(supportDep);
+        this.safeUIController = new SafeUIController(supportDep);
         try {
-            this.departments = keyUIController.initKeyUI();
+            this.departments = safeUIController.initKeyUI();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -152,7 +152,7 @@ public class KeyUI {
                 System.out.print("放入钥匙");
                 String input = getInput(display);
                 if (input.equals("0")) return;
-                String success_msg = this.keyUIController.retKey(dep, input);
+                String success_msg = this.safeUIController.retKey(dep, input);
                 System.out.println(success_msg + "，" + dep + "信息变更如下：");
                 this.displaySafe(dep);
                 break;
@@ -180,7 +180,7 @@ public class KeyUI {
                 System.out.print("取出钥匙");
                 String input = getInput(display);
                 if (input.equals("0")) return;
-                String success_msg = this.keyUIController.fetchKey(dep, input) +
+                String success_msg = this.safeUIController.fetchKey(dep, input) +
                         "，" + dep + "的信息变更如下：";
                 System.out.println(success_msg);
                 this.displaySafe(dep);
@@ -234,7 +234,7 @@ public class KeyUI {
         try {
             String input = inputSafe(dep);
             // 更新部门选择
-            this.departments = this.keyUIController.addSafe(dep, input);
+            this.departments = this.safeUIController.addSafe(dep, input);
         }
         catch (Exception e) {
             // 更新时出错则提示用户，并继续询问是否添加保险柜
@@ -257,7 +257,7 @@ public class KeyUI {
      */
     private String inputSafe(String dep) {
         // 获取新保险柜需要输入的数据
-        String columnNames = this.keyUIController.getSafeMemberNames(dep);
+        String columnNames = this.safeUIController.getSafeMemberNames(dep);
         // 取出前两项
         columnNames = columnNames.substring(columnNames.indexOf('\t') + 1);
         columnNames = columnNames.substring(columnNames.indexOf('\t') + 1);
@@ -290,14 +290,14 @@ public class KeyUI {
                 if (id == 0) return;
                 String keyStr;
                 // 确认保险柜的存在
-                keyStr = this.keyUIController.findSafe(dep, id);
+                keyStr = this.safeUIController.findSafe(dep, id);
                 // 输出信息，用户确认删除
                 System.out.println("确定要删除" + id + "号保险柜吗？信息如下：");
-                System.out.println(this.keyUIController.getSafeMemberNames(dep));
+                System.out.println(this.safeUIController.getSafeMemberNames(dep));
                 System.out.println(keyStr);
                 System.out.println("注意：此操作不可逆！1. 是 0. 否");
                 if (getChoice(scanner, 0, 1) == 1) {
-                    this.departments = this.keyUIController.delSafe(dep, id);
+                    this.departments = this.safeUIController.delSafe(dep, id);
                     System.out.println("删除" + id + "号保险柜成功！" +
                             dep + "的保险柜信息变更如下：");
                     this.displaySafe(dep);
@@ -318,7 +318,7 @@ public class KeyUI {
      */
     private void displaySafe(String dep) {
         try {
-            List<String> outputs = this.keyUIController.displaySafe(dep);
+            List<String> outputs = this.safeUIController.displaySafe(dep);
             for (String output : outputs) {
                 System.out.println(output);
             }
@@ -354,6 +354,6 @@ public class KeyUI {
     }
 
     private void exit() throws Exception {
-        this.keyUIController.exitKeyUI();
+        this.safeUIController.exitKeyUI();
     }
 }
