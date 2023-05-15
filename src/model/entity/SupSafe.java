@@ -1,8 +1,10 @@
 package model.entity;
 
+import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 
-public class SupSafe extends Safe {
+public class SupSafe extends Safe implements Comparable<SupSafe>{
 
     private String loc;
     private int num_key;
@@ -44,6 +46,14 @@ public class SupSafe extends Safe {
         return department;
     }
 
+    public int getNum_key() {
+        return num_key;
+    }
+
+    public void setNum_key(int num_key) {
+        this.num_key = num_key;
+    }
+
     @Override
     public String toString() {
         return super.toString() + loc + '\t' + num_key + '\t' +
@@ -58,5 +68,21 @@ public class SupSafe extends Safe {
         stringList.add("出库人");
         stringList.add("备注");
         return stringList;
+    }
+
+    @Override
+    public int compareTo(SupSafe o) {
+        if (this.loc.equals(o.loc)) return super.compareTo(o);
+        else return this.loc.compareTo(o.loc);
+    }
+
+    public Object[] getMembers() {
+        List<Object> objectList = new LinkedList<>(Arrays.asList(super.getMembers()));
+        objectList.add(this.loc);
+        objectList.add(this.num_key);
+        objectList.add(this.last_return);
+        objectList.add(this.last_fetch);
+        objectList.add(this.note);
+        return objectList.toArray();
     }
 }

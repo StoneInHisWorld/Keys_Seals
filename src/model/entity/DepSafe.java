@@ -1,8 +1,10 @@
 package model.entity;
 
+import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 
-public class DepSafe extends Safe {
+public class DepSafe extends Safe implements Comparable<DepSafe>{
 
     private String store = "";
     private String safe_id = "null";
@@ -68,6 +70,18 @@ public class DepSafe extends Safe {
                 last_fetch  + '\t'+ note;
     }
 
+    public Object[] getMembers() {
+        List<Object> objectList = new LinkedList<>(Arrays.asList(super.getMembers()));
+        objectList.add(this.store);
+        objectList.add(this.safe_id);
+        objectList.add(this.back_up);
+        objectList.add(this.emergency);
+        objectList.add(this.last_return);
+        objectList.add(this.last_fetch);
+        objectList.add(this.note);
+        return objectList.toArray();
+    }
+
     public static List<String> memberToStr() {
         List<String> stringList = Safe.memberToStr();
         stringList.add("商铺名称");
@@ -78,5 +92,14 @@ public class DepSafe extends Safe {
         stringList.add("出库人");
         stringList.add("备注");
         return stringList;
+    }
+
+    @Override
+    public int compareTo(DepSafe o) {
+        if (this.store.equals(o.store))
+            if (this.safe_id.equals(o.safe_id))
+                return super.compareTo(o);
+            else return this.safe_id.compareTo(o.safe_id);
+        else return this.store.compareTo(o.store);
     }
 }

@@ -36,10 +36,13 @@ public class SupSafesDAO {
      * @throws IOException 文件写入异常
      */
     public void writeBack(List<SupSafe> safes) throws IOException {
-        FileWriter fileWriter = new FileWriter(new File(this.supSafe_filePath));
+//        FileWriter fileWriter = new FileWriter(new File(this.supSafe_filePath));
+        FileOutputStream file = new FileOutputStream(this.supSafe_filePath);
+        // 读取部门保险柜
+        BufferedWriter br = new BufferedWriter(new OutputStreamWriter(file, StandardCharsets.UTF_8));
         for (SupSafe safe : safes) {
-            fileWriter.write(safe.toString() + "\n");
+            br.write(safe.toString() + "\n");
         }
-        fileWriter.close();
+        br.close();
     }
 }
