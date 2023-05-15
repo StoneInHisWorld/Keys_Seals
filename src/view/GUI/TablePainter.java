@@ -9,14 +9,25 @@ public abstract class TablePainter {
 
     protected final JTable toBePainted;
     protected final Font tableFont;
-    protected final String[] actions = new String[]{"入库", "出库", "删除"};
+    protected final JFrame ownerFrame;
+    protected final List<Object[]> data;
+    protected final String[] columnNames;
 
     /**
      * 获得表格绘图器对象
      * @param toBePainted 绘制的表格对象
+     * @param ownerFrame 表格所属界面
      * @throws Exception 字体参数异常
      */
-    public TablePainter(JTable toBePainted) throws Exception {
+//    public TablePainter(JTable toBePainted, JFrame ownerFrame) throws Exception {
+//
+//    }
+
+    public TablePainter(JTable toBePainted, JFrame ownerFrame,
+                        List<Object[]> data, String[] columnNames) throws Exception {
+        this.ownerFrame = ownerFrame;
+        this.data = data;
+        this.columnNames = columnNames;
         this.tableFont = BasicMethods.getFont(Font.PLAIN, BasicMethods.NORMAL);
         this.toBePainted = toBePainted;
         this.toBePainted.setFont(this.tableFont);
@@ -49,5 +60,5 @@ public abstract class TablePainter {
 
     abstract protected void drawTable() throws Exception;
     abstract protected DefaultTableModel getTableModel() throws Exception;
-    abstract protected List<String> getTableColumnNames();
+//    abstract protected List<String> getTableColumnNames();
 }

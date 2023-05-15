@@ -41,6 +41,7 @@ public class SafeUIController {
      * 添加保险柜，同时更新部门选择
      * @param dep 新保险柜所属部门
      * @param keyStr 新保险柜其他数据
+     * @throws Exception 字符串解析异常
      */
     public Set<String> addSafe(String dep, String keyStr) throws Exception {
         if (dep.equals(supportDep)) {

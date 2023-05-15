@@ -43,6 +43,11 @@ public class DBService {
         for (SupSafe key : db.getSupSafes()) {
             depSet.add(key.getDepartment());
         }
+        // 排序
+        List<String> depList = new LinkedList<>(depSet);
+        Collections.sort(depList);
+        depSet.clear();
+        depSet.addAll(depList);
         return depSet;
     }
 
@@ -110,12 +115,12 @@ public class DBService {
      */
     public void addDepSafe(String dep, String keyStr) throws Exception {
         List<DepSafe> depSafes = this.db.getDepSafes();
-        int lastest_Id;
-        int size = depSafes.size();
-        if (size > 0) {
-            lastest_Id = depSafes.get(size - 1).getId();
-        }
-        else lastest_Id = 0;
+        int lastest_Id = this.getDepSafeMembers(dep).size();
+//        int size = depSafes.size();
+//        if (size > 0) {
+//            lastest_Id = depSafes.get(size - 1).getId();
+//        }
+//        else lastest_Id = 0;
         // int lastestId = depSafes.get(depSafes.size() - 1).getId();
         // 检查输入的字符串是否合法
         keyStr = dep + '\t' + (lastest_Id + 1) + '\t' + keyStr;
@@ -310,12 +315,12 @@ public class DBService {
      */
     public void addSupSafe(String keyStr) throws Exception {
         List<SupSafe> supSafes = this.db.getSupSafes();
-        int lastest_Id;
-        int size = supSafes.size();
-        if (size > 0) {
-            lastest_Id = supSafes.get(size - 1).getId();
-        }
-        else lastest_Id = 0;
+        int lastest_Id = supSafes.size();
+//        int size = supSafes.size();
+//        if (size > 0) {
+//            lastest_Id = supSafes.get(size - 1).getId();
+//        }
+//        else lastest_Id = 0;
         // 检查输入的字符串是否合法
         keyStr = Safe.supportDep + "\t" + (lastest_Id + 1) + "\t" +
                 keyStr;

@@ -46,8 +46,7 @@ public class MainFrame extends UI {
             frame.setVisible(true);
             BasicMethods.moveToCenter(frame);
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, e.getMessage(), "出错！", JOptionPane.ERROR_MESSAGE);
-            e.printStackTrace();
+            BasicMethods.dealException(e);
         }
     }
 

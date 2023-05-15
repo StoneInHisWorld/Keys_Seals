@@ -13,7 +13,7 @@ public class SealBtnMouseListener extends MouseAdapter {
         try {
             BasicMethods.showStandardMessageDialog("提示", "该功能尚未开放！", JOptionPane.INFORMATION_MESSAGE);
         } catch (Exception exception) {
-            exception.printStackTrace();
+            BasicMethods.dealException(exception);
         }
     }
 }

@@ -47,6 +47,13 @@ public class BasicMethods {
         return btn;
     }
 
+    /**
+     * 获取字体
+     * @param style 字体风格
+     * @param size 字体大小
+     * @return 预设字体
+     * @throws Exception 字体大小参数错误，字体风格参数错误
+     */
     public static Font getFont(int style, int size) throws Exception {
         switch (size) {
             case SMALL:size = 11;break;
@@ -87,5 +94,22 @@ public class BasicMethods {
             default:throw new Exception("不支持的表格单元格大小" + choice);
         }
         return new Dimension(width, height);
+    }
+
+    public static void dealException(Exception e) {
+        JOptionPane.showMessageDialog(null, e.getMessage(), "出错", JOptionPane.ERROR_MESSAGE);
+        e.printStackTrace();
+    }
+
+    public static void prompt(final String msg) {
+        JOptionPane.showMessageDialog(null, msg,
+                "提示", JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    public static boolean yesOrNo(String msg) {
+        int op = JOptionPane.showConfirmDialog(null, msg,
+                "选择", JOptionPane.YES_NO_OPTION);
+        System.out.println(op);
+        return op == 0;
     }
 }

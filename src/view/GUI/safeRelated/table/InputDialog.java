@@ -1,6 +1,9 @@
 package view.GUI.safeRelated.table;
 
+import controller.SafeUIController;
 import view.GUI.BasicMethods;
+import view.GUI.safeRelated.Frame.DepOverviewFrame;
+import view.GUI.safeRelated.MouseListener.BasicMouseListener;
 
 import javax.swing.*;
 import java.awt.*;
@@ -10,7 +13,6 @@ import java.util.List;
 
 public class InputDialog extends JDialog {
 
-    private final Dimension textFieldSize;
     private JPanel contentPane;
     private JButton buttonOK;
     private JButton buttonCancel;
@@ -20,15 +22,26 @@ public class InputDialog extends JDialog {
     private JPanel inputPanel;
     private JPanel messaagePanel;
     private JLabel promptLabel;
-    private Object[] toBeInput;
-    private List<JTextField> fieldsHaveData;
+    // 自定义部分
+    private final BasicMouseListener listener;
+    private final Dimension textFieldSize;
+    private final Object[] toBeInput;
+    private final List<JTextField> fieldsHaveData;
 
-    public InputDialog(Object[] toBeInput) throws Exception {
+    public InputDialog(Object[] toBeInput, String dialogTtile,
+                       BasicMouseListener listener) throws Exception {
+        this.listener = listener;
         setContentPane(contentPane);
         setModal(true);
         getRootPane().setDefaultButton(buttonOK);
 
-        buttonOK.addActionListener(e -> onOK());
+        buttonOK.addActionListener(e -> {
+            try {
+                onOK();
+            } catch (Exception exception) {
+                BasicMethods.dealException(exception);
+            }
+        });
 
         buttonCancel.addActionListener(e -> onCancel());
 
@@ -41,24 +54,34 @@ public class InputDialog extends JDialog {
         });
 
         // call onCancel() on ESCAPE
-        contentPane.registerKeyboardAction(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                onCancel();
-            }
-        }, KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
+        contentPane.registerKeyboardAction(
+                e -> onCancel(),
+                KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0),
+                JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT
+        );
         // 自定义部分
+        this.toBeInput = toBeInput;
+        this.textFieldSize = new Dimension(200, 50);
+        this.fieldsHaveData = new LinkedList<>();
+        this.customize();
+        this.present(dialogTtile);
+    }
+
+    /**
+     * 自定义对话框
+     * @throws Exception 字体参数异常
+     */
+    private void customize() throws Exception {
+        // UI设置
         GridLayout inputPanelLayout = new GridLayout();
         inputPanelLayout.setHgap(5);
         this.inputPanel.setLayout(inputPanelLayout);
         this.promptLabel.setFont(BasicMethods.getFont(Font.PLAIN, BasicMethods.BIG));
-        this.toBeInput = toBeInput;
-        this.fieldsHaveData = new LinkedList<>();
-        this.textFieldSize = new Dimension(200, 50);
-
+        // 定制输入界面的输入框
         for (Object s : toBeInput) {
             JPanel panel = new JPanel();
             panel.setLayout(new BorderLayout());
-            JLabel label = new JLabel((String) s);
+            JLabel label = new JLabel(s.toString());
             label.setFont(BasicMethods.getFont(Font.PLAIN, BasicMethods.NORMAL));
             panel.add(label, BorderLayout.NORTH);
             JTextField dataField = new JTextField();
@@ -69,9 +92,18 @@ public class InputDialog extends JDialog {
         }
     }
 
-    private void onOK() {
-        // add your code here
-        dispose();
+    /**
+     * 对于确认键的处理
+     * @throws Exception 添加的保险柜信息字符串解析异常
+     */
+    private void onOK() throws Exception {
+        List<Object> data = new LinkedList<>();
+        for (JTextField fieldsHaveDatum : fieldsHaveData) {
+            data.add(fieldsHaveDatum.getText());
+        }
+        this.listener.dealTransaction(data.toArray());
+        this.dispose();
+        listener.refreshParentFrame();
     }
 
     private void onCancel() {
@@ -79,10 +111,10 @@ public class InputDialog extends JDialog {
         dispose();
     }
 
-    public static void main(String[] args) throws Exception {
-        InputDialog dialog = new InputDialog(new String[]{"1", "2", "3", "4", "5"});
-        dialog.pack();
-        dialog.setVisible(true);
-        System.exit(0);
+    private void present(final String dialogTtile) {
+        BasicMethods.moveToCenter(this);
+        this.setTitle(dialogTtile);
+        this.pack();
+        this.setVisible(true);
     }
 }

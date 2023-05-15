@@ -1,3 +1,5 @@
 1. 添加key时对保险箱id与序号进行查重。放在DB中进行？或是DBService？
 2. 添加数据库无信息时，初始化数据库的功能
-3. 去掉点击钥匙按钮的界面重新排布，应该调出一个新的界面供部门选择
+3. 添加一个SafeGUIController类用于给SafeUIController发送GUI界面的消息
+4. 在Frame类中去掉SafeUIController
+5. 入库钥匙的GUI提示要改一下
