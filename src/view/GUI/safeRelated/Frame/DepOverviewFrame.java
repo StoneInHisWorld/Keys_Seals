@@ -1,16 +1,13 @@
 package view.GUI.safeRelated.Frame;
 
 import view.GUI.BasicMethods;
-import view.GUI.safeRelated.MouseListener.AddSafeBtnMouseListener;
-import view.GUI.safeRelated.MouseListener.DelSafeBtnMouseListener;
-import view.GUI.safeRelated.MouseListener.FetKeyBtnMouseListener;
-import view.GUI.safeRelated.MouseListener.RetKeyBtnMouseListener;
+import view.GUI.BasicMouseListener;
 import view.GUI.safeRelated.SafeGUIController;
+import view.GUI.safeRelated.table.InputDialog;
 import view.GUI.safeRelated.table.SafeTablePainter;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.LinkedList;
 import java.util.List;
@@ -78,23 +75,38 @@ public class DepOverviewFrame {
     private void dealAddingBtn() {
         // 添加“添加按钮”监听器
         this.addingBtn.addMouseListener(
-                new AddSafeBtnMouseListener(
-                        ownerFrame, this,
-                        this.safeGUIController.getAddingSafeToBeInput(this.dep),
-                        this.addSafeBtnDialogTitle));
+                new AddSafeBtnMouseListener(ownerFrame)
+        );
     }
 
     /**
      * 处理“返回”按钮
      */
     private void dealBackBtn() {
-        this.backBtn.addMouseListener(new MouseAdapter() {
+        this.backBtn.addMouseListener(new BasicMouseListener(this.parentFrame) {
             @Override
             public void mouseClicked(MouseEvent e) {
                 ownerFrame.dispose();
-                parentFrame.setVisible(true);
+                this.showParentFrame();
+            }
+
+            @Override
+            public void refreshParentFrame() {
+
+            }
+
+            @Override
+            public void dealTransaction(Object[] inputData) throws Exception {
+
             }
         });
+//        new MouseAdapter() {
+//            @Override
+//            public void mouseClicked(MouseEvent e) {
+//                ownerFrame.dispose();
+//                parentFrame.setVisible(true);
+//            }
+//        });
     }
 
     // 表格相关
@@ -120,29 +132,28 @@ public class DepOverviewFrame {
     private Object[] getActBtns() throws Exception {
         List<JButton> btns = new LinkedList<>();
         btns.add(
-                BasicMethods.getVisibleBtn(actions[0],
-                BasicMethods.getFont(Font.PLAIN, BasicMethods.NORMAL),
-                BasicMethods.NORMAL, new RetKeyBtnMouseListener(
-                        this.ownerFrame, this,
-                        this.getRetKeyBtnToBeInput(),
-                        this.retKeyBtnDialogTitle))
+                BasicMethods.getVisibleBtn(
+                        actions[0], BasicMethods.getFont(Font.PLAIN, BasicMethods.NORMAL),
+                        BasicMethods.NORMAL, new RetKeyBtnMouseListener(this.ownerFrame)
+                )
         );
         btns.add(
-                BasicMethods.getVisibleBtn(actions[1],
-                BasicMethods.getFont(Font.PLAIN, BasicMethods.NORMAL),
-                BasicMethods.NORMAL, new FetKeyBtnMouseListener(
-                        this.ownerFrame, this.getFetKeyBtnToBeInput(),
-                        this.fetKeyBtnDialogTitle, this
-                ))
+                BasicMethods.getVisibleBtn(
+                        actions[1], BasicMethods.getFont(Font.PLAIN, BasicMethods.NORMAL),
+                        BasicMethods.NORMAL, new FetKeyBtnMouseListener(this.ownerFrame)
+                )
         );
         btns.add(
-                BasicMethods.getVisibleBtn(actions[2],
-                BasicMethods.getFont(Font.PLAIN, BasicMethods.NORMAL),
-                BasicMethods.NORMAL, new DelSafeBtnMouseListener(
-                        this.ownerFrame, this
-                ))
+                BasicMethods.getVisibleBtn(
+                        actions[2], BasicMethods.getFont(Font.PLAIN, BasicMethods.NORMAL),
+                        BasicMethods.NORMAL, new DelSafeBtnMouseListener(this.ownerFrame)
+                )
         );
         return btns.toArray();
+    }
+
+    private Object[] getAddSafeToBeToInput() {
+        return this.safeGUIController.getAddingSafeToBeInput(this.dep);
     }
 
     private Object[] getRetKeyBtnToBeInput() {
@@ -208,5 +219,151 @@ public class DepOverviewFrame {
                 this.overviewTable.getSelectedRow(), 0).toString();
         return this.safeGUIController.fetchKey(this.dep, inputData,
                 selectedSafeId);
+    }
+
+    private class FetKeyBtnMouseListener extends BasicMouseListener {
+
+        private final Object[] toBeInput;
+        private final String inputDialogTitle;
+
+        public FetKeyBtnMouseListener(JFrame parentFrame) {
+            super(parentFrame);
+            this.toBeInput = getFetKeyBtnToBeInput();
+            this.inputDialogTitle = fetKeyBtnDialogTitle;
+        }
+
+        @Override
+        public void mouseClicked(MouseEvent e) {
+            try {
+                new InputDialog(this.toBeInput, this.inputDialogTitle,
+                        this);
+            } catch (Exception exception) {
+                BasicMethods.dealException(exception);
+            }
+        }
+
+        @Override
+        public void refreshParentFrame() {
+            try {
+                drawTable();
+            } catch (Exception e) {
+                BasicMethods.dealException(e);
+            }
+        }
+
+        @Override
+        public void dealTransaction(Object[] inputData) throws Exception {
+            String successMsg = dealFetchingKey(inputData);
+            BasicMethods.prompt(successMsg);
+        }
+    }
+
+    private class DelSafeBtnMouseListener extends BasicMouseListener {
+
+        public DelSafeBtnMouseListener(JFrame parentFrame) {
+            super(parentFrame);
+        }
+
+        @Override
+        public void mouseClicked(MouseEvent e) {
+            if (BasicMethods.yesOrNo("确定要删除该保险柜吗？")) {
+                try {
+                    this.dealTransaction(null);
+                    this.refreshParentFrame();
+                } catch (Exception exception) {
+                    BasicMethods.dealException(exception);
+                }
+            }
+        }
+
+        @Override
+        public void refreshParentFrame() {
+            try {
+                drawTable();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        @Override
+        public void dealTransaction(Object[] inputData) throws Exception {
+            String successMsg = dealDeletingSafe();
+            BasicMethods.prompt(successMsg);
+        }
+    }
+
+    private class AddSafeBtnMouseListener extends BasicMouseListener {
+
+        private final Object[] toBeInput;
+        private final String dialogTitle;
+
+        public AddSafeBtnMouseListener(JFrame parentFrame) {
+            super(parentFrame);
+            this.toBeInput = getAddSafeToBeToInput();
+            this.dialogTitle = addSafeBtnDialogTitle;
+        }
+
+        @Override
+        public void mouseClicked(MouseEvent e) {
+            try {
+                new InputDialog(toBeInput, dialogTitle, this);
+            } catch (Exception exception) {
+                BasicMethods.dealException(exception);
+            }
+        }
+
+        @Override
+        public void refreshParentFrame() {
+            try {
+                drawTable();
+            } catch (Exception e) {
+                BasicMethods.dealException(e);
+            }
+        }
+
+        /**
+         * 处理添加保险柜事务
+         */
+        @Override
+        public void dealTransaction(Object[] inputData) throws Exception {
+            String successMsg = dealAddingSafe(inputData);
+            BasicMethods.prompt(successMsg);
+        }
+    }
+
+    private class RetKeyBtnMouseListener extends BasicMouseListener {
+
+        private final Object[] toBeInput;
+        private final String dialogTitle;
+
+        public RetKeyBtnMouseListener(JFrame parentFrame) {
+            super(parentFrame);
+            this.toBeInput = getRetKeyBtnToBeInput();
+            this.dialogTitle = retKeyBtnDialogTitle;
+        }
+
+        @Override
+        public void mouseClicked(MouseEvent e) {
+            try {
+                new InputDialog(toBeInput, dialogTitle, this);
+            } catch (Exception exception) {
+                BasicMethods.dealException(exception);
+            }
+        }
+
+        @Override
+        public void refreshParentFrame() {
+            try {
+                drawTable();
+            } catch (Exception e) {
+                BasicMethods.dealException(e);
+            }
+        }
+
+        @Override
+        public void dealTransaction(Object[] inputData) throws Exception {
+            String successMsg = dealReturningKey(inputData);
+            BasicMethods.prompt(successMsg);
+        }
     }
 }

@@ -116,12 +116,6 @@ public class DBService {
     public void addDepSafe(String dep, String keyStr) throws Exception {
         List<DepSafe> depSafes = this.db.getDepSafes();
         int lastest_Id = this.getDepSafeMembers(dep).size();
-//        int size = depSafes.size();
-//        if (size > 0) {
-//            lastest_Id = depSafes.get(size - 1).getId();
-//        }
-//        else lastest_Id = 0;
-        // int lastestId = depSafes.get(depSafes.size() - 1).getId();
         // 检查输入的字符串是否合法
         keyStr = dep + '\t' + (lastest_Id + 1) + '\t' + keyStr;
         DepSafe depSafe = new DepSafe(keyStr);
@@ -225,7 +219,7 @@ public class DBService {
                     case 'j': {
                         int emer_num = depSafe.getEmergency() - 1;
                         if (emer_num < 0) {
-                            throw new Exception("紧急钥匙数量不足！");
+                            throw new Exception("应急钥匙数量不足！");
                         }
                         else {
                             depSafe.setEmergency(emer_num);
@@ -316,11 +310,6 @@ public class DBService {
     public void addSupSafe(String keyStr) throws Exception {
         List<SupSafe> supSafes = this.db.getSupSafes();
         int lastest_Id = supSafes.size();
-//        int size = supSafes.size();
-//        if (size > 0) {
-//            lastest_Id = supSafes.get(size - 1).getId();
-//        }
-//        else lastest_Id = 0;
         // 检查输入的字符串是否合法
         keyStr = Safe.supportDep + "\t" + (lastest_Id + 1) + "\t" +
                 keyStr;

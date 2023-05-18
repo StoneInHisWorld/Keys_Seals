@@ -1,8 +1,5 @@
 package view.GUI.safeRelated.table;
 
-import view.GUI.BasicMethods;
-import view.GUI.safeRelated.MouseListener.RetKeyBtnMouseListener;
-
 import javax.swing.*;
 import java.awt.*;
 

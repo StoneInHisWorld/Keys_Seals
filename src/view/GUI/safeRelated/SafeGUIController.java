@@ -2,11 +2,10 @@ package view.GUI.safeRelated;
 
 import controller.SafeUIController;
 import view.GUI.BasicMethods;
+import view.GUI.safeRelated.table.SafeTablePainter;
 
 import javax.swing.*;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 /**
  * GUI消息分发器，负责处理GUI层的消息，转换为适配SafeUIController接口的输入。
@@ -23,6 +22,11 @@ public class SafeGUIController {
      */
     public SafeGUIController(SafeUIController controller) {
         this.controller = controller;
+    }
+
+    public SafeGUIController(String supDep) throws Exception {
+        this.controller = new SafeUIController(supDep);
+        this.controller.initKeyUI();
     }
 
     public String addSafe(String dep, Object[] inputData)
@@ -169,5 +173,15 @@ public class SafeGUIController {
             toBeInput = new String[]{"*还备用或应急钥匙（b或j）", "*入库人", "备注"};
         }
         return toBeInput;
+    }
+
+    public Set<String> collectDepartments() {
+        List<String> departments = new LinkedList<>(this.controller.getDepartments());
+        Collections.sort(departments);
+        return new LinkedHashSet<>(departments);
+    }
+
+    public String getSupDep() {
+        return SafeUIController.supportDep;
     }
 }
