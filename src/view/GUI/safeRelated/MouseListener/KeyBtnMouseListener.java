@@ -2,9 +2,10 @@ package view.GUI.safeRelated.MouseListener;
 
 import view.GUI.BasicMethods;
 import view.GUI.BasicMouseListener;
-import view.GUI.safeRelated.Frame.DepOverviewFrame;
+import view.GUI.safeRelated.Frame.AllDepOverviewFrame;
+import view.GUI.safeRelated.Frame.SafeOverviewFrame;
 import view.GUI.safeRelated.SafeGUIController;
-import view.GUI.safeRelated.table.InputDialog;
+import view.GUI.safeRelated.Frame.InputDialog;
 
 import javax.swing.*;
 import java.awt.*;
@@ -15,11 +16,11 @@ import java.util.Set;
 
 public class KeyBtnMouseListener extends MouseAdapter {
 
-    private final JFrame mainFrame;
+    private final JFrame ownerFrame;
     private final SafeGUIController guiController;
 
-    public KeyBtnMouseListener(JFrame mainFrame, String supDep) throws Exception {
-        this.mainFrame = mainFrame;
+    public KeyBtnMouseListener(JFrame ownerFrame, String supDep) throws Exception {
+        this.ownerFrame = ownerFrame;
         this.guiController = new SafeGUIController(supDep);
     }
 
@@ -38,7 +39,7 @@ public class KeyBtnMouseListener extends MouseAdapter {
                 msgLabel.setFont(BasicMethods.getFont(Font.PLAIN, BasicMethods.BIG));
                 msgLabel.setText("请选择要查看保险柜的部门：");
                 Object[] options = this.getDepOptions();
-                int choice = JOptionPane.showOptionDialog(mainFrame, msgLabel, "部门选择",
+                int choice = JOptionPane.showOptionDialog(ownerFrame, msgLabel, "部门选择",
                         JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null,
                         options, null);
                 this.dealChoice(departments, choice, options.length);
@@ -61,12 +62,19 @@ public class KeyBtnMouseListener extends MouseAdapter {
     private Object[] getDepOptions() {
         // 为每一个部门创建一个按钮
         Set<String> depStrs = this.guiController.collectDepartments();
+        depStrs.add("总览");
         depStrs.add("添加部门");
         return depStrs.toArray();
     }
 
     private void dealChoice(Set<String> departments, int choice, int optionCount) throws Exception {
-        if (choice == optionCount - 1) {
+        if (choice == optionCount - 2) {
+            // 选择部门总览
+            new AllDepOverviewFrame(
+                    this.ownerFrame, this.guiController
+            ).present();
+        }
+        else if (choice == optionCount - 1) {
             // 选择添加部门
             String new_dep = JOptionPane.showInputDialog("请输入要添加的部门：");
             if (departments.contains(new_dep)) {
@@ -79,20 +87,20 @@ public class KeyBtnMouseListener extends MouseAdapter {
             }
             new InputDialog(
                     this.guiController.getAddingSafeToBeInput(new_dep), "添加" + new_dep + "的新保险柜",
-                    new AddDepMouseListener(this.mainFrame, new_dep)
+                    new AddDepMouseListener(this.ownerFrame, new_dep)
             );
         }
         else if (choice >= 0) {
             // 选择了要查看的部门
-            mainFrame.dispose();
+            ownerFrame.dispose();
             this.showDepOverviewFrame(this.getSelectDepBtn(departments, choice));
         }
     }
 
     private void showDepOverviewFrame(String dep) throws Exception {
         JFrame frame = new JFrame();
-        new DepOverviewFrame(
-                mainFrame, frame, dep, this.guiController
+        new SafeOverviewFrame(
+                ownerFrame, frame, dep, this.guiController
         );
     }
 

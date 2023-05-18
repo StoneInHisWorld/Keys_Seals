@@ -3,7 +3,6 @@ package view.GUI.safeRelated.Frame;
 import view.GUI.BasicMethods;
 import view.GUI.BasicMouseListener;
 import view.GUI.safeRelated.SafeGUIController;
-import view.GUI.safeRelated.table.InputDialog;
 import view.GUI.safeRelated.table.SafeTablePainter;
 
 import javax.swing.*;
@@ -12,7 +11,7 @@ import java.awt.event.MouseEvent;
 import java.util.LinkedList;
 import java.util.List;
 
-public class DepOverviewFrame {
+public class SafeOverviewFrame {
 
     private JPanel mainPanel;
     private JPanel add_del_Safe_Panel;
@@ -36,8 +35,8 @@ public class DepOverviewFrame {
      * @param dep 所属部门
      * @throws Exception 空保险柜异常
      */
-    public DepOverviewFrame(JFrame parentFrame, JFrame ownerFrame,
-                            String dep, SafeGUIController safeGUIController) throws Exception {
+    public SafeOverviewFrame(JFrame parentFrame, JFrame ownerFrame,
+                             String dep, SafeGUIController safeGUIController) throws Exception {
         this.parentFrame = parentFrame;
         this.dep = dep;
         this.safeGUIController = safeGUIController;
@@ -100,13 +99,6 @@ public class DepOverviewFrame {
 
             }
         });
-//        new MouseAdapter() {
-//            @Override
-//            public void mouseClicked(MouseEvent e) {
-//                ownerFrame.dispose();
-//                parentFrame.setVisible(true);
-//            }
-//        });
     }
 
     // 表格相关
@@ -182,26 +174,11 @@ public class DepOverviewFrame {
     public String dealReturningKey(final Object[] inputData) throws Exception {
         String selectedSafeId = this.overviewTable.getModel().getValueAt(
                 this.overviewTable.getSelectedRow(), 0).toString();
-//        StringBuilder input = new StringBuilder(selectedSafeId + "\t");
-//        for (Object inputDatum : inputData) {
-//            input.append(inputDatum);
-//            input.append("\t");
-//        }
-//        char keySelected = inputData[0].toString().charAt(0);
         return this.safeGUIController.retKey(this.dep, inputData,
                 selectedSafeId);
     }
 
     public String dealAddingSafe(final Object[] inputData) throws Exception {
-//        StringBuilder safeStr = new StringBuilder();
-//        for (Object inputDatum : inputData) {
-//            safeStr.append(inputDatum.toString());
-//            safeStr.append("\t");
-//        }
-//        this.safeUIController.addSafe(dep, safeStr.toString());
-//        JOptionPane.showMessageDialog(null,
-//                "添加" + dep + "保险柜成功！", "提示",
-//                JOptionPane.INFORMATION_MESSAGE);
         return this.safeGUIController.addSafe(this.dep, inputData);
     }
 

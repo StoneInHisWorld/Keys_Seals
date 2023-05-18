@@ -25,8 +25,8 @@ public class MainFrame extends UI {
 
     public MainFrame(JFrame frame) throws Exception {
         this.welcome();
-        keyBt.addMouseListener(new KeyBtnMouseListener(
-                frame, super.getSupportDep())
+        keyBt.addMouseListener(
+                new KeyBtnMouseListener(frame, super.getSupportDep())
         );
         sealBt.addMouseListener(new SealBtnMouseListener());
     }

@@ -1,7 +1,7 @@
 //package view.GUI.safeRelated.MouseListener;
 //
 //import view.GUI.BasicMethods;
-//import view.GUI.safeRelated.Frame.DepOverviewFrame;
+//import view.GUI.safeRelated.Frame.SafeOverviewFrame;
 //import view.GUI.safeRelated.table.InputDialog;
 //
 //import javax.swing.*;
@@ -9,11 +9,11 @@
 //
 //public class AddSafeBtnMouseListener extends BasicMouseListener {
 //
-//    private final DepOverviewFrame depOverviewFrame;
+//    private final SafeOverviewFrame depOverviewFrame;
 //    private final Object[] toBeInput;
 //    private final String dialogTitle;
 //
-//    public AddSafeBtnMouseListener(JFrame parentFrame, DepOverviewFrame depOverviewFrame,
+//    public AddSafeBtnMouseListener(JFrame parentFrame, SafeOverviewFrame depOverviewFrame,
 //                                   Object[] toBeInput, String dialogTitle) {
 //        super(parentFrame);
 //        this.depOverviewFrame = depOverviewFrame;

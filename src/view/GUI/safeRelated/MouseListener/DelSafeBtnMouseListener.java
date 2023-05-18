@@ -1,16 +1,16 @@
 //package view.GUI.safeRelated.MouseListener;
 //
 //import view.GUI.BasicMethods;
-//import view.GUI.safeRelated.Frame.DepOverviewFrame;
+//import view.GUI.safeRelated.Frame.SafeOverviewFrame;
 //
 //import javax.swing.*;
 //import java.awt.event.MouseEvent;
 //
 //public class DelSafeBtnMouseListener extends BasicMouseListener {
 //
-//    private final DepOverviewFrame depOverviewFrame;
+//    private final SafeOverviewFrame depOverviewFrame;
 //
-//    public DelSafeBtnMouseListener(JFrame parentFrame, DepOverviewFrame depOverviewFrame) {
+//    public DelSafeBtnMouseListener(JFrame parentFrame, SafeOverviewFrame depOverviewFrame) {
 //        super(parentFrame);
 //        this.depOverviewFrame = depOverviewFrame;
 //    }

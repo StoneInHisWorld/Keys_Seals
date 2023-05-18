@@ -1,4 +1,4 @@
-package view.GUI.safeRelated.table;
+package view.GUI.safeRelated.Frame;
 
 import view.GUI.BasicMethods;
 import view.GUI.BasicMouseListener;

@@ -1,7 +1,7 @@
 //package view.GUI.safeRelated.MouseListener;
 //
 //import view.GUI.BasicMethods;
-//import view.GUI.safeRelated.Frame.DepOverviewFrame;
+//import view.GUI.safeRelated.Frame.SafeOverviewFrame;
 //import view.GUI.safeRelated.table.InputDialog;
 //
 //import javax.swing.*;
@@ -9,12 +9,12 @@
 //
 //public class RetKeyBtnMouseListener extends BasicMouseListener {
 //
-//    private final DepOverviewFrame depOverviewFrame;
+//    private final SafeOverviewFrame depOverviewFrame;
 //    private final Object[] toBeInput;
 //    private final String dialogTitle;
 //
 //    public RetKeyBtnMouseListener(JFrame parentFrame,
-//                                  DepOverviewFrame depOverviewFrame, Object[] toBeInput, String dialogTitle) {
+//                                  SafeOverviewFrame depOverviewFrame, Object[] toBeInput, String dialogTitle) {
 //        super(parentFrame);
 //        this.depOverviewFrame = depOverviewFrame;
 //        this.toBeInput = toBeInput;

@@ -18,12 +18,7 @@ public class SafeGUIController {
     /**
      * GUI消息分发器，负责处理GUI层的消息，转换为适配SafeUIController接口的输入。
      * 负责从Controller获取数据库信息转发给GUI层。
-     * @param controller UI控制器
      */
-    public SafeGUIController(SafeUIController controller) {
-        this.controller = controller;
-    }
-
     public SafeGUIController(String supDep) throws Exception {
         this.controller = new SafeUIController(supDep);
         this.controller.initKeyUI();
@@ -183,5 +178,46 @@ public class SafeGUIController {
 
     public String getSupDep() {
         return SafeUIController.supportDep;
+    }
+
+    public List<Object[]> getAllSafeData() throws Exception {
+        List<Object[]> ret = new LinkedList<>();
+        for (String department : this.collectDepartments()) {
+            ret.addAll(this.getSafeData(department));
+        }
+        return ret;
+    }
+
+    public int[] getAllSafeColumnSize(String dep) {
+        int[] columnSize;
+        if (dep.equals(SafeUIController.supportDep)) {
+            columnSize = new int[]{
+                    BasicMethods.BIG, BasicMethods.SMALL,
+                    BasicMethods.NORMAL, BasicMethods.SMALL,
+                    BasicMethods.BIG, BasicMethods.BIG,
+                    BasicMethods.ULTRA
+            };
+        }
+        else {
+            columnSize = new int[]{
+                    BasicMethods.BIG,
+                    BasicMethods.SMALL, BasicMethods.NORMAL,
+                    BasicMethods.SMALL, BasicMethods.SMALL,
+                    BasicMethods.SMALL, BasicMethods.BIG,
+                    BasicMethods.BIG, BasicMethods.ULTRA
+            };
+        }
+        return columnSize;
+    }
+
+    public String[] getAllSafeTableColumnNames(String dep) {
+        String memberStr = this.controller.getSafeMemberNames(dep);
+        List<String> strings = new LinkedList<>(Arrays.asList(memberStr.split("\t")));
+        strings.add("操作");
+        String[] ret = new String[strings.size()];
+        for (int i = 0; i < strings.size(); i++) {
+            ret[i] = strings.get(i);
+        }
+        return ret;
     }
 }
