@@ -62,13 +62,14 @@ public class SafeTablePainter extends TablePainter {
      * @return 默认表格模型
      */
     protected DefaultTableModel getTableModel() {
-        // 每条保险柜信息去掉部门名称并在末尾加上空字符串
-        for (int i = 0; i < safeData.size(); i++) {
-            List<Object> members = new LinkedList<>(Arrays.asList(safeData.get(i)));
-            members.remove(0);
-            members.add("null");
-            safeData.set(i, members.toArray());
-        }
+//        // 每条保险柜信息去掉部门名称并在末尾加上空字符串
+//        for (int i = 0; i < safeData.size(); i++) {
+//            List<Object> members = new LinkedList<>(Arrays.asList(safeData.get(i)));
+//            members.remove(0);
+//            members.add("null");
+//            safeData.set(i, members.toArray());
+//        }
+        // 生成表格model
         Object[][] dataVectors = new Object[safeData.size()][];
         for (int i = 0; i < dataVectors.length; i++) {
             dataVectors[i] = safeData.get(i);

@@ -42,8 +42,9 @@ public class KeyBtnMouseListener extends MouseAdapter {
                 int choice = JOptionPane.showOptionDialog(ownerFrame, msgLabel, "部门选择",
                         JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null,
                         options, null);
-                this.dealChoice(departments, choice, options.length);
-                break;
+                if (this.dealChoice(departments, choice, options.length)) {
+                    break;
+                }
             } catch (Exception exception) {
                 BasicMethods.dealException(exception);
             }
@@ -67,7 +68,7 @@ public class KeyBtnMouseListener extends MouseAdapter {
         return depStrs.toArray();
     }
 
-    private void dealChoice(Set<String> departments, int choice, int optionCount) throws Exception {
+    private boolean dealChoice(Set<String> departments, int choice, int optionCount) throws Exception {
         if (choice == optionCount - 2) {
             // 选择部门总览
             new AllDepOverviewFrame(
@@ -77,6 +78,9 @@ public class KeyBtnMouseListener extends MouseAdapter {
         else if (choice == optionCount - 1) {
             // 选择添加部门
             String new_dep = JOptionPane.showInputDialog("请输入要添加的部门：");
+            // 检查部门名输入
+            if (new_dep == null) return false;
+            if (new_dep.equals("")) throw new Exception("部门名不能为空！");
             if (departments.contains(new_dep)) {
                 throw new Exception(new_dep + "已存在，请重新输入新的部门名，或查看"
                         + new_dep + "钥匙以添加新的保险柜！");
@@ -95,6 +99,7 @@ public class KeyBtnMouseListener extends MouseAdapter {
             ownerFrame.dispose();
             this.showDepOverviewFrame(this.getSelectDepBtn(departments, choice));
         }
+        return true;
     }
 
     private void showDepOverviewFrame(String dep) throws Exception {

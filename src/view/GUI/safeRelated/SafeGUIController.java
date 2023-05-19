@@ -77,6 +77,12 @@ public class SafeGUIController {
         return successMsg;
     }
 
+    /**
+     * 获取完整的保险柜数据
+     * @param dep 保险柜所在部门
+     * @return dep部门下所有保险柜的信息序列
+     * @throws Exception 找不到保险柜异常
+     */
     public List<Object[]> getSafeData(String dep) throws Exception {
         return this.controller.getSafeMembers(dep);
     }

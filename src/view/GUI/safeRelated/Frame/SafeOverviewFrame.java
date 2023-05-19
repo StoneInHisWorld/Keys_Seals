@@ -8,6 +8,7 @@ import view.GUI.safeRelated.table.SafeTablePainter;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -107,10 +108,19 @@ public class SafeOverviewFrame {
      * @throws Exception 表格绘制异常
      */
     public void drawTable() throws Exception {
+        // 获取完整的保险柜数据
+        List<Object[]> safeData = this.safeGUIController.getSafeData(this.dep);
+        // 每条保险柜信息去掉部门名称并在末尾加上空字符串
+        for (int i = 0; i < safeData.size(); i++) {
+            List<Object> members = new LinkedList<>(Arrays.asList(safeData.get(i)));
+            members.remove(0);
+            // 留出操作栏空间
+            members.add("null");
+            safeData.set(i, members.toArray());
+        }
         SafeTablePainter safeTablePainter = new SafeTablePainter(
                 this.overviewTable, this.ownerFrame, this.getActBtns(),
-                this.safeGUIController.getSafeData(this.dep),
-                this.safeGUIController.getColumnSize(this.dep),
+                safeData, this.safeGUIController.getColumnSize(this.dep),
                 this.getTableColumnNames()
         );
         safeTablePainter.drawTable();
