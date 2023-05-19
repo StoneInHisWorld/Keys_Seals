@@ -44,10 +44,10 @@ public class DBService {
             depSet.add(key.getDepartment());
         }
         // 排序
-        List<String> depList = new LinkedList<>(depSet);
-        Collections.sort(depList);
-        depSet.clear();
-        depSet.addAll(depList);
+//        List<String> depList = new LinkedList<>(depSet);
+//        Collections.sort(depList);
+//        depSet.clear();
+//        depSet.addAll(depList);
         return depSet;
     }
 
@@ -169,7 +169,8 @@ public class DBService {
     }
 
     /**
-     * 删除部门和序号均符合用户输入的保险柜
+     * 删除部门和序号均符合用户输入的保险柜。删除后刷新所有部门保险柜的id，id
+     * 仅在部门内部排序。
      * @param dep 保险柜所属部门
      * @param id 保险柜id
      * @return 删除是否成功
@@ -179,10 +180,23 @@ public class DBService {
         if (this.db.getDepSafes().removeIf(
                 depSafe -> depSafe.getDepartment().equals(dep) &&
                         depSafe.getId() == id)) {
-            // 若删除成功，则刷新所有key的id
+//            // 若删除成功，则刷新所有key的id
+//            List<DepSafe> depSafes = this.db.getDepSafes();
+//            int new_id = 1;
+//            for (DepSafe depSafe : depSafes) {
+//                depSafe.setId(new_id++);
+//            }
+            // 若删除成功，则按部门刷新所有key的id
             List<DepSafe> depSafes = this.db.getDepSafes();
+            String last_dep = "";
             int new_id = 1;
             for (DepSafe depSafe : depSafes) {
+                // 如果本保险柜与上个保险柜所属部门不同，则刷新id
+                String cur_Dep = depSafe.getDepartment();
+                if (!cur_Dep.equals(last_dep)) {
+                    new_id = 1;
+                    last_dep = cur_Dep;
+                }
                 depSafe.setId(new_id++);
             }
             return;

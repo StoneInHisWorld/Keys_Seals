@@ -2,9 +2,7 @@ package view.GUI.safeRelated;
 
 import controller.SafeUIController;
 import view.GUI.BasicMethods;
-import view.GUI.safeRelated.table.SafeTablePainter;
 
-import javax.swing.*;
 import java.util.*;
 
 /**
@@ -107,7 +105,7 @@ public class SafeGUIController {
         return columnSize;
     }
 
-    public Object[] getAddingSafeToBeInput(String dep) {
+    public Object[] getToBeInputOfAddSafe(String dep) {
         List<String> toBeInput = new LinkedList<>(Arrays.asList(
                 controller.getSafeMemberNames(dep).split("\t")));
         toBeInput.remove(0);
@@ -124,6 +122,23 @@ public class SafeGUIController {
         }
         return toBeInput.toArray();
     }
+//    public Object[] getToBeInputOfAddAnyDepSafe() {
+//        List<String> toBeInput = new LinkedList<>(Arrays.asList(
+//                controller.getSafeMemberNames(dep).split("\t")));
+//        // 去掉序号项
+//        toBeInput.remove(1);
+//        // 添加必填项
+//        int index = 0;
+//        if (dep.equals(SafeUIController.supportDep)) {
+//            toBeInput.set(index, "*" + toBeInput.get(index));
+//        }
+//        else {
+//            toBeInput.set(index, "*" + toBeInput.get(index));
+//            index++;
+//            toBeInput.set(index, "*" + toBeInput.get(index));
+//        }
+//        return toBeInput.toArray();
+//    }
 
     public String delSafe(String dep, int id) throws Exception {
         this.controller.delSafe(dep, id);
@@ -178,7 +193,7 @@ public class SafeGUIController {
 
     public Set<String> collectDepartments() {
         List<String> departments = new LinkedList<>(this.controller.getDepartments());
-        Collections.sort(departments);
+//        Collections.sort(departments);
         return new LinkedHashSet<>(departments);
     }
 
@@ -186,13 +201,13 @@ public class SafeGUIController {
         return SafeUIController.supportDep;
     }
 
-    public List<Object[]> getAllSafeData() throws Exception {
-        List<Object[]> ret = new LinkedList<>();
-        for (String department : this.collectDepartments()) {
-            ret.addAll(this.getSafeData(department));
-        }
-        return ret;
-    }
+//    public List<Object[]> getAllSafeData() throws Exception {
+//        List<Object[]> ret = new LinkedList<>();
+//        for (String department : this.collectDepartments()) {
+//            ret.addAll(this.getSafeData(department));
+//        }
+//        return ret;
+//    }
 
     public int[] getAllSafeColumnSize(String dep) {
         int[] columnSize;
@@ -225,5 +240,13 @@ public class SafeGUIController {
             ret[i] = strings.get(i);
         }
         return ret;
+    }
+
+    /**
+     * 将更新的数据写回数据文件
+     * @throws Exception 文件写入异常
+     */
+    public void refreshDB() throws Exception {
+        this.controller.refreshDB();
     }
 }

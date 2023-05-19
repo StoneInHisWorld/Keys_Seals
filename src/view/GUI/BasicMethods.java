@@ -1,5 +1,7 @@
 package view.GUI;
 
+import jdk.nashorn.internal.scripts.JO;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseListener;
@@ -106,10 +108,22 @@ public class BasicMethods {
                 "提示", JOptionPane.INFORMATION_MESSAGE);
     }
 
-    public static boolean yesOrNo(String msg) {
+    public static boolean yesOrNo(final String msg) {
         int op = JOptionPane.showConfirmDialog(null, msg,
                 "选择", JOptionPane.YES_NO_OPTION);
         System.out.println(op);
         return op == 0;
+    }
+
+    public static String getSinLineInput(final String msg,
+                                         final String blankPrompt) {
+        while (true) {
+            String input = JOptionPane.showInputDialog(msg);
+            if (input == null) return null;
+            if (input.equals("")) JOptionPane.showMessageDialog(
+                    null, blankPrompt
+            );
+            else return input;
+        }
     }
 }

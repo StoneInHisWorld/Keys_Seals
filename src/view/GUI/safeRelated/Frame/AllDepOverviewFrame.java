@@ -25,6 +25,8 @@ public class AllDepOverviewFrame {
     private final JFrame ownerFrame;
     private final JFrame parentFrame;
     private final SafeGUIController controller;
+    private static final String[] actions = new String[]{"入库", "出库", "删除"};
+
 
     public AllDepOverviewFrame(JFrame parentFrame, SafeGUIController controller) throws Exception {
         this.parentFrame = parentFrame;
@@ -49,8 +51,13 @@ public class AllDepOverviewFrame {
         this.backBtn.addMouseListener(new BasicMouseListener(this.parentFrame) {
             @Override
             public void mouseClicked(MouseEvent e) {
-                ownerFrame.dispose();
-                this.showParentFrame();
+                try {
+                    ownerFrame.dispose();
+                    this.showParentFrame();
+                    controller.refreshDB();
+                } catch (Exception exception) {
+                    BasicMethods.dealException(exception);
+                }
             }
 
             @Override
@@ -127,12 +134,31 @@ public class AllDepOverviewFrame {
         this.depSafeTablePane.setVisible(false);
     }
 
-    private Object[] getActBtns() {
-        return new Object[0];
+    private Object[] getActBtns() throws Exception {
+        List<JButton> btns = new LinkedList<>();
+//        btns.add(
+//                BasicMethods.getVisibleBtn(
+//                        actions[0], BasicMethods.getFont(Font.PLAIN, BasicMethods.NORMAL),
+//                        BasicMethods.NORMAL, new SafeOverviewFrame.RetKeyBtnMouseListener(this.ownerFrame)
+//                )
+//        );
+//        btns.add(
+//                BasicMethods.getVisibleBtn(
+//                        actions[1], BasicMethods.getFont(Font.PLAIN, BasicMethods.NORMAL),
+//                        BasicMethods.NORMAL, new SafeOverviewFrame.FetKeyBtnMouseListener(this.ownerFrame)
+//                )
+//        );
+//        btns.add(
+//                BasicMethods.getVisibleBtn(
+//                        actions[2], BasicMethods.getFont(Font.PLAIN, BasicMethods.NORMAL),
+//                        BasicMethods.NORMAL, new SafeOverviewFrame.DelSafeBtnMouseListener(this.ownerFrame)
+//                )
+//        );
+        return btns.toArray();
     }
 
     private Object[] getAddSafeToBeToInput(String dep) {
-        return this.controller.getAddingSafeToBeInput(dep);
+        return this.controller.getToBeInputOfAddSafe(dep);
     }
 
     private class AddSafeBtnMouseListener extends BasicMouseListener {
@@ -145,28 +171,35 @@ public class AllDepOverviewFrame {
 
         @Override
         public void mouseClicked(MouseEvent e) {
-            try {
-                // 选择添加部门
-                Set<String> departments = controller.collectDepartments();
-                String dep = JOptionPane.showInputDialog("请输入要添加的部门：");
-                if (!dep.equals(controller.getSupDep()) && dep.contains("后勤")) {
-                    throw new Exception("有关后勤部门的信息，部门栏请填“" +
-                            controller.getSupDep() + "”！");
-                }
-                else if (!departments.contains(dep)) {
-                    if (!BasicMethods.yesOrNo("将创建一个新部门：" + dep + "\n" +
-                            "是否继续？")) {
-                        return;
+            Set<String> departments = controller.collectDepartments();
+            while (true) {
+                try {
+                    // 选择添加部门
+//                String dep = JOptionPane.showInputDialog("请输入要添加的部门：");
+                    String dep = BasicMethods.getSinLineInput(
+                            "请输入要添加的部门：", "部门名不能为空！"
+                    );
+                    if (dep == null) break;
+                    if (!dep.equals(controller.getSupDep()) && dep.contains("后勤")) {
+                        throw new Exception("有关后勤部门的信息，部门栏请填“" +
+                                controller.getSupDep() + "”！");
                     }
+                    else if (!departments.contains(dep)) {
+                        if (!BasicMethods.yesOrNo("将创建一个新部门：" + dep + "\n" +
+                                "是否继续？")) {
+                            continue;
+                        }
+                    }
+                    this.dep = dep;
+                    new InputDialog(
+                            controller.getToBeInputOfAddSafe(dep),
+                            "添加" + dep + "的新保险柜",
+                            this
+                    );
+                    break;
+                } catch (Exception exception) {
+                    BasicMethods.dealException(exception);
                 }
-                this.dep = dep;
-                new InputDialog(
-                        controller.getAddingSafeToBeInput(dep),
-                        "添加" + dep + "的新保险柜",
-                        this
-                );
-            } catch (Exception exception) {
-                BasicMethods.dealException(exception);
             }
         }
 

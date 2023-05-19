@@ -90,7 +90,7 @@ public class KeyBtnMouseListener extends MouseAdapter {
                         this.guiController.getSupDep() + "”！");
             }
             new InputDialog(
-                    this.guiController.getAddingSafeToBeInput(new_dep), "添加" + new_dep + "的新保险柜",
+                    this.guiController.getToBeInputOfAddSafe(new_dep), "添加" + new_dep + "的新保险柜",
                     new AddDepMouseListener(this.ownerFrame, new_dep)
             );
         }

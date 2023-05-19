@@ -86,8 +86,13 @@ public class SafeOverviewFrame {
         this.backBtn.addMouseListener(new BasicMouseListener(this.parentFrame) {
             @Override
             public void mouseClicked(MouseEvent e) {
-                ownerFrame.dispose();
-                this.showParentFrame();
+                try {
+                    ownerFrame.dispose();
+                    this.showParentFrame();
+                    safeGUIController.refreshDB();
+                } catch (Exception exception) {
+                    BasicMethods.dealException(exception);
+                }
             }
 
             @Override
@@ -155,7 +160,7 @@ public class SafeOverviewFrame {
     }
 
     private Object[] getAddSafeToBeToInput() {
-        return this.safeGUIController.getAddingSafeToBeInput(this.dep);
+        return this.safeGUIController.getToBeInputOfAddSafe(this.dep);
     }
 
     private Object[] getRetKeyBtnToBeInput() {

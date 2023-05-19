@@ -96,10 +96,12 @@ public class DepSafe extends Safe implements Comparable<DepSafe>{
 
     @Override
     public int compareTo(DepSafe o) {
-        if (this.store.equals(o.store))
-            if (this.safe_id.equals(o.safe_id))
-                return super.compareTo(o);
-            else return this.safe_id.compareTo(o.safe_id);
-        else return this.store.compareTo(o.store);
+        if (this.department.equals(o.department))
+            if (this.store.equals(o.store))
+                if (this.safe_id.equals(o.safe_id))
+                    return super.compareTo(o);
+                else return this.safe_id.compareTo(o.safe_id);
+            else return this.store.compareTo(o.store);
+        else return this.department.compareTo(o.department);
     }
 }
