@@ -148,12 +148,12 @@ public class AllDepOverviewFrame {
                         BasicMethods.NORMAL, new FetKeyBtnMouseListener(this.ownerFrame)
                 )
         );
-//        btns.add(
-//                BasicMethods.getVisibleBtn(
-//                        actions[2], BasicMethods.getFont(Font.PLAIN, BasicMethods.NORMAL),
-//                        BasicMethods.NORMAL, new SafeOverviewFrame.DelSafeBtnMouseListener(this.ownerFrame)
-//                )
-//        );
+        btns.add(
+                BasicMethods.getVisibleBtn(
+                        actions[2], BasicMethods.getFont(Font.PLAIN, BasicMethods.NORMAL),
+                        BasicMethods.NORMAL, new DelSafeBtnMouseListener(this.ownerFrame)
+                )
+        );
         return btns.toArray();
     }
 
@@ -213,7 +213,6 @@ public class AllDepOverviewFrame {
             while (true) {
                 try {
                     // 选择添加部门
-//                String dep = JOptionPane.showInputDialog("请输入要添加的部门：");
                     String dep = BasicMethods.getSinLineInput(
                             "请输入要添加的部门：", "部门名不能为空！"
                     );
@@ -341,6 +340,46 @@ public class AllDepOverviewFrame {
                     getSelectedDep(this.belongsTo),
                     inputData,
                     getSelectedId(this.belongsTo)
+            );
+            BasicMethods.prompt(successMsg);
+        }
+    }
+
+    private class DelSafeBtnMouseListener extends BasicMouseListener {
+
+        private Container belongsTo;
+
+        public DelSafeBtnMouseListener(JFrame parentFrame) {
+            super(parentFrame);
+        }
+
+        @Override
+        public void mouseClicked(MouseEvent e) {
+            if (BasicMethods.yesOrNo("确定要删除该保险柜吗？")) {
+                try {
+                    this.belongsTo = e.getComponent().getParent().getParent();
+                    this.dealTransaction(null);
+                    this.refreshParentFrame();
+                } catch (Exception exception) {
+                    BasicMethods.dealException(exception);
+                }
+            }
+        }
+
+        @Override
+        public void refreshParentFrame() {
+            try {
+                drawTable();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        @Override
+        public void dealTransaction(Object[] inputData) throws Exception {
+            String successMsg = controller.delSafe(
+                    getSelectedDep(this.belongsTo),
+                    Integer.parseInt(getSelectedId(this.belongsTo))
             );
             BasicMethods.prompt(successMsg);
         }

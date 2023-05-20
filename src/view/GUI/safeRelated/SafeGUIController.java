@@ -122,23 +122,6 @@ public class SafeGUIController {
         }
         return toBeInput.toArray();
     }
-//    public Object[] getToBeInputOfAddAnyDepSafe() {
-//        List<String> toBeInput = new LinkedList<>(Arrays.asList(
-//                controller.getSafeMemberNames(dep).split("\t")));
-//        // 去掉序号项
-//        toBeInput.remove(1);
-//        // 添加必填项
-//        int index = 0;
-//        if (dep.equals(SafeUIController.supportDep)) {
-//            toBeInput.set(index, "*" + toBeInput.get(index));
-//        }
-//        else {
-//            toBeInput.set(index, "*" + toBeInput.get(index));
-//            index++;
-//            toBeInput.set(index, "*" + toBeInput.get(index));
-//        }
-//        return toBeInput.toArray();
-//    }
 
     public String delSafe(String dep, int id) throws Exception {
         this.controller.delSafe(dep, id);
