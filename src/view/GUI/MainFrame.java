@@ -17,18 +17,18 @@ public class MainFrame extends UI {
     private JLabel welcomeLabel;
     private JLabel warningLabel;
     private JPanel btPanel;
-    private JButton keyBt;
-    private JButton sealBt;
+    private JButton keyBtn;
+    private JButton sealBtn;
     private JPanel mainFramePanel;
-    private JPanel keyBtPanel;
-    private JPanel sealBtPanel;
+    private JPanel keyBtnPanel;
+    private JPanel sealBtnPanel;
 
     public MainFrame(JFrame frame) throws Exception {
         this.welcome();
-        keyBt.addMouseListener(
+        keyBtn.addMouseListener(
                 new KeyBtnMouseListener(frame, super.getSupportDep())
         );
-        sealBt.addMouseListener(new SealBtnMouseListener());
+        sealBtn.addMouseListener(new SealBtnMouseListener());
     }
 
     public static void main(String[] args) throws Exception {

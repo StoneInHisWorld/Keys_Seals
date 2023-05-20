@@ -1,0 +1,10 @@
+java.lang.Exception: 无法找到配置文件！
+	at view.UI.<init>(UI.java:20)
+	at view.GUI.MainFrame.<init>(MainFrame.java:26)
+	at view.GUI.MainFrame.main(MainFrame.java:41)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+	at java.lang.reflect.Method.invoke(Unknown Source)
+	at com.exe4j.runtime.LauncherEngine.launch(LauncherEngine.java:84)
+	at com.exe4j.runtime.WinLauncher.main(WinLauncher.java:94)

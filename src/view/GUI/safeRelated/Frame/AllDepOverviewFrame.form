@@ -5,19 +5,25 @@
     <constraints>
       <xy x="20" y="20" width="500" height="400"/>
     </constraints>
-    <properties/>
+    <properties>
+      <name value="mainPanel"/>
+    </properties>
     <border type="none"/>
     <children>
       <scrollpane id="2e97" binding="depSafeTablePane">
         <constraints>
           <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
         </constraints>
-        <properties/>
+        <properties>
+          <name value="depSafeTablePane"/>
+        </properties>
         <border type="none"/>
         <children>
           <component id="92d8" class="javax.swing.JTable" binding="depSafeTable">
             <constraints/>
-            <properties/>
+            <properties>
+              <name value="depSafeTable"/>
+            </properties>
           </component>
         </children>
       </scrollpane>
@@ -25,12 +31,17 @@
         <constraints>
           <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
         </constraints>
-        <properties/>
+        <properties>
+          <name value="supDepSafeTablePane"/>
+        </properties>
         <border type="none"/>
         <children>
           <component id="85785" class="javax.swing.JTable" binding="supDepSafeTable">
             <constraints/>
-            <properties/>
+            <properties>
+              <name value="supDepSafeTable"/>
+              <opaque value="true"/>
+            </properties>
           </component>
         </children>
       </scrollpane>
@@ -39,7 +50,9 @@
         <constraints>
           <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
         </constraints>
-        <properties/>
+        <properties>
+          <name value="buttonPanel"/>
+        </properties>
         <border type="none"/>
         <children>
           <component id="82183" class="javax.swing.JButton" binding="addSafeBtn">
@@ -50,6 +63,7 @@
             </constraints>
             <properties>
               <font name="Microsoft YaHei UI" size="20"/>
+              <name value="添加保险柜"/>
               <text value="添加保险柜"/>
               <toolTipText value=""/>
             </properties>
@@ -62,6 +76,7 @@
             </constraints>
             <properties>
               <font name="Microsoft YaHei UI" size="20"/>
+              <name value="返回"/>
               <text value="返回"/>
             </properties>
           </component>

@@ -7,6 +7,7 @@
     </constraints>
     <properties>
       <font name="Microsoft YaHei UI" size="20"/>
+      <name value="mainPanel"/>
     </properties>
     <border type="none"/>
     <children>
@@ -14,12 +15,16 @@
         <constraints>
           <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
         </constraints>
-        <properties/>
+        <properties>
+          <name value="tablePanel"/>
+        </properties>
         <border type="none"/>
         <children>
           <component id="97ae6" class="javax.swing.JTable" binding="overviewTable">
             <constraints/>
-            <properties/>
+            <properties>
+              <name value="overviewTable"/>
+            </properties>
           </component>
         </children>
       </scrollpane>
@@ -28,7 +33,9 @@
         <constraints>
           <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
         </constraints>
-        <properties/>
+        <properties>
+          <name value="add_del_safe_Panel"/>
+        </properties>
         <border type="none"/>
         <children>
           <component id="49083" class="javax.swing.JButton" binding="addingBtn">
@@ -39,6 +46,7 @@
             </constraints>
             <properties>
               <font name="Microsoft YaHei UI" size="20"/>
+              <name value="addingBtn"/>
               <text value="添加保险柜"/>
             </properties>
           </component>
@@ -51,6 +59,7 @@
             <properties>
               <enabled value="true"/>
               <font name="Microsoft YaHei UI" size="20"/>
+              <name value="backBtn"/>
               <text value="返回"/>
             </properties>
           </component>

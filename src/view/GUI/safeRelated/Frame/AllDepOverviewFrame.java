@@ -78,7 +78,7 @@ public class AllDepOverviewFrame {
                 JFrame.EXIT_ON_CLOSE
         );
         this.ownerFrame.setPreferredSize(
-                new Dimension(1500, 1000)
+                new Dimension(1500, 800)
         );
         this.ownerFrame.pack();
         this.parentFrame.dispose();
@@ -136,18 +136,18 @@ public class AllDepOverviewFrame {
 
     private Object[] getActBtns() throws Exception {
         List<JButton> btns = new LinkedList<>();
-//        btns.add(
-//                BasicMethods.getVisibleBtn(
-//                        actions[0], BasicMethods.getFont(Font.PLAIN, BasicMethods.NORMAL),
-//                        BasicMethods.NORMAL, new SafeOverviewFrame.RetKeyBtnMouseListener(this.ownerFrame)
-//                )
-//        );
-//        btns.add(
-//                BasicMethods.getVisibleBtn(
-//                        actions[1], BasicMethods.getFont(Font.PLAIN, BasicMethods.NORMAL),
-//                        BasicMethods.NORMAL, new SafeOverviewFrame.FetKeyBtnMouseListener(this.ownerFrame)
-//                )
-//        );
+        btns.add(
+                BasicMethods.getVisibleBtn(
+                        actions[0], BasicMethods.getFont(Font.PLAIN, BasicMethods.NORMAL),
+                        BasicMethods.NORMAL, new RetKeyBtnMouseListener(this.ownerFrame)
+                )
+        );
+        btns.add(
+                BasicMethods.getVisibleBtn(
+                        actions[1], BasicMethods.getFont(Font.PLAIN, BasicMethods.NORMAL),
+                        BasicMethods.NORMAL, new FetKeyBtnMouseListener(this.ownerFrame)
+                )
+        );
 //        btns.add(
 //                BasicMethods.getVisibleBtn(
 //                        actions[2], BasicMethods.getFont(Font.PLAIN, BasicMethods.NORMAL),
@@ -157,8 +157,46 @@ public class AllDepOverviewFrame {
         return btns.toArray();
     }
 
-    private Object[] getAddSafeToBeToInput(String dep) {
-        return this.controller.getToBeInputOfAddSafe(dep);
+    private String getSelectedDep(Container clicked) throws Exception {
+        // 获取点击的表格
+        if (clicked.getName().equals(depSafeTable.getName())) {
+            return depSafeTable.getValueAt(
+                    depSafeTable.getSelectedRow(), 0
+            ).toString();
+        }
+        else if (clicked.getName().equals(supDepSafeTable.getName())) {
+            return supDepSafeTable.getValueAt(
+                    supDepSafeTable.getSelectedRow(), 0
+            ).toString();
+        }
+        else {
+                throw new Exception("表格没有被选中！");
+        }
+    }
+
+    private String getSelectedId(Container clicked) throws Exception {
+        // 获取点击的表格
+        if (clicked.getName().equals(depSafeTable.getName())) {
+            return depSafeTable.getValueAt(
+                    depSafeTable.getSelectedRow(), 1
+            ).toString();
+        }
+        else if (clicked.getName().equals(supDepSafeTable.getName())) {
+            return supDepSafeTable.getValueAt(
+                    supDepSafeTable.getSelectedRow(), 1
+            ).toString();
+        }
+        else {
+            throw new Exception("表格没有被选中！");
+        }
+    }
+
+    private Object[] getRetKeyBtnToBeInput(String dep) {
+        return controller.getRetKeyBtnToBeInput(dep);
+    }
+
+    private Object[] getFetKeyBtnToBeInput(String dep) {
+        return controller.getFetKeyBtnToBeInput(dep);
     }
 
     private class AddSafeBtnMouseListener extends BasicMouseListener {
@@ -218,6 +256,92 @@ public class AllDepOverviewFrame {
         @Override
         public void dealTransaction(Object[] inputData) throws Exception {
             String successMsg = controller.addSafe(this.dep, inputData);
+            BasicMethods.prompt(successMsg);
+        }
+    }
+
+    private class RetKeyBtnMouseListener extends BasicMouseListener {
+
+        private Container belongsTo;
+
+        public RetKeyBtnMouseListener(JFrame parentFrame) {
+            super(parentFrame);
+        }
+
+        @Override
+        public void mouseClicked(MouseEvent e) {
+            try {
+                this.belongsTo = e.getComponent().getParent().getParent();
+                String dep = getSelectedDep(belongsTo);
+                new InputDialog(
+                        getRetKeyBtnToBeInput(dep),
+                        "归还" + dep + "的钥匙",
+                        this
+                );
+            } catch (Exception exception) {
+                BasicMethods.dealException(exception);
+            }
+        }
+
+        @Override
+        public void refreshParentFrame() {
+            try {
+                drawTable();
+            } catch (Exception e) {
+                BasicMethods.dealException(e);
+            }
+        }
+
+        @Override
+        public void dealTransaction(Object[] inputData) throws Exception {
+            String selectedSafeId = getSelectedId(this.belongsTo);
+            String successMsg = controller.retKey(
+                    getSelectedDep(belongsTo), inputData, selectedSafeId
+            );
+            BasicMethods.prompt(successMsg);
+        }
+    }
+
+    private class FetKeyBtnMouseListener extends BasicMouseListener {
+
+        private Container belongsTo;
+
+        public FetKeyBtnMouseListener(JFrame parentFrame) {
+            super(parentFrame);
+        }
+
+        @Override
+        public void mouseClicked(MouseEvent e) {
+            try {
+                // 获取表格对象
+                this.belongsTo = e.getComponent().getParent().getParent();
+                String dep = getSelectedDep(this.belongsTo);
+                new InputDialog(
+                        getFetKeyBtnToBeInput(dep),
+                        "取走" + dep + "的钥匙",
+                        this
+                );
+            } catch (Exception exception) {
+                BasicMethods.dealException(exception);
+            }
+        }
+
+        @Override
+        public void refreshParentFrame() {
+            try {
+                drawTable();
+            } catch (Exception e) {
+                BasicMethods.dealException(e);
+            }
+        }
+
+        @Override
+        public void dealTransaction(Object[] inputData) throws Exception {
+            String successMsg = controller.fetchKey(
+                    getSelectedDep(this.belongsTo),
+                    inputData,
+                    getSelectedId(this.belongsTo)
+            );
             BasicMethods.prompt(successMsg);
         }
     }
