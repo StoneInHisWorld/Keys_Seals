@@ -8,7 +8,7 @@ import javax.swing.*;
 import javax.swing.plaf.FontUIResource;
 import java.awt.*;
 
-public class MainFrame extends UI {
+public class MainFrame extends UI{
 
     /**
      * 界面组件
@@ -19,16 +19,15 @@ public class MainFrame extends UI {
     private JPanel btPanel;
     private JButton keyBtn;
     private JButton sealBtn;
-    private JPanel mainFramePanel;
+    private JPanel mainPanel;
     private JPanel keyBtnPanel;
     private JPanel sealBtnPanel;
 
-    public MainFrame(JFrame frame) throws Exception {
+    private final PresentFrame presentFrame;
+
+    public MainFrame() throws Exception {
         this.welcome();
-        keyBtn.addMouseListener(
-                new KeyBtnMouseListener(frame, super.getSupportDep())
-        );
-        sealBtn.addMouseListener(new SealBtnMouseListener());
+        this.presentFrame = new PresentFrame(null);
     }
 
     public static void main(String[] args) throws Exception {
@@ -37,22 +36,58 @@ public class MainFrame extends UI {
         // 设置文本显示效果
         UIManager.put("OptionPane.messageFont", new FontUIResource(BasicMethods.getFont(Font.PLAIN, BasicMethods.BIG)));
         try {
-            JFrame frame = new JFrame();
-            MainFrame mainFrame = new MainFrame(frame);
-            frame.setContentPane(mainFrame.mainFramePanel);
-            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            frame.setTitle(mainFrame.getCompanyName() + "钥匙印章管理系统v" + mainFrame.getVersion());
-            frame.pack();
-            frame.setVisible(true);
-            BasicMethods.moveToCenter(frame);
+            new MainFrame().present();
         } catch (Exception e) {
             BasicMethods.dealException(e);
         }
+    }
+
+    private void present() throws Exception {
+        this.presentFrame.present();
+        this.warningLabel.setFont(
+                BasicMethods.getFont(Font.PLAIN, BasicMethods.NORMAL)
+        );
+        this.welcomeLabel.setFont(
+                BasicMethods.getFont(Font.BOLD, BasicMethods.ULTRA)
+        );
+        this.keyBtn.addMouseListener(
+                new KeyBtnMouseListener(
+                        presentFrame.getOwnerFrame(),
+                        super.getSupportDep()
+                )
+        );
+        this.keyBtn.setFont(BasicMethods.getFont(Font.BOLD, BasicMethods.NORMAL));
+        sealBtn.addMouseListener(
+                new SealBtnMouseListener()
+        );
+        this.sealBtn.setFont(BasicMethods.getFont(Font.BOLD, BasicMethods.NORMAL));
     }
 
     @Override
     public void welcome() {
         this.welcomeLabel.setText("欢迎来到" + super.companyName + "钥匙印章管理系统！");
         this.warningLabel.setText("注意：" + this.warning);
+    }
+
+    private class PresentFrame extends BasicFrame {
+
+        public PresentFrame(JFrame parentFrame) {
+            super(parentFrame);
+        }
+
+        @Override
+        protected int getSize() {
+            return BasicMethods.SMALL;
+        }
+
+        @Override
+        protected String getTitle() {
+            return getCompanyName() + "钥匙印章管理系统v" + getVersion();
+        }
+
+        @Override
+        protected JPanel getMainPanel() {
+            return mainPanel;
+        }
     }
 }

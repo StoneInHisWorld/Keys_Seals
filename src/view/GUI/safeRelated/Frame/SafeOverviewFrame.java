@@ -1,5 +1,6 @@
 package view.GUI.safeRelated.Frame;
 
+import view.GUI.BasicFrame;
 import view.GUI.BasicMethods;
 import view.GUI.BasicMouseListener;
 import view.GUI.safeRelated.SafeGUIController;
@@ -7,12 +8,13 @@ import view.GUI.safeRelated.table.SafeTablePainter;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
-public class SafeOverviewFrame {
+public class SafeOverviewFrame extends BasicFrame {
 
     private JPanel mainPanel;
     private JPanel add_del_Safe_Panel;
@@ -20,8 +22,6 @@ public class SafeOverviewFrame {
     private JTable overviewTable;
     private JButton addingBtn;
     private JButton backBtn;
-    private final JFrame parentFrame;
-    private final JFrame ownerFrame;
     private final SafeGUIController safeGUIController;
     private final String dep;
     private static final String[] actions = new String[]{"入库", "出库", "删除"};
@@ -36,12 +36,12 @@ public class SafeOverviewFrame {
      * @param dep 所属部门
      * @throws Exception 空保险柜异常
      */
-    public SafeOverviewFrame(JFrame parentFrame, JFrame ownerFrame,
-                             String dep, SafeGUIController safeGUIController) throws Exception {
-        this.parentFrame = parentFrame;
+    public SafeOverviewFrame(JFrame parentFrame,
+                             String dep,
+                             SafeGUIController safeGUIController) throws Exception {
+        super(parentFrame);
         this.dep = dep;
         this.safeGUIController = safeGUIController;
-        this.ownerFrame = ownerFrame;
         this.addSafeBtnDialogTitle = "添加" + dep + "保险柜";
         this.fetKeyBtnDialogTitle = "取出" + dep + "保险柜的钥匙";
         this.retKeyBtnDialogTitle = "归还" + dep + "保险柜的钥匙";
@@ -49,24 +49,6 @@ public class SafeOverviewFrame {
         this.dealBackBtn();
         this.drawTable();
         this.present();
-    }
-
-    // 界面相关
-    /**
-     * 展示界面
-     */
-    public void present() {
-        this.ownerFrame.setContentPane(this.mainPanel);
-        this.ownerFrame.setDefaultCloseOperation(
-                JFrame.EXIT_ON_CLOSE
-        );
-        this.ownerFrame.setTitle(dep + "保险柜信息");
-        this.ownerFrame.setPreferredSize(
-                new Dimension(1500, 750)
-        );
-        this.ownerFrame.pack();
-        this.ownerFrame.setVisible(true);
-        BasicMethods.moveToCenter(this.ownerFrame);
     }
 
     /**
@@ -83,26 +65,14 @@ public class SafeOverviewFrame {
      * 处理“返回”按钮
      */
     private void dealBackBtn() {
-        this.backBtn.addMouseListener(new BasicMouseListener(this.parentFrame) {
+        this.backBtn.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 try {
-                    ownerFrame.dispose();
-                    this.showParentFrame();
-                    safeGUIController.refreshDB();
+                    backToLastFrame();
                 } catch (Exception exception) {
                     BasicMethods.dealException(exception);
                 }
-            }
-
-            @Override
-            public void refreshParentFrame() {
-
-            }
-
-            @Override
-            public void dealTransaction(Object[] inputData) throws Exception {
-
             }
         });
     }
@@ -213,6 +183,21 @@ public class SafeOverviewFrame {
                 selectedSafeId);
     }
 
+    @Override
+    protected int getSize() {
+        return BasicMethods.BIG;
+    }
+
+    @Override
+    protected String getTitle() {
+        return this.dep + "保险柜信息";
+    }
+
+    @Override
+    protected JPanel getMainPanel() {
+        return this.mainPanel;
+    }
+
     private class FetKeyBtnMouseListener extends BasicMouseListener {
 
         private final Object[] toBeInput;
@@ -228,7 +213,7 @@ public class SafeOverviewFrame {
         public void mouseClicked(MouseEvent e) {
             try {
                 new InputDialog(this.toBeInput, this.inputDialogTitle,
-                        this);
+                        this, BasicMethods.BIG);
             } catch (Exception exception) {
                 BasicMethods.dealException(exception);
             }
@@ -298,7 +283,7 @@ public class SafeOverviewFrame {
         @Override
         public void mouseClicked(MouseEvent e) {
             try {
-                new InputDialog(toBeInput, dialogTitle, this);
+                new InputDialog(toBeInput, dialogTitle, this, BasicMethods.ULTRA);
             } catch (Exception exception) {
                 BasicMethods.dealException(exception);
             }
@@ -337,7 +322,7 @@ public class SafeOverviewFrame {
         @Override
         public void mouseClicked(MouseEvent e) {
             try {
-                new InputDialog(toBeInput, dialogTitle, this);
+                new InputDialog(toBeInput, dialogTitle, this, BasicMethods.BIG);
             } catch (Exception exception) {
                 BasicMethods.dealException(exception);
             }

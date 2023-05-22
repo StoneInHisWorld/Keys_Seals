@@ -1,5 +1,6 @@
 package view.GUI.safeRelated.Frame;
 
+import view.GUI.BasicFrame;
 import view.GUI.BasicMethods;
 import view.GUI.BasicMouseListener;
 import view.GUI.safeRelated.SafeGUIController;
@@ -12,7 +13,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-public class AllDepOverviewFrame {
+public class AllDepOverviewFrame extends BasicFrame {
+
     private JScrollPane depSafeTablePane;
     private JScrollPane supDepSafeTablePane;
     private JTable depSafeTable;
@@ -22,16 +24,13 @@ public class AllDepOverviewFrame {
     private JButton backBtn;
     private JPanel mainPanel;
 
-    private final JFrame ownerFrame;
-    private final JFrame parentFrame;
     private final SafeGUIController controller;
     private static final String[] actions = new String[]{"入库", "出库", "删除"};
 
 
     public AllDepOverviewFrame(JFrame parentFrame, SafeGUIController controller) throws Exception {
-        this.parentFrame = parentFrame;
+        super(parentFrame);
         this.controller = controller;
-        this.ownerFrame = new JFrame("保险柜总览");
         this.dealAddingBtn();
         this.dealBackBtn();
         this.drawTable();
@@ -72,18 +71,19 @@ public class AllDepOverviewFrame {
         });
     }
 
-    public void present() {
-        this.ownerFrame.setContentPane(this.mainPanel);
-        this.ownerFrame.setDefaultCloseOperation(
-                JFrame.EXIT_ON_CLOSE
-        );
-        this.ownerFrame.setPreferredSize(
-                new Dimension(1500, 800)
-        );
-        this.ownerFrame.pack();
-        this.parentFrame.dispose();
-        this.ownerFrame.setVisible(true);
-        BasicMethods.moveToCenter(this.ownerFrame);
+    @Override
+    protected int getSize() {
+        return BasicMethods.ULTRA;
+    }
+
+    @Override
+    protected String getTitle() {
+        return "保险柜总览";
+    }
+
+    @Override
+    protected JPanel getMainPanel() {
+        return this.mainPanel;
     }
 
     private void drawTable() throws Exception {
@@ -231,8 +231,8 @@ public class AllDepOverviewFrame {
                     new InputDialog(
                             controller.getToBeInputOfAddSafe(dep),
                             "添加" + dep + "的新保险柜",
-                            this
-                    );
+                            this,
+                            BasicMethods.ULTRA);
                     break;
                 } catch (Exception exception) {
                     BasicMethods.dealException(exception);
@@ -275,8 +275,8 @@ public class AllDepOverviewFrame {
                 new InputDialog(
                         getRetKeyBtnToBeInput(dep),
                         "归还" + dep + "的钥匙",
-                        this
-                );
+                        this,
+                        BasicMethods.BIG);
             } catch (Exception exception) {
                 BasicMethods.dealException(exception);
             }
@@ -318,8 +318,8 @@ public class AllDepOverviewFrame {
                 new InputDialog(
                         getFetKeyBtnToBeInput(dep),
                         "取走" + dep + "的钥匙",
-                        this
-                );
+                        this,
+                        BasicMethods.BIG);
             } catch (Exception exception) {
                 BasicMethods.dealException(exception);
             }

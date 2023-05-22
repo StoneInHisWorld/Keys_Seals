@@ -25,17 +25,20 @@ public class InputDialog extends JDialog {
     private final Dimension textFieldSize;
     private final Object[] toBeInput;
     private final List<JTextField> fieldsHaveData;
+    private final int width_size;
 
     /**
      * 生成一个新的输入对话框
      * @param toBeInput 将要输入的信息
      * @param dialogTtile 输入对话框的标题
      * @param listener 处理“确定”键的监听器。用户点击确定后会处理用户输入的数据，并刷新父界面。
+     * @param width_size 对话框的宽度大小参数。需为BasicMethods的参数。
      * @throws Exception 字体参数异常
      */
     public InputDialog(Object[] toBeInput, String dialogTtile,
-                       BasicMouseListener listener) throws Exception {
+                       BasicMouseListener listener, int width_size) throws Exception {
         this.listener = listener;
+        this.width_size = width_size;
         setContentPane(contentPane);
         setModal(true);
         getRootPane().setDefaultButton(buttonOK);
@@ -81,13 +84,13 @@ public class InputDialog extends JDialog {
         GridLayout inputPanelLayout = new GridLayout();
         inputPanelLayout.setHgap(5);
         this.inputPanel.setLayout(inputPanelLayout);
-        this.promptLabel.setFont(BasicMethods.getFont(Font.PLAIN, BasicMethods.BIG));
+        this.promptLabel.setFont(BasicMethods.getFont(Font.BOLD, BasicMethods.BIG));
         // 定制输入界面的输入框
         for (Object s : toBeInput) {
             JPanel panel = new JPanel();
             panel.setLayout(new BorderLayout());
             JLabel label = new JLabel(s.toString());
-            label.setFont(BasicMethods.getFont(Font.PLAIN, BasicMethods.NORMAL));
+            label.setFont(BasicMethods.getFont(Font.PLAIN, BasicMethods.BIG));
             panel.add(label, BorderLayout.NORTH);
             JTextField dataField = new JTextField();
             dataField.setSize(this.textFieldSize);
@@ -116,7 +119,8 @@ public class InputDialog extends JDialog {
         dispose();
     }
 
-    private void present(final String dialogTtile) {
+    private void present(final String dialogTtile) throws Exception {
+        BasicMethods.setDialogSize(this, this.width_size, BasicMethods.NORMAL);
         BasicMethods.moveToCenter(this);
         this.setTitle(dialogTtile);
         this.pack();

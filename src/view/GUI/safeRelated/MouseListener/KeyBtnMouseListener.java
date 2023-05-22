@@ -91,8 +91,8 @@ public class KeyBtnMouseListener extends MouseAdapter {
             }
             new InputDialog(
                     this.guiController.getToBeInputOfAddSafe(new_dep), "添加" + new_dep + "的新保险柜",
-                    new AddDepMouseListener(this.ownerFrame, new_dep)
-            );
+                    new AddDepMouseListener(this.ownerFrame, new_dep),
+                    BasicMethods.ULTRA);
         }
         else if (choice >= 0) {
             // 选择了要查看的部门
@@ -105,7 +105,7 @@ public class KeyBtnMouseListener extends MouseAdapter {
     private void showDepOverviewFrame(String dep) throws Exception {
         JFrame frame = new JFrame();
         new SafeOverviewFrame(
-                ownerFrame, frame, dep, this.guiController
+                ownerFrame, dep, this.guiController
         );
     }
 

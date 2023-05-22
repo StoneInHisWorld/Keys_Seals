@@ -184,31 +184,23 @@ public class SafeGUIController {
         return SafeUIController.supportDep;
     }
 
-//    public List<Object[]> getAllSafeData() throws Exception {
-//        List<Object[]> ret = new LinkedList<>();
-//        for (String department : this.collectDepartments()) {
-//            ret.addAll(this.getSafeData(department));
-//        }
-//        return ret;
-//    }
-
     public int[] getAllSafeColumnSize(String dep) {
         int[] columnSize;
         if (dep.equals(SafeUIController.supportDep)) {
             columnSize = new int[]{
-                    BasicMethods.BIG, BasicMethods.SMALL,
                     BasicMethods.NORMAL, BasicMethods.SMALL,
-                    BasicMethods.BIG, BasicMethods.BIG,
+                    BasicMethods.NORMAL, BasicMethods.SMALL,
+                    BasicMethods.NORMAL, BasicMethods.NORMAL,
                     BasicMethods.ULTRA
             };
         }
         else {
             columnSize = new int[]{
-                    BasicMethods.BIG,
-                    BasicMethods.SMALL, BasicMethods.NORMAL,
+                    BasicMethods.NORMAL,
                     BasicMethods.SMALL, BasicMethods.SMALL,
-                    BasicMethods.SMALL, BasicMethods.BIG,
-                    BasicMethods.BIG, BasicMethods.ULTRA
+                    BasicMethods.SMALL, BasicMethods.SMALL,
+                    BasicMethods.SMALL, BasicMethods.NORMAL,
+                    BasicMethods.NORMAL, BasicMethods.ULTRA
             };
         }
         return columnSize;
