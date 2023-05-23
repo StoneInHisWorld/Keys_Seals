@@ -44,10 +44,6 @@ public class DBService {
             depSet.add(key.getDepartment());
         }
         // 排序
-        List<String> depList = new LinkedList<>(depSet);
-        Collections.sort(depList);
-        depSet.clear();
-        depSet.addAll(depList);
         return depSet;
     }
 
@@ -116,12 +112,6 @@ public class DBService {
     public void addDepSafe(String dep, String keyStr) throws Exception {
         List<DepSafe> depSafes = this.db.getDepSafes();
         int lastest_Id = this.getDepSafeMembers(dep).size();
-//        int size = depSafes.size();
-//        if (size > 0) {
-//            lastest_Id = depSafes.get(size - 1).getId();
-//        }
-//        else lastest_Id = 0;
-        // int lastestId = depSafes.get(depSafes.size() - 1).getId();
         // 检查输入的字符串是否合法
         keyStr = dep + '\t' + (lastest_Id + 1) + '\t' + keyStr;
         DepSafe depSafe = new DepSafe(keyStr);
@@ -149,18 +139,6 @@ public class DBService {
     }
 
     /**
-     * 根据序号查找全部门保险柜
-     * @param id 保险柜ID
-     * @return 找到则返回对应的保险柜，否则返回null
-     */
-    public DepSafe findDepSafe(int id) {
-        for (DepSafe depSafe : this.db.getDepSafes()) {
-            if (depSafe.getId() == id) return depSafe;
-        }
-        return null;
-    }
-
-    /**
      * 根据序号和部门查找保险柜
      * @param dep 保险柜所属部门
      * @param id 保险柜ID
@@ -175,7 +153,8 @@ public class DBService {
     }
 
     /**
-     * 删除部门和序号均符合用户输入的保险柜
+     * 删除部门和序号均符合用户输入的保险柜。删除后刷新所有部门保险柜的id，id
+     * 仅在部门内部排序。
      * @param dep 保险柜所属部门
      * @param id 保险柜id
      * @return 删除是否成功
@@ -185,10 +164,17 @@ public class DBService {
         if (this.db.getDepSafes().removeIf(
                 depSafe -> depSafe.getDepartment().equals(dep) &&
                         depSafe.getId() == id)) {
-            // 若删除成功，则刷新所有key的id
+            // 若删除成功，则按部门刷新所有key的id
             List<DepSafe> depSafes = this.db.getDepSafes();
+            String last_dep = "";
             int new_id = 1;
             for (DepSafe depSafe : depSafes) {
+                // 如果本保险柜与上个保险柜所属部门不同，则刷新id
+                String cur_Dep = depSafe.getDepartment();
+                if (!cur_Dep.equals(last_dep)) {
+                    new_id = 1;
+                    last_dep = cur_Dep;
+                }
                 depSafe.setId(new_id++);
             }
             return;
@@ -225,7 +211,7 @@ public class DBService {
                     case 'j': {
                         int emer_num = depSafe.getEmergency() - 1;
                         if (emer_num < 0) {
-                            throw new Exception("紧急钥匙数量不足！");
+                            throw new Exception("应急钥匙数量不足！");
                         }
                         else {
                             depSafe.setEmergency(emer_num);
@@ -316,11 +302,6 @@ public class DBService {
     public void addSupSafe(String keyStr) throws Exception {
         List<SupSafe> supSafes = this.db.getSupSafes();
         int lastest_Id = supSafes.size();
-//        int size = supSafes.size();
-//        if (size > 0) {
-//            lastest_Id = supSafes.get(size - 1).getId();
-//        }
-//        else lastest_Id = 0;
         // 检查输入的字符串是否合法
         keyStr = Safe.supportDep + "\t" + (lastest_Id + 1) + "\t" +
                 keyStr;

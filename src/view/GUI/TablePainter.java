@@ -19,10 +19,6 @@ public abstract class TablePainter {
      * @param ownerFrame 表格所属界面
      * @throws Exception 字体参数异常
      */
-//    public TablePainter(JTable toBePainted, JFrame ownerFrame) throws Exception {
-//
-//    }
-
     public TablePainter(JTable toBePainted, JFrame ownerFrame,
                         List<Object[]> data, String[] columnNames) throws Exception {
         this.ownerFrame = ownerFrame;
@@ -60,5 +56,4 @@ public abstract class TablePainter {
 
     abstract protected void drawTable() throws Exception;
     abstract protected DefaultTableModel getTableModel() throws Exception;
-//    abstract protected List<String> getTableColumnNames();
 }

@@ -3,10 +3,7 @@ package view.GUI.safeRelated;
 import controller.SafeUIController;
 import view.GUI.BasicMethods;
 
-import javax.swing.*;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 /**
  * GUI消息分发器，负责处理GUI层的消息，转换为适配SafeUIController接口的输入。
@@ -19,10 +16,11 @@ public class SafeGUIController {
     /**
      * GUI消息分发器，负责处理GUI层的消息，转换为适配SafeUIController接口的输入。
      * 负责从Controller获取数据库信息转发给GUI层。
-     * @param controller UI控制器
+     * @throws Exception 找不到数据文件异常
      */
-    public SafeGUIController(SafeUIController controller) {
-        this.controller = controller;
+    public SafeGUIController(String supDep) throws Exception {
+        this.controller = new SafeUIController(supDep);
+        this.controller.initKeyUI();
     }
 
     public String addSafe(String dep, Object[] inputData)
@@ -78,6 +76,12 @@ public class SafeGUIController {
         return successMsg;
     }
 
+    /**
+     * 获取完整的保险柜数据
+     * @param dep 保险柜所在部门
+     * @return dep部门下所有保险柜的信息序列
+     * @throws Exception 找不到保险柜异常
+     */
     public List<Object[]> getSafeData(String dep) throws Exception {
         return this.controller.getSafeMembers(dep);
     }
@@ -102,7 +106,7 @@ public class SafeGUIController {
         return columnSize;
     }
 
-    public Object[] getAddingSafeToBeInput(String dep) {
+    public Object[] getToBeInputOfAddSafe(String dep) {
         List<String> toBeInput = new LinkedList<>(Arrays.asList(
                 controller.getSafeMemberNames(dep).split("\t")));
         toBeInput.remove(0);
@@ -169,5 +173,47 @@ public class SafeGUIController {
             toBeInput = new String[]{"*还备用或应急钥匙（b或j）", "*入库人", "备注"};
         }
         return toBeInput;
+    }
+
+    public Set<String> collectDepartments() {
+        List<String> departments = new LinkedList<>(this.controller.getDepartments());
+        return new LinkedHashSet<>(departments);
+    }
+
+    public String getSupDep() {
+        return SafeUIController.supportDep;
+    }
+
+    public int[] getAllSafeColumnSize(String dep) {
+        int[] columnSize;
+        if (dep.equals(SafeUIController.supportDep)) {
+            columnSize = new int[]{
+                    BasicMethods.NORMAL, BasicMethods.SMALL,
+                    BasicMethods.NORMAL, BasicMethods.SMALL,
+                    BasicMethods.NORMAL, BasicMethods.NORMAL,
+                    BasicMethods.ULTRA
+            };
+        }
+        else {
+            columnSize = new int[]{
+                    BasicMethods.NORMAL,
+                    BasicMethods.SMALL, BasicMethods.SMALL,
+                    BasicMethods.SMALL, BasicMethods.SMALL,
+                    BasicMethods.SMALL, BasicMethods.NORMAL,
+                    BasicMethods.NORMAL, BasicMethods.ULTRA
+            };
+        }
+        return columnSize;
+    }
+
+    public String[] getAllSafeTableColumnNames(String dep) {
+        String memberStr = this.controller.getSafeMemberNames(dep);
+        List<String> strings = new LinkedList<>(Arrays.asList(memberStr.split("\t")));
+        strings.add("操作");
+        String[] ret = new String[strings.size()];
+        for (int i = 0; i < strings.size(); i++) {
+            ret[i] = strings.get(i);
+        }
+        return ret;
     }
 }

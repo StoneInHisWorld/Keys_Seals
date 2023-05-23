@@ -31,7 +31,6 @@ public class CmdUI extends UI {
                     + ui.getExitCmd() + ". 退出");
             int cmd = KeyUI.getChoice(scanner, ui.getExitCmd(), ui.getSealCmd());
             try {
-//                cmd = scanner.nextInt();
                 if (cmd == ui.getExitCmd()) {
                     break;
                 }

@@ -11,6 +11,10 @@ public abstract class UI {
     protected final String supportDep;
     protected final String version;
 
+    /**
+     * 基础UI类。负责加载配置文件。
+     * @throws Exception 配置文件读写异常
+     */
     public UI() throws Exception {
         // 加载配置文件
         FileInputStream fileInputStream;
@@ -49,6 +53,5 @@ public abstract class UI {
     }
 
     abstract public void welcome();
-
 
 }

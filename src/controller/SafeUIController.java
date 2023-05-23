@@ -119,6 +119,10 @@ public class SafeUIController {
         return this.dbService.collectDepart();
     }
 
+    /**
+     * 将更新的数据写回数据文件
+     * @throws Exception 文件写入异常
+     */
     public void refreshDB() throws Exception {
         this.dbService.writeBackDB();
     }
