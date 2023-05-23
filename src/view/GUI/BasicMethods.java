@@ -1,12 +1,13 @@
 package view.GUI;
 
-import jdk.nashorn.internal.scripts.JO;
-import view.GUI.safeRelated.Frame.InputDialog;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseListener;
 
+/**
+ * 设置GUI界面组件，获取GUI界面组件的基本方法。
+ * 有关字体大小、组件大小、界面提示、异常处理事宜请全部使用本类中的方法。
+ */
 public class BasicMethods {
 
     public static final String UIFontString = "Microsoft YaHei UI";
@@ -32,13 +33,6 @@ public class BasicMethods {
         JButton btn = new JButton(text);
         btn.setVisible(true);
         Dimension dimension;
-//        switch (size) {
-//            case SMALL: dimension = new Dimension(20, 10); break;
-//            case NORMAL: dimension = new Dimension(75, 30); break;
-//            case BIG: dimension = new Dimension(200, 50); break;
-//            case ULTRA: dimension = new Dimension(400, 100); break;
-//            default: dimension = new Dimension(-1, -1);break;
-//        }
         switch (size) {
             case SMALL: dimension = new Dimension(20, 10); break;
             case NORMAL: dimension = new Dimension(70, 25); break;
@@ -65,13 +59,6 @@ public class BasicMethods {
      * @throws Exception 字体大小参数错误，字体风格参数错误
      */
     public static Font getFont(int style, int size) throws Exception {
-//        switch (size) {
-//            case SMALL:size = 11;break;
-//            case NORMAL:size = 15;break;
-//            case BIG:size = 20;break;
-//            case ULTRA:size = 30;break;
-//            default:throw new Exception("错误的字体大小！");
-//        }
         switch (size) {
             case SMALL:size = 10;break;
             case NORMAL:size = 13;break;
@@ -142,6 +129,12 @@ public class BasicMethods {
         }
     }
 
+    /**
+     * 设置窗体大小。
+     * @param toBeEdited 设置用于的窗体
+     * @param size 指定的大小参数
+     * @throws Exception 窗体大小参数异常
+     */
     public static void setFrameSize(Frame toBeEdited, int size) throws Exception {
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         int screen_width = screenSize.width;

@@ -8,17 +8,16 @@ abstract public class BasicMouseListener extends MouseAdapter {
 
     protected final JFrame parentFrame;
 
+    /**
+     * 基础鼠标监听器。
+     * @param parentFrame 上级界面。用于展示和返回。
+     */
     protected BasicMouseListener(JFrame parentFrame) {
         this.parentFrame = parentFrame;
     }
 
     public void disposeParentFrame() {
         parentFrame.dispose();
-    }
-
-    public void showParentFrame() {
-        parentFrame.validate();
-        parentFrame.setVisible(true);
     }
 
     @Override

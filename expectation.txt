@@ -1,5 +1,2 @@
 1. 添加key时对保险箱id与序号进行查重。放在DB中进行？或是DBService？
-2. 添加数据库无信息时，初始化数据库的功能
-3. 添加一个SafeGUIController类用于给SafeUIController发送GUI界面的消息
-4. InputDialog里面的ok btn listener看看是否能改成构造函数的Listener
-5. 入库钥匙的GUI提示要改一下
+2. 增加根据屏幕分辨率更改GUI字体尺寸的功能

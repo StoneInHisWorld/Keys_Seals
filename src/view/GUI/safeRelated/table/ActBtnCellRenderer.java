@@ -10,6 +10,11 @@ public class ActBtnCellRenderer implements TableCellRenderer {
 
     public final Font cellFont;
 
+    /**
+     * 表格单元格渲染器。将表格渲染为标签，提示用户点击。
+     * @param textSize 文本大小
+     * @throws Exception 字体参数异常
+     */
     public ActBtnCellRenderer(int textSize) throws Exception {
         this.cellFont = BasicMethods.getFont(Font.PLAIN, textSize);
     }

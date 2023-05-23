@@ -11,6 +11,11 @@ public class DepSafe extends Safe implements Comparable<DepSafe>{
     private int back_up = 0;
     private int emergency = 0;
 
+    /**
+     * 通过信息字符串生成一个部门保险柜。
+     * @param depKey_str 信息字符串。格式为“部门名称\t序号\t店铺名称\t保险柜名称\t备用钥匙数量\t应急钥匙数量\t入库人\t出库人\t备注\t”
+     * @throws Exception 信息字符串解析异常
+     */
     public DepSafe(String depKey_str) throws Exception {
         String[] strs = depKey_str.split("\t");
         int progress = 0;

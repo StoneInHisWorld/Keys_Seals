@@ -10,9 +10,6 @@ import java.awt.*;
 
 public class MainFrame extends UI{
 
-    /**
-     * 界面组件
-     */
     private JPanel topPanel;
     private JLabel welcomeLabel;
     private JLabel warningLabel;
@@ -25,7 +22,12 @@ public class MainFrame extends UI{
 
     private final PresentFrame presentFrame;
 
+    /**
+     * 生成主界面。
+     * @throws Exception 配置文件读写异常
+     */
     public MainFrame() throws Exception {
+        super();
         this.welcome();
         this.presentFrame = new PresentFrame(null);
     }
@@ -42,8 +44,11 @@ public class MainFrame extends UI{
         }
     }
 
+    /**
+     * 设置部分组件的字体，添加按钮的监听器。显示主窗体
+     * @throws Exception 字体设置异常，窗体展示异常
+     */
     private void present() throws Exception {
-        this.presentFrame.present();
         this.warningLabel.setFont(
                 BasicMethods.getFont(Font.PLAIN, BasicMethods.NORMAL)
         );
@@ -61,6 +66,7 @@ public class MainFrame extends UI{
                 new SealBtnMouseListener()
         );
         this.sealBtn.setFont(BasicMethods.getFont(Font.BOLD, BasicMethods.NORMAL));
+        this.presentFrame.present();
     }
 
     @Override

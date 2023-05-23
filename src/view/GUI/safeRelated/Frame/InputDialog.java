@@ -30,12 +30,12 @@ public class InputDialog extends JDialog {
     /**
      * 生成一个新的输入对话框
      * @param toBeInput 将要输入的信息
-     * @param dialogTtile 输入对话框的标题
+     * @param dialogTitle 输入对话框的标题
      * @param listener 处理“确定”键的监听器。用户点击确定后会处理用户输入的数据，并刷新父界面。
      * @param width_size 对话框的宽度大小参数。需为BasicMethods的参数。
      * @throws Exception 字体参数异常
      */
-    public InputDialog(Object[] toBeInput, String dialogTtile,
+    public InputDialog(Object[] toBeInput, String dialogTitle,
                        BasicMouseListener listener, int width_size) throws Exception {
         this.listener = listener;
         this.width_size = width_size;
@@ -72,7 +72,7 @@ public class InputDialog extends JDialog {
         this.textFieldSize = new Dimension(200, 50);
         this.fieldsHaveData = new LinkedList<>();
         this.customize();
-        this.present(dialogTtile);
+        this.present(dialogTitle);
     }
 
     /**

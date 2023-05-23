@@ -8,6 +8,7 @@ import view.GUI.safeRelated.table.SafeTablePainter;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.LinkedList;
 import java.util.List;
@@ -27,7 +28,12 @@ public class AllDepOverviewFrame extends BasicFrame {
     private final SafeGUIController controller;
     private static final String[] actions = new String[]{"入库", "出库", "删除"};
 
-
+    /**
+     * 全部门总览界面
+     * @param parentFrame 上级界面
+     * @param controller GUI界面分发处理器
+     * @throws Exception 找不到保险柜异常、数据文件无效异常、列尺寸参数异常
+     */
     public AllDepOverviewFrame(JFrame parentFrame, SafeGUIController controller) throws Exception {
         super(parentFrame);
         this.controller = controller;
@@ -46,29 +52,21 @@ public class AllDepOverviewFrame extends BasicFrame {
         );
     }
 
+    /**
+     * 处理返回按钮
+     */
     private void dealBackBtn() {
-        this.backBtn.addMouseListener(new BasicMouseListener(this.parentFrame) {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                try {
-                    ownerFrame.dispose();
-                    this.showParentFrame();
-                    controller.refreshDB();
-                } catch (Exception exception) {
-                    BasicMethods.dealException(exception);
+        this.backBtn.addMouseListener( new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    try {
+                        backToLastFrame();
+                    } catch (Exception exception) {
+                        BasicMethods.dealException(exception);
+                    }
                 }
             }
-
-            @Override
-            public void refreshParentFrame() {
-
-            }
-
-            @Override
-            public void dealTransaction(Object[] inputData) throws Exception {
-
-            }
-        });
+        );
     }
 
     @Override
@@ -86,6 +84,10 @@ public class AllDepOverviewFrame extends BasicFrame {
         return this.mainPanel;
     }
 
+    /**
+     * 绘制界面中的部门保险柜表格以及后勤部保险柜表格
+     * @throws Exception 找不到保险柜异常、数据文件无效异常、列尺寸参数异常
+     */
     private void drawTable() throws Exception {
         // 绘制部门保险柜表格
         Set<String> departments = this.controller.collectDepartments();
@@ -93,6 +95,11 @@ public class AllDepOverviewFrame extends BasicFrame {
         this.drawSupDepTable(departments);
     }
 
+    /**
+     * 绘制后勤部保险柜表格。
+     * @param departments 数据文件中所有涉及的部门
+     * @throws Exception 找不到保险柜异常、数据文件无效异常、列尺寸参数异常
+     */
     private void drawSupDepTable(Set<String> departments) throws Exception {
         for (String department : departments) {
             // 有后勤部则绘制表格
@@ -110,6 +117,11 @@ public class AllDepOverviewFrame extends BasicFrame {
         this.supDepSafeTable.setVisible(false);
     }
 
+    /**
+     * 绘制部门保险柜表格。
+     * @param departments 数据文件中所有涉及的部门
+     * @throws Exception 找不到保险柜异常、数据文件无效异常、列尺寸参数异常
+     */
     private void drawDepTable(Set<String> departments) throws Exception {
         String supportDep = this.controller.getSupDep();
         // 检查是否有其他部门
@@ -199,6 +211,9 @@ public class AllDepOverviewFrame extends BasicFrame {
         return controller.getFetKeyBtnToBeInput(dep);
     }
 
+    /**
+     * 处理按钮业务的监听器类
+     */
     private class AddSafeBtnMouseListener extends BasicMouseListener {
 
         private String dep;

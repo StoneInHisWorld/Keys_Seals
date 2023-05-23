@@ -30,14 +30,12 @@ public class SafeOverviewFrame extends BasicFrame {
     private final String retKeyBtnDialogTitle;
 
     /**
-     * 新建部门总览界面
-     *
-     * @param parentFrame 父框架
+     * 生成一个部门总览界面。
+     * @param parentFrame 上级界面
      * @param dep 所属部门
-     * @throws Exception 空保险柜异常
+     * @throws Exception 字体参数异常、找不到保险柜异常、数据文件无效异常、列尺寸参数异常
      */
-    public SafeOverviewFrame(JFrame parentFrame,
-                             String dep,
+    public SafeOverviewFrame(JFrame parentFrame, String dep,
                              SafeGUIController safeGUIController) throws Exception {
         super(parentFrame);
         this.dep = dep;
@@ -80,7 +78,7 @@ public class SafeOverviewFrame extends BasicFrame {
     // 表格相关
     /**
      * 绘制表格
-     * @throws Exception 表格绘制异常
+     * @throws Exception 字体参数异常、找不到保险柜异常、数据文件无效异常、列尺寸参数异常
      */
     public void drawTable() throws Exception {
         // 获取完整的保险柜数据

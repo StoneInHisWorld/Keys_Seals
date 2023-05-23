@@ -17,7 +17,7 @@ public class SafeTablePainter extends TablePainter {
     private final int[] columnSize;
 
     /**
-     * 得到保险柜表格绘制器
+     * 创建保险柜表格绘制器
      * @param toBePainted 绘制的表格对象
      * @param actionBtns 操作按钮
      * @param safeData 保险柜数据
@@ -62,13 +62,6 @@ public class SafeTablePainter extends TablePainter {
      * @return 默认表格模型
      */
     protected DefaultTableModel getTableModel() {
-//        // 每条保险柜信息去掉部门名称并在末尾加上空字符串
-//        for (int i = 0; i < safeData.size(); i++) {
-//            List<Object> members = new LinkedList<>(Arrays.asList(safeData.get(i)));
-//            members.remove(0);
-//            members.add("null");
-//            safeData.set(i, members.toArray());
-//        }
         // 生成表格model
         Object[][] dataVectors = new Object[safeData.size()][];
         for (int i = 0; i < dataVectors.length; i++) {

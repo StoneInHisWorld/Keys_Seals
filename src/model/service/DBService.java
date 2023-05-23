@@ -44,10 +44,6 @@ public class DBService {
             depSet.add(key.getDepartment());
         }
         // 排序
-//        List<String> depList = new LinkedList<>(depSet);
-//        Collections.sort(depList);
-//        depSet.clear();
-//        depSet.addAll(depList);
         return depSet;
     }
 
@@ -143,18 +139,6 @@ public class DBService {
     }
 
     /**
-     * 根据序号查找全部门保险柜
-     * @param id 保险柜ID
-     * @return 找到则返回对应的保险柜，否则返回null
-     */
-    public DepSafe findDepSafe(int id) {
-        for (DepSafe depSafe : this.db.getDepSafes()) {
-            if (depSafe.getId() == id) return depSafe;
-        }
-        return null;
-    }
-
-    /**
      * 根据序号和部门查找保险柜
      * @param dep 保险柜所属部门
      * @param id 保险柜ID
@@ -180,12 +164,6 @@ public class DBService {
         if (this.db.getDepSafes().removeIf(
                 depSafe -> depSafe.getDepartment().equals(dep) &&
                         depSafe.getId() == id)) {
-//            // 若删除成功，则刷新所有key的id
-//            List<DepSafe> depSafes = this.db.getDepSafes();
-//            int new_id = 1;
-//            for (DepSafe depSafe : depSafes) {
-//                depSafe.setId(new_id++);
-//            }
             // 若删除成功，则按部门刷新所有key的id
             List<DepSafe> depSafes = this.db.getDepSafes();
             String last_dep = "";

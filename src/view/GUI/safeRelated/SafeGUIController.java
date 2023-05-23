@@ -16,6 +16,7 @@ public class SafeGUIController {
     /**
      * GUI消息分发器，负责处理GUI层的消息，转换为适配SafeUIController接口的输入。
      * 负责从Controller获取数据库信息转发给GUI层。
+     * @throws Exception 找不到数据文件异常
      */
     public SafeGUIController(String supDep) throws Exception {
         this.controller = new SafeUIController(supDep);
@@ -176,7 +177,6 @@ public class SafeGUIController {
 
     public Set<String> collectDepartments() {
         List<String> departments = new LinkedList<>(this.controller.getDepartments());
-//        Collections.sort(departments);
         return new LinkedHashSet<>(departments);
     }
 
@@ -215,13 +215,5 @@ public class SafeGUIController {
             ret[i] = strings.get(i);
         }
         return ret;
-    }
-
-    /**
-     * 将更新的数据写回数据文件
-     * @throws Exception 文件写入异常
-     */
-    public void refreshDB() throws Exception {
-        this.controller.refreshDB();
     }
 }
