@@ -90,7 +90,7 @@ public class InputDialog extends JDialog {
             JPanel panel = new JPanel();
             panel.setLayout(new BorderLayout());
             JLabel label = new JLabel(s.toString());
-            label.setFont(BasicMethods.getFont(Font.PLAIN, BasicMethods.BIG));
+            label.setFont(BasicMethods.getFont(Font.PLAIN, BasicMethods.NORMAL));
             panel.add(label, BorderLayout.NORTH);
             JTextField dataField = new JTextField();
             dataField.setSize(this.textFieldSize);

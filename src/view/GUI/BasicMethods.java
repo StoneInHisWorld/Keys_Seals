@@ -61,7 +61,7 @@ public class BasicMethods {
     public static Font getFont(int style, int size) throws Exception {
         switch (size) {
             case SMALL:size = 10;break;
-            case NORMAL:size = 13;break;
+            case NORMAL:size = 15;break;
             case BIG:size = 20;break;
             case ULTRA:size = 25;break;
             default:throw new Exception("错误的字体大小！");
@@ -172,7 +172,7 @@ public class BasicMethods {
         int screen_height = screenSize.height;
         Dimension d;
         // 界面占整个屏幕的百分比
-        double[] width_portion = {0.1, 0.2, 0.4, 0.5};
+        double[] width_portion = {0.1, 0.2, 0.5, 0.6};
         double[] height_portion = {0.1, 0.2, 0.2, 0.3};
         int width, height;
         switch (width_size) {
